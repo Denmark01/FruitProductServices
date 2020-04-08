@@ -1,0 +1,35 @@
+<!-- <app-carousel></app-carousel> -->
+<div class="container left">
+  <!-- <ngb-alert *ngIf="!staticAlert" (close)="staticAlertClosed = true" class="overlapTop">
+    Check out our awesome new features!</ngb-alert> -->
+    <ngb-alert *ngIf="successMessage" (close)="successMessage = null" [type]="alertColor">
+     {{ successMessage}}
+      </ngb-alert>
+  <app-search-bar (messageEvent)="receiveMessage($event)"></app-search-bar>
+  <app-loader *ngIf="isLoading"></app-loader>
+  <!-- <p>{{counter | async}}<button (click)="increment()">Increment</button></p> -->
+  <div class="row mar_bottom"  *ngIf="!isLoading">
+    <div class="image col-lg-2 col-md-3 col-sm-4 col-9 mw-182px"
+      *ngFor="let item of product_list | grdFilter: {name: searchText, delivery:searchText,  price: searchText};let i = index;">
+      <ul>
+        <li>
+          <img [src]="item.image" />
+        </li>
+        <li>{{item.name}}</li>
+        <li>
+          <b>Delivery : </b>{{item.delivery}}</li>
+        <li id="red" style="min-height: 20px;">Rs : {{item.price}} / {{item.weight}}</li>
+        <li>
+          Qty :
+          <i class="fa fa-minus-circle" aria-hidden="true" (click)="decrementQty(i)"></i>
+            <input type="text" [(ngModel)]="item.qty" class="textBox" />
+          <i class="fa fa-plus-circle" aria-hidden="true" (click)="incrementQty(i)"></i>
+         
+        </li>
+        <li>
+          <button class="btn btn-primary btn-sm-4" (click)="addToCart(item, 'notCss')">{{item.qty > 0?'Click to add': 'Add to Cart'}}</button>
+        </li>
+      </ul>
+    </div>
+    </div>
+</div>

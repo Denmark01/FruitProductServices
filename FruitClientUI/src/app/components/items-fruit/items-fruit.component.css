@@ -1,0 +1,65 @@
+.image{
+    text-align: left;
+    outline: 1px solid #c7c4c4;
+    margin-right: 9px;
+    /* min-width: 16%; */
+    /* overflow-wrap: break-word; */
+   margin-bottom: 13px;
+}
+
+img {
+    width: 125px;
+    height: 110px;
+    margin-top: 7px;
+}
+ul{
+    list-style-type: none;
+    padding-left: 22px;
+}
+ul li{
+    padding-bottom: 7px;
+    min-height: 53px;
+}
+.image:hover{
+    outline: 1px solid red;
+}
+#red{
+    color: red;
+}
+.mar_bottom{
+    margin-bottom: 7%;
+}
+
+.left {
+position : relative;
+left: 10%;
+}
+@media screen and (min-width: 480px) {
+    .left {
+        position : relative;
+        left: 3%;
+        }
+}
+
+.open.dropdown .dropdown-menu ng-select{ display: block; transform: none; }
+.overlapTop {
+    z-index : 1;
+}
+
+::ng-deep .ngx-datepicker-calendar-container {
+    z-index:1
+    }
+
+.textBox {
+    width: 50px;
+    text-align: center;
+    margin: 0px 4px;
+}
+.mw-182px {
+min-width:182px
+}
+
+.alert ::ng-deep {
+    min-width: 50%;
+    max-width: 70%;
+}

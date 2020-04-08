@@ -1,0 +1,76 @@
+<div class="wholeContainer">
+
+
+<div class="container" *ngIf="mode">
+  <div class="box col-lg-5 col-md-6 col-sm-10">
+    <form>
+      <b></b>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Email address</label>
+        <input type="email" #email class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Password</label>
+        <input type="password" #password class="form-control" id="exampleInputPassword1" placeholder="Password">
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+      </div>
+      <button type="submit" (click)="submitLogin(email.value, password.value)" class="btn btn-primary">Login</button>
+    </form>
+  </div>
+</div>
+
+<div class="container" *ngIf="!mode">
+  <div class="box col-lg-5 col-md-6 col-sm-10">
+    <form>
+      <div class="form-group">
+        <label for="name1">Your Full Name</label>
+        <input type="text" #name1 class="form-control" id="name1" placeholder="your your full name">
+      </div>
+      <div class="form-group">
+        <label for="email1">Email address</label>
+        <input type="email" #email1 class="form-control" id="email1" placeholder="your email id">
+      </div>
+      <div class="form-group">
+        <label for="mobno">Contact Number</label>
+        <input type="number" #mobno class="form-control" id="mobno" placeholder="your contact no">
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Password</label>
+        <input type="password" #pass class="form-control" id="exampleInputPassword1" placeholder="choose password">
+      </div>
+      <div class="form-check-inline">
+        <label class="form-check-label">
+          <input type="radio" class="form-check-input" name="optradio">Male
+        </label>
+      </div>
+      <div class="form-check-inline">
+        <label class="form-check-label">
+          <input type="radio" class="form-check-input" name="optradio">Female
+        </label>
+      </div>
+      <div class="form-check-inline">
+        <label class="form-check-label">
+          <input type="radio" class="form-check-input" name="optradio">Other
+        </label>
+      </div>
+      <!-- <div class="form-group">
+        <label for="address">Email address</label>
+        <input type="textbox" #email class="form-control" id="address" placeholder="your address">
+      </div>
+      <div class="form-group">
+        <label for="hno">House No & Building</label>
+        <input type="text" #pin class="form-control" id="hno" placeholder="H.no & Building">
+      </div>
+      <div class="form-group">
+        <label for="street"></label>
+        <input type="text" #pin class="form-control" id="hno" placeholder="H.no">
+      </div> -->
+      <button type="submit"  (click)="submitLogin1(pin.value)" class="btn btn-primary">Sign Up</button>
+    </form>
+  </div>
+</div>
+</div>
