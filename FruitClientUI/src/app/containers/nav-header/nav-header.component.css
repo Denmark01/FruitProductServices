@@ -12,3 +12,7 @@
     margin: 0;
   }
   
+  .alert ::ng-deep {
+    min-width: 50%;
+    max-width: 70%;
+}

@@ -16,7 +16,9 @@
         <a class="nav-link" routerLink="/" routerLinkActive="active">Vegetables</a>
       </li>
       <li class="nav-item">
+        <!-- <li class="nav-item" *ngif="isAdmin"> -->
         <a class="nav-link" routerLink="/upload" routerLinkActive="active">Upload Item</a>
+        <!-- <a class="nav-link" routerLink="/upload" routerLinkActive="active">Upload Item</a> -->
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">
@@ -42,3 +44,10 @@
 
   </div>
 </nav>
+
+<div>
+  <ngb-alert *ngIf="successMessage" (close)="successMessage = null" [type]="alertColor">
+    {{ successMessage}}
+     </ngb-alert>
+     <!-- <button (click)="alert()">Alert</button> -->
+</div>

@@ -5,6 +5,9 @@ import { map, catchError } from 'rxjs/operators';
 import { config } from './utils/config';
 import {environment } from '../environments/environment';
 import { Router } from '@angular/router';
+import { NgRedux } from 'ng2-redux';
+import { LoginState } from './containers/login/login.reducer';
+import { SAVE_PROFILE, LOGIN_LOADER } from './containers/login/login.action';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +17,9 @@ export class AuthService {
   isLogged = false;
   errorData: {};
 
-  constructor(private http: HttpClient,   private router: Router) { }
+  constructor(private http: HttpClient,
+    private router: Router,
+    private ngRedux: NgRedux<LoginState>) { }
 
   redirectUrl: string;
 
@@ -35,9 +40,13 @@ export class AuthService {
   login(user, pass) {
     const requestUrl = environment.apiUrl + config.api.auth;
     const data = {username: user, password: pass};
+    this.ngRedux.dispatch({type: LOGIN_LOADER});
     this.http.post(requestUrl, data).subscribe(user => {
       if (user) {
         this.saveToken = user;
+
+        this.ngRedux.dispatch({type: SAVE_PROFILE, user_profile: this.saveToken.user_profile, is_admin: this.saveToken.isAdmin});
+
         localStorage.setItem('token', this.saveToken.jwt);
         this.router.navigate(['']);
       }

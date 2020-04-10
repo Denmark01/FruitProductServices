@@ -5,10 +5,11 @@ import { NgbAlertConfig } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient } from '@angular/common/http';
 import { DataShareService } from 'src/app/services/data-share.service';
 import { AppServiceService } from 'src/app/services/app-service.service';
-import {alertType} from '../../utils/config';
+import {alertType, alertMsg} from '../../utils/config';
 import { NgRedux, select } from 'ng2-redux';
 import { IItemFruitState } from './item.fruit.reducer';
-import { INCREMENT } from './item-fruit.action';
+import { INCREMENT, NOTIFICATION } from './item-fruit.action';
+import { AppReduxService } from 'src/app/services/app-redux.service';
 @Component({
   selector: 'app-items-fruit',
   templateUrl: './items-fruit.component.html',
@@ -38,7 +39,7 @@ export class ItemsFruitComponent implements OnInit {
       private alertConfig: NgbAlertConfig,
       private http: HttpClient,
       private service: DataShareService,
-      private appService: AppServiceService,
+      private reduxService: AppReduxService,
       private dataShare: DataShareService,
       private ngRedux: NgRedux<IItemFruitState>
       ) {
@@ -48,7 +49,7 @@ export class ItemsFruitComponent implements OnInit {
       }
 
   ngOnInit() {
-    this.appService.getItemListRedux();
+    this.reduxService.getItemListRedux();
 
     this. ngRedux.subscribe(() => {
       const store: any = this.ngRedux.getState();
@@ -78,27 +79,9 @@ export class ItemsFruitComponent implements OnInit {
       name : 'Onion / Pyaaz', delivery: 'Delivery within 1 hour',
       price : '30', weight : 'KG', qty: 0, item_id: 101},
       {image : 'assets/image/399.jpg', name : 'Deluxe Wedding Basket', delivery: 'Delivery within two days',
-       price : '1020.00', weight : 'NA', qty: 0, item_id: 102},
-      {image : 'assets/image/beetroot.jpg', name : 'Beet Root / Chukandar', delivery: 'Delivery within 1 hour'
-      , price : '16', weight : '250 gms', qty: 0, item_id: 103},
-      {image : 'assets/image/onion-1.jpg', name : 'Onion / Pyaaz', delivery: 'Delivery within 1 hour', price : '30'
-      , weight : 'KG', qty: 0, item_id: 104},
-      {image : 'assets/image/399.jpg', name : 'Deluxe Wedding Basket', delivery: 'Delivery within two days'
-      , price : '1020.00', weight : 'NA', qty: 0, item_id: 105},
-      {image : 'assets/image/beetroot.jpg', name : 'Beet Root / Chukandar', delivery: 'Delivery within 1 hour',
-       price : '16', weight : '250 gms', qty: 0, item_id: 106},
-      {image : 'assets/image/onion-1.jpg', name : 'Onion / Pyaaz', delivery: 'Delivery within 1 hour'
-      , price : '30', weight : 'KG', qty: 0, item_id: 107},
-      {image : 'assets/image/399.jpg', name : 'Deluxe Wedding Basket', delivery: 'Delivery within two days'
-      , price : '1020.00', weight : 'NA', qty: 0, item_id: 108},
-      {image : 'assets/image/beetroot.jpg', name : 'Beet Root / Chukandar', delivery: 'Delivery within 1 hour'
-      , price : '16', weight : '250 gms', qty: 0, item_id: 109},
+       price : '1020.00', weight : 'NA', qty: 0, item_id: 102}
     ];
 
-    const list = [
-      {image : 'assets/image/onion-1.jpg', name : 'Onion / Pyaaz',
-      price : '30', unit : 'KG', maxqty: '30', item_id: 101},
-    ];
 
 
     // setTimeout(() => this.staticAlertClosed = true, 20000);
@@ -126,13 +109,12 @@ export class ItemsFruitComponent implements OnInit {
 
   addToCart(item, action) {
       if (item.qty === 0) {
-        alert('Please add quantity');
+        this.reduxService.notification(alertMsg.addQty, alertType.warning);
       } else {
         const sameItem = this.service.getCart().filter(e => e.qty === item.qty && e.item_id === item.item_id);
         console.log('Same item added ' + sameItem + ' ' + sameItem.length);
         if (sameItem.length > 0) {
-          this._success.next('Already added in cart');
-          this.alertColor = alertType.warning;
+          this.reduxService.notification(alertMsg.alreadyAdded, alertType.warning);
         } else {
           const qtyChange = this.service.getCart().filter(e => e.qty !== item.qty && e.item_id === item.item_id);
           if (qtyChange.length > 0 && this.service.getCart().length > 0) {
@@ -141,17 +123,19 @@ export class ItemsFruitComponent implements OnInit {
                 data.qty = item.qty;
               }
             });
-            this._success.next('Cart updated..');
-            this.alertColor = alertType.info;
+            this.reduxService.addToCart(this.service.getCart());
+            this.reduxService.notification(alertMsg.cartUpadted, alertType.success);
           } else {
             // this.service.setCart({ 'price': item.price, 'name': item.name, 'item_id': item.item_id, 'qty': item.qty });
             this.service.setCart({...item});
+            this.reduxService.addToCart(this.service.getCart());
             const len = this.service.getCart().length;
             this.service.currentMessage.subscribe(message => this.countCart = message);
             this.service.changeMessage(len + '');
             console.log('Cart ' + JSON.stringify(this.service.getCart()));
-            this._success.next('Added in cart');
-            this.alertColor = alertType.success;
+            // this._success.next('Added in cart');
+            // this.alertColor = alertType.success;
+            this.reduxService.notification(alertMsg.itemAdded, alertType.success);
           }
         }
       }

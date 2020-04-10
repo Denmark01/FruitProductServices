@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { DataShareService } from 'src/app/services/data-share.service';
 import { AuthService } from 'src/app/auth.service';
 import { NgRedux } from 'ng2-redux';
-import { IItemFruitState } from 'src/app/components/items-fruit/item.fruit.reducer';
+import { LoginState } from './login.reducer';
 
 
 @Component({
@@ -17,11 +17,14 @@ export class LoginComponent implements OnInit {
   public mode: boolean;
   public loginName: string;
   public logUser: string;
+  public isSignInLoading: boolean;
+  public isAdmin: boolean;
+
   constructor(private http: HttpClient,
     private route: Router,
     private service: DataShareService,
     private authService: AuthService,
-    private ngRedux: NgRedux<IItemFruitState>) { }
+    private ngRedux: NgRedux<LoginState>) { }
 
   ngOnInit() {
     const url = this.route.url;
@@ -30,6 +33,12 @@ export class LoginComponent implements OnInit {
     } else if (url.includes('signup')) {
       this.mode = false;
     }
+
+    this. ngRedux.subscribe(() => {
+      const store: any = this.ngRedux.getState();
+      this.isSignInLoading = store.login.login_loader;
+      this.isAdmin = store.login.is_admin;
+    });
   }
 
   submitLogin(email, password) {

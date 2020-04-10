@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { DataShareService } from './data-share.service';
 import { NgRedux } from 'ng2-redux';
 import { IItemFruitState } from '../components/items-fruit/item.fruit.reducer';
-import { GET_FRUIT_LIST, START_LOADER } from '../components/items-fruit/item-fruit.action';
+import { START_LOADER } from '../components/items-fruit/item-fruit.action';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,23 +16,23 @@ constructor(private http: HttpClient,
 }
   getItemList() {
     const url = environment.apiUrl + config.api.getItems;
-    console.log(url);
+    this.ngRedux.dispatch({type: START_LOADER});
     const response: any = this.http.get(url);
     return response;
   }
 
-  getItemListRedux() {
-    const url = environment.apiUrl + config.api.getItems;
+  // getItemListRedux() {
+  //   const url = environment.apiUrl + config.api.getItems;
 
-    this.ngRedux.dispatch({type: START_LOADER});
+  //   this.ngRedux.dispatch({type: START_LOADER});
 
-    this.getItemList().subscribe(data => {
-      console.log('Redux data ' + data);
-      this.ngRedux.dispatch({type: GET_FRUIT_LIST, payload: data});
-    }, err => {
-      console.log('ERROr calling apii....');
-    });
-  }
+  //   this.getItemList().subscribe(data => {
+  //     console.log('Redux data ' + data);
+  //     this.ngRedux.dispatch({type: GET_FRUIT_LIST, payload: data});
+  //   }, err => {
+  //     console.log('ERROr calling apii....');
+  //   });
+  // }
 
   uploadItems(formData, val) {
     const url = environment.apiUrl + config.api.uploadItems;
@@ -44,6 +44,13 @@ constructor(private http: HttpClient,
   login(user, pass) {
     const data = {username: user, password: pass};
     const url = environment.apiUrl + config.api.auth;
+    const response: any = this.http.post(url, data);
+    return response;
+  }
+
+  feedback(name, remarks) {
+    const data = {name: name, remarks: remarks};
+    const url = environment.apiUrl + config.api.feedback;
     const response: any = this.http.post(url, data);
     return response;
   }

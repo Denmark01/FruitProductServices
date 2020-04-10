@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataShareService } from 'src/app/services/data-share.service';
-import { select } from 'ng2-redux';
+import { select, NgRedux } from 'ng2-redux';
+import { IItemFruitState } from '../items-fruit/item.fruit.reducer';
 
 @Component({
   selector: 'app-add-cart',
@@ -14,15 +15,24 @@ export class AddCartComponent implements OnInit, OnDestroy {
   @select(s => s.itemFruit.item_list) item_list;
 
   constructor(private dataShare: DataShareService,
-    private service: DataShareService) { }
+    private service: DataShareService,
+    private ngRedux: NgRedux<IItemFruitState>) { }
 
   ngOnInit() {
-    // this.product_list = this.dataShare.getCart();
+    this.product_list = this.dataShare.getCart();
     this.product_list = this.item_list;
     if (this.product_list.length === 0) {
       this.service.changeMessage(0 + '');
     }
-  }
+  //   this.ngRedux.subscribe(() => {
+  //     const store: any = this.ngRedux.getState();
+  //     this.product_list = store.itemFruit.cart_item;
+  //     console.log('Add Cart comp :: product list ' + store.itemFruit.cart_item);
+  //     if (this.product_list.length === 0) {
+  //       this.service.changeMessage(0 + '');
+  //     }
+  // });
+}
 
   delete(index) {
     this.product_list[index].qty = 0;

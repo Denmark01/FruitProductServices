@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { NgRedux } from 'ng2-redux';
+import { IItemFruitState } from 'src/app/components/items-fruit/item.fruit.reducer';
+import { AppServiceService } from 'src/app/services/app-service.service';
+import { AppReduxService } from 'src/app/services/app-redux.service';
 
 @Component({
   selector: 'app-feedback',
@@ -7,9 +11,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FeedbackComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private appRedux: AppReduxService
+  ) { }
 
   ngOnInit() {
+  }
+
+  feedbackSubmit(name , remarks) {
+    this.appRedux.feedbackRedux(name, remarks);
   }
 
 }

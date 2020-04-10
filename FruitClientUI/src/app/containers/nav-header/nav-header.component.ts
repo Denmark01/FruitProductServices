@@ -4,6 +4,10 @@ import { Router } from '@angular/router';
 import { NgRedux, select } from 'ng2-redux';
 import { IItemFruitState } from 'src/app/components/items-fruit/item.fruit.reducer';
 import { LOGOUT } from 'src/app/components/items-fruit/item-fruit.action';
+import { NgbAlertConfig } from '@ng-bootstrap/ng-bootstrap';
+import { debounceTime } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import {alertType} from '../../utils/config';
 
 @Component({
   selector: 'app-nav-header',
@@ -11,10 +15,17 @@ import { LOGOUT } from 'src/app/components/items-fruit/item-fruit.action';
   styleUrls: ['./nav-header.component.css']
 })
 export class NavHeaderComponent implements OnInit {
+  private _success = new Subject<string>();
+  staticAlertClosed = false;
+  successMessage: string;
+  staticAlert = false;
+  public alertColor: string;
+
   public item_cart = [];
   count: number;
   public token: string;
   public isLoggedIn: boolean;
+  public isAdmin: boolean;
   @ViewChild('navbarToggler') navbarToggler: ElementRef;
 
   @select(s => s.itemFruit.item_list) item_list;
@@ -23,8 +34,11 @@ export class NavHeaderComponent implements OnInit {
   constructor(
     private service: DataShareService,
     private route: Router,
-    private ngRedux: NgRedux<IItemFruitState>
-    ) { }
+    private ngRedux: NgRedux<IItemFruitState>,
+    private alertConfig: NgbAlertConfig,
+    ) {
+      alertConfig.dismissible = true;
+    }
 
   ngOnInit() {
     this.token = '';
@@ -46,7 +60,16 @@ export class NavHeaderComponent implements OnInit {
     this. ngRedux.subscribe(() => {
       const store: any = this.ngRedux.getState();
       this.isLoggedIn = store.itemFruit.isLoggedIn;
+      this.isAdmin = store.login.is_admin;
+      this._success.next(store.itemFruit.growlMsg);
+      this.alertColor = store.itemFruit.growlType;
     });
+
+    this._success.subscribe((message) => this.successMessage = message);
+    this._success.pipe(
+      debounceTime(3000)
+    ).subscribe(() => this.successMessage = null);
+
   }
 
 
@@ -69,5 +92,9 @@ export class NavHeaderComponent implements OnInit {
     this.ngRedux.dispatch({type: LOGOUT});
     localStorage.removeItem('token');
     this.route.navigate(['feedback']);
+  }
+  alert() {
+    this._success.next('Added in cart');
+    this.alertColor = alertType.success;
   }
 }

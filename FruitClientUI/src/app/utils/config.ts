@@ -2,7 +2,8 @@ export const config = {
     api: {
         getItems : 'getAll',
         uploadItems : 'uploadItem',
-        auth: 'authenticate'
+        auth: 'authenticate',
+        feedback: 'feedback'
     }
 
 };
@@ -17,3 +18,11 @@ export enum alertType  {
     light = 'light',
     dark = 'dark'
   }
+
+export const alertMsg ={
+    itemAdded: 'Item added in the cart..',
+    cartUpadted: 'Cart updated..',
+    alreadyAdded: 'Already added in cart..',
+    feedback: 'Thanks for your feedback..',
+    addQty: 'Please add quantity..'
+}

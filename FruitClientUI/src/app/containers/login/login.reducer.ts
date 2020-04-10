@@ -1,28 +1,31 @@
 
 import {tassign} from 'tassign';
-import { LOGOUT, SAVE_PROFILE, CHK_ADMIN } from './login.action';
-export interface IItemFruitState {
+import { SAVE_PROFILE, CHK_ADMIN, LOGIN_LOADER } from './login.action';
+export interface LoginState {
     isLoggedIn: boolean;
-    isAdmin: boolean;
+    is_admin: boolean;
     user_profile: any;
+    login_loader: boolean;
 }
 
-export const ITEM_INITIAL_STATE: IItemFruitState = {
+export const LOGIN_INITIAL_STATE: LoginState = {
     isLoggedIn: false,
-    isAdmin: false,
-    user_profile: {}
+    is_admin: false,
+    user_profile: {},
+    login_loader: false
 };
 
-export function ItemFruitReducer(state: IItemFruitState= ITEM_INITIAL_STATE, action): IItemFruitState {
+export function LoginSignupReducer(state: LoginState= LOGIN_INITIAL_STATE, action): LoginState {
     switch (action.type) {
-        case LOGOUT:
-            return tassign( state, {isLoggedIn : false});
 
         case SAVE_PROFILE:
-            return tassign( state, {user_profile: action.user_profile});
+            return tassign( state, {user_profile: action.user_profile, login_loader: false});
 
         case CHK_ADMIN:
-            return tassign( state, {isAdmin: action.isAdmin});
+            return tassign( state, {is_admin: action.is_admin});
+
+        case LOGIN_LOADER:
+            return tassign( state, {login_loader: true});
     }
     return state;
 }

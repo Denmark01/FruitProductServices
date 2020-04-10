@@ -1,6 +1,6 @@
 
 import {tassign} from 'tassign';
-import { INCREMENT, GET_FRUIT_LIST, START_LOADER, LOGOUT, SAVE_PROFILE, CHK_ADMIN } from './item-fruit.action';
+import { INCREMENT, GET_FRUIT_LIST, START_LOADER, LOGOUT, NOTIFICATION, SAVE_CART} from './item-fruit.action';
 export interface IItemFruitState {
     counter: number;
     item_list: any;
@@ -8,6 +8,9 @@ export interface IItemFruitState {
     item_loader: boolean;
     isAdmin: boolean;
     user_profile: any;
+    growlMsg: string;
+    growlType: string;
+    cart_item: any;
 }
 
 export const ITEM_INITIAL_STATE: IItemFruitState = {
@@ -16,7 +19,10 @@ export const ITEM_INITIAL_STATE: IItemFruitState = {
     item_loader: false,
     isLoggedIn: false,
     isAdmin: false,
-    user_profile: {}
+    user_profile: {},
+    growlMsg: '',
+    growlType: '',
+    cart_item: []
 };
 
 export function ItemFruitReducer(state: IItemFruitState= ITEM_INITIAL_STATE, action): IItemFruitState {
@@ -38,11 +44,11 @@ export function ItemFruitReducer(state: IItemFruitState= ITEM_INITIAL_STATE, act
         case LOGOUT:
             return tassign( state, {isLoggedIn : false});
 
-        case SAVE_PROFILE:
-            return tassign( state, {user_profile: action.user_profile});
+        case NOTIFICATION:
+            return tassign( state, {growlMsg: action.msg, growlType: action.msgType});
 
-        case CHK_ADMIN:
-            return tassign( state, {isAdmin: action.isAdmin});
+        case SAVE_CART:
+            return tassign( state, {cart_item: action.cart_item});
     }
     return state;
 }
