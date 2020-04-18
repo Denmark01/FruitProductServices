@@ -16,6 +16,7 @@ export class AuthService {
   saveToken: any;
   isLogged = false;
   errorData: {};
+  userId = '101';
 
   constructor(private http: HttpClient,
     private router: Router,
@@ -48,6 +49,7 @@ export class AuthService {
         this.ngRedux.dispatch({type: SAVE_PROFILE, user_profile: this.saveToken.user_profile, is_admin: this.saveToken.isAdmin});
 
         localStorage.setItem('token', this.saveToken.jwt);
+        localStorage.setItem('userId', this.userId);
         this.router.navigate(['']);
       }
     });

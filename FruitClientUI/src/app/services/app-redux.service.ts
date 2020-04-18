@@ -46,6 +46,7 @@ export class AppReduxService {
       this.ngRedux.dispatch({type: GET_FRUIT_LIST, payload: data});
     }, err => {
       console.log('ERROr calling apii....');
+      this.notification(alertMsg.internalError, alertType.danger);
     });
   }
 
@@ -55,11 +56,34 @@ export class AppReduxService {
         this.notification(alertMsg.feedback, alertType.warning);
         this.route.navigate(['']);
       }
+    }, error => {
+      this.notification(alertMsg.internalError, alertType.danger);
     });
   }
 
   addToCart(item) {
-    this.ngRedux.dispatch({type: SAVE_CART, cart_item: item});
+    this.appService.addToCart(item).subscribe((data) => {
+      if (data) {
+        this.ngRedux.dispatch({type: SAVE_CART, cart_item: data});
+        this.notification(alertMsg.feedback, alertType.warning);
+        this.route.navigate(['']);
+      }
+    }, error => {
+      this.notification(alertMsg.internalError, alertType.danger);
+    });
+
+  }
+
+  addToCart123(item) {
+    this.appService.addToCart(item).subscribe((data) => {
+      if (data) {
+        this.notification(alertMsg.cartUpadted, alertType.success);
+        this.ngRedux.dispatch({type: SAVE_CART, cart_item: data});
+        this.route.navigate(['']);
+      }
+    }, error => {
+      this.notification(alertMsg.internalError, alertType.danger);
+    });
   }
 
 }

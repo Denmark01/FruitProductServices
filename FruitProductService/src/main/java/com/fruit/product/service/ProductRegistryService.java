@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -35,7 +39,9 @@ import com.fruit.product.dto.ResponseDTO;
 import com.fruit.product.dto.ResponseOutDTO;
 import com.fruit.product.dto.ResponseStatusDTO;
 import com.fruit.product.dto.ValidateTokenDTO;
+import com.fruit.product.model.Feedback;
 import com.fruit.product.repository.CartRepository;
+import com.fruit.product.repository.FeedbackRepository;
 import com.fruit.product.repository.ProductRepository;
 import com.fruit.product.util.JwtUtil;
 
@@ -56,7 +62,9 @@ public class ProductRegistryService {
 	JwtUtil jwt;
 	@Autowired
 	MyProperty myProps;
-
+	@Autowired
+	FeedbackRepository feedbackRepository;
+	
 	public ResponseOutDTO getAll() {
 		ProductRespDTO outDto = new ProductRespDTO();
 		List<Product> product=new ArrayList<>();
@@ -145,34 +153,83 @@ public class ProductRegistryService {
 		return responseDto;
 	}
 
-	public int getRole(AuthenticationRequest authenticationRequest) {
+	public  Map<String, Integer> getRole(AuthenticationRequest authenticationRequest) {
 		String user = authenticationRequest.getUsername();
 		String pass = authenticationRequest.getPassword();
-		int userId = jdbcTemplate.queryForObject(QueryConstants.userId, new Object[] {user, pass}, Integer.class);
+		Map<String, Integer> map = new HashMap<>();
+		int userId = jdbcTemplate.queryForObject(QueryConstants.userId, new Object[] {user}, Integer.class);
 		
 		int userRole = jdbcTemplate.queryForObject(QueryConstants.userRole, new Object[] {userId}, Integer.class);
-		
-		return userRole;
+		map.put("userId", userId);
+		map.put("userRole", userRole);
+		return map;
 	}
 
-	public ResponseOutDTO addCartService(AddCartDTO entity) {
+	public ResponseOutDTO addCartService(List<AddCartDTO> addCartList) {
 		logger.info("ProductRegistryService |  addCartService method invoked");
 		ResponseStatusDTO outputData = new ResponseStatusDTO();
-		LocalDateTime current = LocalDateTime.now();
-		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-		entity.setCartTime(current.format(format));
-		AddCartDTO cart = new AddCartDTO();
-		cart = cartRepository.save(entity);
-		if (cart != null) {
-			outputData.setStatus_obj(new ResponseDTO("Success", true));
-			outputData.setStatus(1);
-			outputData.setMessage("Item added to cart sucessfully");
-		} else {
-			outputData.setStatus_obj(new ResponseDTO("Failure", false));
-		}
-		logger.info("ProductRegistryService |  addCartService method exit");
+		String deleteCartByUserId = QueryConstants.deleteCartByUserId;
+		
+			try {
+				if (addCartList.size() > 0) {
+					int delCount = jdbcTemplate.queryForObject(deleteCartByUserId, new Object[] {}, Integer.class);
+					logger.info("delete data count "+ delCount);
+					int insert[] = batchInsert(addCartList);
+					if (insert.length > 0) {
+						outputData.setStatus_obj(new ResponseDTO("Success", true));
+						outputData.setStatus(1);
+						outputData.setMessage("Added to Cart "+ insert.length);
+					} else {
+						outputData.setStatus_obj(new ResponseDTO("Success", true));
+						outputData.setStatus(0);
+						outputData.setMessage("Zero cart added");
+					}
+				} else {
+					outputData.setStatus_obj(new ResponseDTO("Success", true));
+					outputData.setStatus(0);
+					outputData.setMessage("No list to add");
+				}
+				
+			} catch(EmptyResultDataAccessException e) {
+				outputData.setStatus_obj(new ResponseDTO("Failure", false));
+				logger.info("ProductRegistryService |  addCartService | DataAccessException ", e);
+			} catch(Exception e) {
+				outputData.setStatus_obj(new ResponseDTO("Failure", false));
+				logger.info("ProductRegistryService |  addCartService | Exception ", e);
+			} finally {
+				logger.info("ProductRegistryService |  addCartService method exit");
+			}
+			
 		return outputData;
 	}
+	
+	public int[] batchInsert(List<AddCartDTO> addCart) {
+
+        return this.jdbcTemplate.batchUpdate(QueryConstants.insertCart,
+			new BatchPreparedStatementSetter() {
+        	LocalDateTime current = LocalDateTime.now();
+    		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    		String dateAndTime = current.format(format);
+    		
+				public void setValues(PreparedStatement ps, int i) throws SQLException {
+					ps.setInt(1, addCart.get(i).getCart_id());
+					ps.setString(2, addCart.get(i).getCategory());
+					ps.setInt(3, addCart.get(i).getCstmerId());
+					ps.setString(4, addCart.get(i).getCstmerName());
+					ps.setInt(5, addCart.get(i).getItemId());
+					ps.setString(6, addCart.get(i).getItemName());
+					ps.setInt(7, addCart.get(i).getItemQty());
+					ps.setFloat(8, addCart.get(i).getPrice());
+					ps.setString(9, addCart.get(i).getUnit());
+					ps.setString(10, dateAndTime);
+				}
+
+				public int getBatchSize() {
+					return addCart.size();
+				}
+
+			});
+    }
 	
 	public ResponseOutDTO uploadService(Map<String, String> fdata, MultipartFile[] files) {
 		logger.info("ProductRegistryService |  uploadService method invoked");
@@ -227,6 +284,25 @@ public class ProductRegistryService {
     	}
 		
 		return outputData;
+	}
+	
+	public ResponseOutDTO submitFeedack(Feedback feedback) {
+		logger.info("ProductRegistryService |  submitFeedack method invoked");
+		ResponseStatusDTO output = new ResponseStatusDTO();
+		Feedback feed=new Feedback();
+		feed=feedbackRepository.save(feedback);
+		logger.info("ProductRegistryService |  submitFeedack method exit");
+		if(feed != null) {
+			output.setStatus(1);
+			output.setMessage("Feedback successfully submited");
+			output.setStatus_obj(new ResponseDTO("Success", true));
+		} else {
+			output.setStatus(1);
+			output.setMessage("Something went wrong");
+			output.setStatus_obj(new ResponseDTO("Failure", false));
+		}
+		
+		return output;
 	}
 	
 	

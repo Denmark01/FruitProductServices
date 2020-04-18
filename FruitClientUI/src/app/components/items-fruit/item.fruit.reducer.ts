@@ -1,6 +1,6 @@
 
 import {tassign} from 'tassign';
-import { INCREMENT, GET_FRUIT_LIST, START_LOADER, LOGOUT, NOTIFICATION, SAVE_CART} from './item-fruit.action';
+import { INCREMENT, GET_FRUIT_LIST, START_LOADER, LOGOUT, NOTIFICATION, SAVE_CART, SELECT_ITEM} from './item-fruit.action';
 export interface IItemFruitState {
     counter: number;
     item_list: any;
@@ -11,6 +11,7 @@ export interface IItemFruitState {
     growlMsg: string;
     growlType: string;
     cart_item: any;
+    fruit_vege: string;
 }
 
 export const ITEM_INITIAL_STATE: IItemFruitState = {
@@ -22,7 +23,8 @@ export const ITEM_INITIAL_STATE: IItemFruitState = {
     user_profile: {},
     growlMsg: '',
     growlType: '',
-    cart_item: []
+    cart_item: [],
+    fruit_vege: 'Fruit'
 };
 
 export function ItemFruitReducer(state: IItemFruitState= ITEM_INITIAL_STATE, action): IItemFruitState {
@@ -49,6 +51,9 @@ export function ItemFruitReducer(state: IItemFruitState= ITEM_INITIAL_STATE, act
 
         case SAVE_CART:
             return tassign( state, {cart_item: action.cart_item});
+
+        case SELECT_ITEM:
+            return tassign( state, {fruit_vege: action.fruit_vege});
     }
     return state;
 }

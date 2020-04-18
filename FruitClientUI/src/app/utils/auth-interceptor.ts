@@ -38,13 +38,14 @@ export class AuthInterceptor implements HttpInterceptor {
                   }
                   if (err.status === 403) {
                     this.router.navigate(['server']);
+                    localStorage.removeItem('token');
                   }
                   if (err.status === 404) {
                     this.router.navigate(['error']);
                   }
-                  if (err.status === 500) {
-                    this.router.navigate(['server']);
-                  }
+                  // if (err.status === 500) {
+                  //   this.router.navigate(['server']);
+                  // }
                 }
               }
             ));

@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 import { NgModule, isDevMode } from '@angular/core';
 import { ReactiveFormsModule, FormsModule} from '@angular/forms';
 import { AppComponent } from './app.component';
@@ -61,6 +62,7 @@ import {SpinnerComponent} from './containers/spinner/spinner.component';
     HttpClientModule,
     NgReduxModule,
     AngularSvgIconModule,
+    CommonModule
     // NgDatepickerModule
   ],
   providers: [AuthGuard,
@@ -73,7 +75,7 @@ export class AppModule {
   constructor(
     ngRedux: NgRedux<IAppState>,
     devTools: DevToolsExtension) {
-    const enhancers = isDevMode() ? [devTools.enhancer()] : [devTools.enhancer()];
+    const enhancers = isDevMode() ? [devTools.enhancer()] : [devTools.enhancer()] ;
     ngRedux.configureStore(rootReducer, InitialState, [], enhancers);
   }
 }

@@ -32,6 +32,7 @@ export class ItemsFruitComponent implements OnInit {
     staticAlert = false;
     public alertColor: string;
     public isLoading: boolean;
+    public added_cart: any;
     @select(s => s.itemFruit.counter) counter;
     // @select(s => s.itemFruit.item_loader)isLoading;
     // @select(s => s.itemFruit.item_list) item_list;
@@ -54,6 +55,7 @@ export class ItemsFruitComponent implements OnInit {
     this. ngRedux.subscribe(() => {
       const store: any = this.ngRedux.getState();
       this.isLoading = store.itemFruit.item_loader;
+      this.searchText = store.itemFruit.fruit_vege;
     const temp = store.itemFruit.item_list;
     console.log('Item list ' + temp);
     let qty1 = [];
@@ -61,6 +63,7 @@ export class ItemsFruitComponent implements OnInit {
       qty1.push({...list, qty : 0});
       });
       this.product_list = qty1;
+
       this.temp_item = this.dataShare.getCart();
       for (let i = 0; i < this.temp_item.length; i++) {
       const val = this.product_list.filter(e => e.item_id === this.temp_item[i].item_id);
@@ -107,7 +110,7 @@ export class ItemsFruitComponent implements OnInit {
   }
  */
 
-  addToCart(item, action) {
+  addToCart123(item) {
       if (item.qty === 0) {
         this.reduxService.notification(alertMsg.addQty, alertType.warning);
       } else {
@@ -124,37 +127,73 @@ export class ItemsFruitComponent implements OnInit {
               }
             });
             this.reduxService.addToCart(this.service.getCart());
-            this.reduxService.notification(alertMsg.cartUpadted, alertType.success);
+            // this.reduxService.notification(alertMsg.cartUpadted, alertType.success);
           } else {
-            // this.service.setCart({ 'price': item.price, 'name': item.name, 'item_id': item.item_id, 'qty': item.qty });
             this.service.setCart({...item});
-            this.reduxService.addToCart(this.service.getCart());
-            const len = this.service.getCart().length;
-            this.service.currentMessage.subscribe(message => this.countCart = message);
-            this.service.changeMessage(len + '');
-            console.log('Cart ' + JSON.stringify(this.service.getCart()));
-            // this._success.next('Added in cart');
-            // this.alertColor = alertType.success;
-            this.reduxService.notification(alertMsg.itemAdded, alertType.success);
+            this.reduxService.addToCart({...this.service.getCart()});
+            // this.reduxService.notification(alertMsg.itemAdded, alertType.success);
           }
         }
       }
   }
 
+  addToCart(item) {
+    if (item.qty === 0) {
+      this.reduxService.notification(alertMsg.addQty, alertType.warning);
+    } else {
+      const sameItem = this.service.getCart().filter(e => e.qty === item.qty && e.item_id === item.item_id);
+      console.log('Same item added ' + sameItem + ' ' + sameItem.length);
+      if (sameItem.length > 0) {
+        this.reduxService.notification(alertMsg.alreadyAdded, alertType.warning);
+      } else {
+        const qtyChange = this.service.getCart().filter(e => e.qty !== item.qty && e.item_id === item.item_id);
+        if (qtyChange.length > 0 && this.service.getCart().length > 0) {
+          this.service.getCart().forEach(data => {
+            if (data.item_id === item.item_id) {
+              data.qty = item.qty;
+            }
+          });
+          // this.reduxService.addToCart(this.service.getCart());
+          this.reduxService.notification(alertMsg.cartUpadted, alertType.success);
+        } else {
+          this.service.setCart({...item});
+          // this.reduxService.addToCart(this.service.getCart());
+          const len = this.service.getCart().length;
+          this.service.currentMessage.subscribe(message => this.countCart = message);
+          this.service.changeMessage(len + '');
+          console.log('Cart ' + JSON.stringify(this.service.getCart()));
+          // this._success.next('Added in cart');
+          // this.alertColor = alertType.success;
+          this.reduxService.notification(alertMsg.itemAdded, alertType.success);
+        }
+      }
+    }
+}
+
   close() {
  }
 
-  decrementQty(index: number) {
-    if (this.product_list[index].qty - 1 < 0) {
-      this.product_list[index].qty = 0;
-      console.log('item_1-> ' + this.product_list[index].qty);
-    } else {
-      this.product_list[index].qty -= 1;
-      console.log('item_2-> ' + index + '  ' + this.product_list[index].qty);
+  decrementQty(item_id: number) {
+    for (let i = 0; i < this.product_list.length; i++) {
+      if (this.product_list[i] === item_id) {
+        if (this.product_list[i].qty - 1 < 0) {
+          this.product_list[i].qty = 0;
+          break;
+        } else {
+          this.product_list[i].qty -= 1;
+        }
+      }
     }
   }
-  incrementQty(index: number) {
-      this.product_list[index].qty += 1;
-      console.log('item_2-> ' + index + '  ' + this.product_list[index].qty);
+
+  incrementQty(item_id: number) {
+    for (let i = 0; i < this.product_list.length; i++) {
+      if (this.product_list[i].item_id === item_id) {
+        if (this.product_list[i].qty + 1 <= this.product_list[i].max_qty) {
+          this.product_list[i].qty += 1;
+          break;
+        }
+      }
+    }
   }
 }

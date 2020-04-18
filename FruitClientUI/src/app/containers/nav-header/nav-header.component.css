@@ -13,6 +13,8 @@
   }
   
   .alert ::ng-deep {
+    margin-left: 30%;
+    margin-right: 30%;
     min-width: 50%;
-    max-width: 70%;
+    max-width: 100%;
 }

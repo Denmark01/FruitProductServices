@@ -3,7 +3,7 @@ import { DataShareService } from 'src/app/services/data-share.service';
 import { Router } from '@angular/router';
 import { NgRedux, select } from 'ng2-redux';
 import { IItemFruitState } from 'src/app/components/items-fruit/item.fruit.reducer';
-import { LOGOUT } from 'src/app/components/items-fruit/item-fruit.action';
+import { LOGOUT, SELECT_ITEM } from 'src/app/components/items-fruit/item-fruit.action';
 import { NgbAlertConfig } from '@ng-bootstrap/ng-bootstrap';
 import { debounceTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -25,7 +25,7 @@ export class NavHeaderComponent implements OnInit {
   count: number;
   public token: string;
   public isLoggedIn: boolean;
-  public isAdmin: boolean;
+  public isAdmin = false;
   @ViewChild('navbarToggler') navbarToggler: ElementRef;
 
   @select(s => s.itemFruit.item_list) item_list;
@@ -91,10 +91,15 @@ export class NavHeaderComponent implements OnInit {
   logout() {
     this.ngRedux.dispatch({type: LOGOUT});
     localStorage.removeItem('token');
+    this.service.setCart([]);
     this.route.navigate(['feedback']);
   }
   alert() {
     this._success.next('Added in cart');
     this.alertColor = alertType.success;
   }
+  selectVege() {
+    this.ngRedux.dispatch({type: SELECT_ITEM, fruit_vege: 'Vegetable'});
+  }
+
 }

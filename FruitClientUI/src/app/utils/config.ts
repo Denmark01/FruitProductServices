@@ -3,7 +3,8 @@ export const config = {
         getItems : 'getAll',
         uploadItems : 'uploadItem',
         auth: 'authenticate',
-        feedback: 'feedback'
+        feedback: 'feedback',
+        addToCart: 'add-to-cart',
     }
 
 };
@@ -24,5 +25,6 @@ export const alertMsg ={
     cartUpadted: 'Cart updated..',
     alreadyAdded: 'Already added in cart..',
     feedback: 'Thanks for your feedback..',
-    addQty: 'Please add quantity..'
+    addQty: 'Please add quantity..',
+    internalError: 'Internal Server error. Please try after some time...'
 }

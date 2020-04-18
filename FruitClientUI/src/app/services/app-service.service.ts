@@ -14,6 +14,9 @@ constructor(private http: HttpClient,
   private app: DataShareService,
   private ngRedux: NgRedux<IItemFruitState>) {
 }
+
+public userId: string = localStorage.getItem('userId');
+
   getItemList() {
     const url = environment.apiUrl + config.api.getItems;
     this.ngRedux.dispatch({type: START_LOADER});
@@ -42,15 +45,22 @@ constructor(private http: HttpClient,
   }
 
   login(user, pass) {
-    const data = {username: user, password: pass};
+    const data = {username: user, password: pass, user_id: this.userId};
     const url = environment.apiUrl + config.api.auth;
     const response: any = this.http.post(url, data);
     return response;
   }
 
   feedback(name, remarks) {
-    const data = {name: name, remarks: remarks};
+    const data = {name: name, comments: remarks, user_id: this.userId};
     const url = environment.apiUrl + config.api.feedback;
+    const response: any = this.http.post(url, data);
+    return response;
+  }
+
+  addToCart(payload) {
+    const data = {...payload, user_id: this.userId};
+    const url = environment.apiUrl + config.api.addToCart;
     const response: any = this.http.post(url, data);
     return response;
   }

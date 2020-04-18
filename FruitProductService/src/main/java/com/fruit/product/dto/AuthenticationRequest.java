@@ -34,4 +34,11 @@ public class AuthenticationRequest implements Serializable {
         this.setUsername(username);
         this.setPassword(password);
     }
+
+	@Override
+	public String toString() {
+		return "AuthenticationRequest [username=" + username + ", password=" + password + "]";
+	}
+    
+    
 }

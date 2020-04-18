@@ -10,7 +10,7 @@
   <!-- <p>{{counter | async}}<button (click)="increment()">Increment</button></p> -->
   <div class="row mar_bottom"  *ngIf="!isLoading">
     <div class="image col-lg-2 col-md-3 col-sm-4 col-9 mw-182px"
-      *ngFor="let item of product_list | grdFilter: {name: searchText, delivery:searchText,  price: searchText};let i = index;">
+      *ngFor="let item of product_list | grdFilter: {name: searchText, delivery:searchText,  price: searchText, category: searchText};let i = index;">
       <ul>
         <li>
           <img [src]="item.image" />
@@ -21,10 +21,10 @@
         <li id="red" style="min-height: 20px;">Rs : {{item.price}} / {{item.weight}}</li>
         <li>
           Qty :
-          <i class="fa fa-minus-circle" aria-hidden="true" (click)="decrementQty(i)"></i>
+          <i class="fa fa-minus-circle" aria-hidden="true" (click)="decrementQty(item.item_id)"></i>
             <input type="text" [(ngModel)]="item.qty" class="textBox" />
-          <i class="fa fa-plus-circle" aria-hidden="true" (click)="incrementQty(i)"></i>
-         
+          <i class="fa fa-plus-circle" aria-hidden="true" (click)="incrementQty(item.item_id)"></i>
+          <span *ngIf="item.qty === item.max_qty" id="red">Max</span>
         </li>
         <li>
           <button class="btn btn-primary btn-sm-4" (click)="addToCart(item, 'notCss')">{{item.qty > 0?'Click to add': 'Add to Cart'}}</button>
