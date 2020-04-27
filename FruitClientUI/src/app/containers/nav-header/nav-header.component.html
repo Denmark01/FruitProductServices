@@ -10,10 +10,10 @@
         <a class="nav-link" routerLink="/" routerLinkActive="active">Home <span class="sr-only">(current)</span></a>
       </li> -->
       <li class="nav-item">
-        <a class="nav-link" routerLink="/" routerLinkActive="active">Fruits</a>
+        <a class="nav-link" (click)="select('FRUITS')" [ngClass]="selectChoice === 'FRUITS' ?'cursor':'onlyPointer'">Fruits</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" (click)="selectVege()" routerLinkActive="active">Vegetables</a>
+        <a class="nav-link" (click)="select('VEGETABLES')" [ngClass]="selectChoice === 'VEGETABLES' ?'cursor':'onlyPointer'">Vegetables</a>
       </li>
       <!-- <li class="nav-item"> -->
       <li class="nav-item" *ngIf="isAdmin === true">
@@ -22,15 +22,15 @@
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">
-      <!-- <li class="nav-item active" *ngIf="token!=''">
-        <a class="nav-link">Welcome {{loginName | titlecase}}!</a>
-      </li> -->
-      <li class="nav-item" placement="bottom" ngbTooltip="Click to Login!">
+      <li class="nav-item active" *ngIf="token!=''">
+        <a class="nav-link">Hello {{username | async}}!</a>
+      </li>
+      <li class="nav-item" placement="bottom" ngbTooltip="Click to Login!" *ngIf="!sLoggedIn">
         <a class="nav-link"  routerLink="/login" routerLinkActive="active" (click)="toggle()">
           <i class="fa fa-sign-in fa-lg" aria-hidden="true"></i></a>
       </li>
-      <li class="nav-item" placement="bottom" ngbTooltip="Click to Sign Up!">
-        <a class="nav-link" routerLinkActive="active" routerLink="/sign-up">
+      <li class="nav-item" placement="bottom" ngbTooltip="Click to Sign Up!" *ngIf="!isLoggedIn">
+        <a class="nav-link" routerLinkActive="active" routerLink="/signup">
           <i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></a>
       </li>
         <li class="nav-item" placement="bottom" ngbTooltip="Items in the Cart">

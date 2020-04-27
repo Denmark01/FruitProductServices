@@ -8,11 +8,13 @@ public class QueryConstants {
 	
 	public static final String userId = "select user_id from user where name = ?";
 	
+	public static final String userName = "select name from user where user_id = ?";
+	
 	public static final String userRole = "select role_id from user_role where user_id = ?";
 	
 	public static final String getAddedCartById = "select * from add_cart where customer_id = ?";
 	
 	public static final String deleteCartByUserId  = "delete from add_cart where customer_id = ?";
 	
-	public static final String insertCart = "insert into add_cart (catgory, customer_id, customer_name, item_id, item_name, item_qty, item_price, item_unit, cart_time) values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	public static final String insertCart = "insert into add_cart (category, customer_id, customer_name, item_id, item_name, item_qty, item_price, item_unit, cart_time) values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 }

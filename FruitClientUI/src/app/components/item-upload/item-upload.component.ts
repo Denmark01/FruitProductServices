@@ -34,8 +34,8 @@ export class ItemUploadComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.category = ['fruits', 'vegetables'];
-    this.unit = ['kg', 'pkt', 'gms', 'pcs'];
+    this.category = ['FRUITS', 'VEGETABLES'];
+    this.unit = ['KG', 'PKT', 'GMS', 'PCS'];
   }
 submit() {
   console.log(this.profileForm.value.itemCatgry);

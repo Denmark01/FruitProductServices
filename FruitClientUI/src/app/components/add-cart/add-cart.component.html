@@ -21,8 +21,11 @@
   
   <div>
     <span *ngIf="product_list.length === 0" class="noItemCart">No Item added in the Cart</span>
-    <button (click)="checkout(product_list)" [ngClass]="product_list.length > 0?'btn btn-primary':'btn btn-primary disabled'">Checkout</button>
-    <button (click)="save(product_list)" [ngClass]="product_list.length > 0?'btn btn-primary':'btn btn-primary disabled'">Save Cart</button>
+    <div class="displayInLine">
+      <button (click)="checkout(product_list)" [ngClass]="product_list.length > 0?'btn btn-primary':'btn btn-primary disabled'">Checkout</button>
+      <button (click)="save(product_list)" [ngClass]="product_list.length > 0?'btn btn-primary':'btn btn-primary disabled'">Save Cart</button>
+    </div>
+    
   </div>
  
 </div>

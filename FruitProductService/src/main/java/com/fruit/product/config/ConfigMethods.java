@@ -10,8 +10,14 @@ public class ConfigMethods {
 	
 	public static ResponseEntity<ResponseOutDTO> resourseUtils(ResponseOutDTO response) {
 		HttpStatus headers = HttpStatus.OK;
+		
 		if(!response.getStatus_obj().isStatus_flag()) {
-			headers = HttpStatus.INTERNAL_SERVER_ERROR;
+			if(response.getStatus_obj().getStatus_msg().equals("Bad Request")) {
+				headers = HttpStatus.BAD_GATEWAY;
+			} else {
+				headers = HttpStatus.INTERNAL_SERVER_ERROR;
+			}
+			
 		}
 		return new ResponseEntity<ResponseOutDTO>(response,new HttpHeaders(),headers);
 	}

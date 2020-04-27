@@ -5,6 +5,8 @@ export const config = {
         auth: 'authenticate',
         feedback: 'feedback',
         addToCart: 'add-to-cart',
+        getProfile: 'get-profile',
+        getCart: 'get-cart'
     }
 
 };
@@ -26,5 +28,6 @@ export const alertMsg ={
     alreadyAdded: 'Already added in cart..',
     feedback: 'Thanks for your feedback..',
     addQty: 'Please add quantity..',
-    internalError: 'Internal Server error. Please try after some time...'
+    internalError: 'Internal Server error. Please try after some time...',
+    saveCart: 'Cart saved successfully',
 }

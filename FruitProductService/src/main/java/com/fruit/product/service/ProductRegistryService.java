@@ -153,36 +153,45 @@ public class ProductRegistryService {
 		return responseDto;
 	}
 
-	public  Map<String, Integer> getRole(AuthenticationRequest authenticationRequest) {
-		String user = authenticationRequest.getUsername();
-		String pass = authenticationRequest.getPassword();
+	public  Map<String, Integer> getRole(String user) {
 		Map<String, Integer> map = new HashMap<>();
-		int userId = jdbcTemplate.queryForObject(QueryConstants.userId, new Object[] {user}, Integer.class);
+		int userId = 0, userRole =0;
+		try {
+		 userId = jdbcTemplate.queryForObject(QueryConstants.userId, new Object[] {user}, Integer.class);
 		
-		int userRole = jdbcTemplate.queryForObject(QueryConstants.userRole, new Object[] {userId}, Integer.class);
+		 userRole = jdbcTemplate.queryForObject(QueryConstants.userRole, new Object[] {userId}, Integer.class);
+		}catch(EmptyResultDataAccessException e) {
+			
+			logger.info("ProductRegistryService |  getRole | DataAccessException ", e);
+		} catch(Exception e) {
+			
+			logger.info("ProductRegistryService |  getRole | Exception ", e);
+		} finally {
+			logger.info("ProductRegistryService |  getRole method exit");
+		}
 		map.put("userId", userId);
 		map.put("userRole", userRole);
 		return map;
 	}
 
-	public ResponseOutDTO addCartService(List<AddCartDTO> addCartList) {
+	public ResponseOutDTO addCartService(List<AddCartDTO> addCartList, String username) {
 		logger.info("ProductRegistryService |  addCartService method invoked");
 		ResponseStatusDTO outputData = new ResponseStatusDTO();
 		String deleteCartByUserId = QueryConstants.deleteCartByUserId;
-		
 			try {
 				if (addCartList.size() > 0) {
-					int delCount = jdbcTemplate.queryForObject(deleteCartByUserId, new Object[] {}, Integer.class);
+					logger.info("query:: userId::  "+ QueryConstants.userId);
+					int userId = jdbcTemplate.queryForObject(QueryConstants.userId, new Object[] {username}, Integer.class);
+					logger.info("Customer id "+ userId);
+					logger.info("query:: deleteCartByUserId::  "+ deleteCartByUserId);
+					int delCount = jdbcTemplate.update(deleteCartByUserId, userId);
 					logger.info("delete data count "+ delCount);
-					int insert[] = batchInsert(addCartList);
+				
+					int insert[] = batchInsert(addCartList,userId, username);
 					if (insert.length > 0) {
 						outputData.setStatus_obj(new ResponseDTO("Success", true));
 						outputData.setStatus(1);
-						outputData.setMessage("Added to Cart "+ insert.length);
-					} else {
-						outputData.setStatus_obj(new ResponseDTO("Success", true));
-						outputData.setStatus(0);
-						outputData.setMessage("Zero cart added");
+						outputData.setMessage("Item added to cart: "+ insert.length);
 					}
 				} else {
 					outputData.setStatus_obj(new ResponseDTO("Success", true));
@@ -203,25 +212,23 @@ public class ProductRegistryService {
 		return outputData;
 	}
 	
-	public int[] batchInsert(List<AddCartDTO> addCart) {
-
+	public int[] batchInsert(List<AddCartDTO> addCart, int customerId, String customerName) {
+		LocalDateTime current = LocalDateTime.now();
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+		String dateAndTime = current.format(format);
         return this.jdbcTemplate.batchUpdate(QueryConstants.insertCart,
 			new BatchPreparedStatementSetter() {
-        	LocalDateTime current = LocalDateTime.now();
-    		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-    		String dateAndTime = current.format(format);
-    		
+        	
 				public void setValues(PreparedStatement ps, int i) throws SQLException {
-					ps.setInt(1, addCart.get(i).getCart_id());
-					ps.setString(2, addCart.get(i).getCategory());
-					ps.setInt(3, addCart.get(i).getCstmerId());
-					ps.setString(4, addCart.get(i).getCstmerName());
-					ps.setInt(5, addCart.get(i).getItemId());
-					ps.setString(6, addCart.get(i).getItemName());
-					ps.setInt(7, addCart.get(i).getItemQty());
-					ps.setFloat(8, addCart.get(i).getPrice());
-					ps.setString(9, addCart.get(i).getUnit());
-					ps.setString(10, dateAndTime);
+					ps.setString(1, addCart.get(i).getCategory());
+					ps.setInt(2, customerId);
+					ps.setString(3, customerName);
+					ps.setInt(4, addCart.get(i).getItemId());
+					ps.setString(5, addCart.get(i).getItemName());
+					ps.setInt(6, addCart.get(i).getItemQty());
+					ps.setFloat(7, addCart.get(i).getPrice());
+					ps.setString(8, addCart.get(i).getUnit());
+					ps.setString(9, dateAndTime);
 				}
 
 				public int getBatchSize() {
@@ -294,11 +301,11 @@ public class ProductRegistryService {
 		logger.info("ProductRegistryService |  submitFeedack method exit");
 		if(feed != null) {
 			output.setStatus(1);
-			output.setMessage("Feedback successfully submited");
+			output.setMessage("Thanks for the feedback");
 			output.setStatus_obj(new ResponseDTO("Success", true));
 		} else {
-			output.setStatus(1);
-			output.setMessage("Something went wrong");
+			output.setStatus(0);
+			output.setMessage("Opps something went wrong. Please try again later..");
 			output.setStatus_obj(new ResponseDTO("Failure", false));
 		}
 		

@@ -1,19 +1,20 @@
 package com.fruit.product.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class AddCartMainDTO {
+public class AddCartMainDTO implements Serializable{
 
-	private List<AddCartDTO> AddCartList;
+	private List<AddCartDTO> addCartList;
 	
 	private String userId;
 
 	public List<AddCartDTO> getAddCartList() {
-		return AddCartList;
+		return addCartList;
 	}
 
 	public void setAddCartList(List<AddCartDTO> addCartList) {
-		AddCartList = addCartList;
+		this.addCartList = addCartList;
 	}
 
 	public String getUserId() {
@@ -26,8 +27,9 @@ public class AddCartMainDTO {
 
 	@Override
 	public String toString() {
-		return "AddCartMainDTO [AddCartList=" + AddCartList + ", userId=" + userId + "]";
+		return "AddCartMainDTO [addCartList=" + addCartList + ", userId=" + userId + "]";
 	}
+
 	
 	
 }

@@ -12,6 +12,18 @@
     color: white;
 }
 
+.onlyPointer {
+    cursor: pointer;
+}
+
+.cursor:hover{
+    cursor: pointer;
+}
+
+.onlyPointer:hover {
+    cursor: pointer;
+}
+
 .btn.disabled {
     cursor: not-allowed;
 }

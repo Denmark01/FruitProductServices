@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name="add_cart")
 public class AddCartDTO {
@@ -19,6 +21,7 @@ public class AddCartDTO {
 	private int cart_id;
 	
 	@NotNull
+	@JsonProperty("item_id")
 	@Column(name="item_id")
 	private int itemId;
 	
@@ -28,12 +31,15 @@ public class AddCartDTO {
 	@Column(name="customer_name")
 	private String cstmerName;
 	
+	@JsonProperty("name")
 	@Column(name="item_name")
 	private String itemName;
 	
+	@JsonProperty("price")
 	@Column(name="item_price")
 	private float price;
 
+	@JsonProperty("qty")
 	@Column(name="item_qty")
 	private int itemQty;
 	

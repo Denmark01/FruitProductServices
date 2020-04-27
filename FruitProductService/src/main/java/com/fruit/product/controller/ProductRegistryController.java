@@ -42,6 +42,7 @@ import com.fruit.product.dto.AuthenticationResponse;
 import com.fruit.product.dto.MyProperty;
 import com.fruit.product.dto.Product;
 import com.fruit.product.dto.ProductRespDTO;
+import com.fruit.product.dto.ResponseDTO;
 import com.fruit.product.dto.ResponseOutDTO;
 import com.fruit.product.dto.ResponseStatusDTO;
 import com.fruit.product.model.Feedback;
@@ -81,16 +82,23 @@ public class ProductRegistryController {
 
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-	public ResponseEntity createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+	public ResponseEntity<ResponseOutDTO> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
 		logger.info("ProductRegistryController |  createAuthenticationToken method invoked");
 		logger.debug("data :: "+ authenticationRequest);
+		ResponseOutDTO output = new ResponseOutDTO();
+		output.setStatus_obj(new ResponseDTO("Success", true));
 		try {
 			authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
 			);
 		}
 		catch (BadCredentialsException e) {
-			throw new Exception("Incorrect username or password", e);
+			output.setStatus_obj(new ResponseDTO("Bad Request", false));
+			logger.error("ProductRegistryController |  createAuthenticationToken | Bad Credential ", e);
+			
+		} catch (Exception e) {
+			logger.error("ProductRegistryController |  createAuthenticationToken | Exception ", e);
+			output.setStatus_obj(new ResponseDTO("Excep", false));
 		}
     	
 
@@ -98,12 +106,14 @@ public class ProductRegistryController {
 				.loadUserByUsername(authenticationRequest.getUsername());
 
 		final String jwt = jwtTokenUtil.generateToken(userDetails);
-		Map<String, Integer> user = productRegistryService.getRole(authenticationRequest);
-		return ResponseEntity.ok(new AuthenticationResponse(jwt, user.get("userId"), user.get("userRole")));
+		Map<String, Integer> user = productRegistryService.getRole(authenticationRequest.getUsername());
+		AuthenticationResponse response = new AuthenticationResponse(jwt, user.get("userId"), user.get("userRole"), authenticationRequest.getUsername());
+		response.setStatus_obj(new ResponseDTO(output.getStatus_obj().getStatus_msg(), output.getStatus_obj().isStatus_flag()));
+		return ConfigMethods.resourseUtils(response);
 	}
     
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	@GetMapping("/getAll")
+	  @RequestMapping(value = "/getAll", method = RequestMethod.GET)
 	public ResponseEntity<ResponseOutDTO> getAllProducts() {
     	logger.info("ProductRegistryController |  getAllProducts method invoked");
     	ResponseOutDTO response = productRegistryService.getAll();
@@ -120,24 +130,23 @@ public class ProductRegistryController {
     	return ConfigMethods.resourseUtils(response);
 	}
 	
-	@PostMapping("/save-item")
-	public ResponseEntity<Product> createProduct(@RequestBody Product entity){
-		logger.info("ProductRegistryController |  createProduct method invoked");
-		logger.debug("data :: "+ entity);
-		Product product=new Product();
-		product=productRegistryService.createProduct(entity);
-		return new ResponseEntity<Product>(product,new HttpHeaders(),HttpStatus.CREATED);
-	}
-	
+	/*
+	 * @PostMapping("/save-item") public ResponseEntity<Product>
+	 * createProduct(@RequestBody Product entity){
+	 * logger.info("ProductRegistryController |  createProduct method invoked");
+	 * logger.debug("data :: "+ entity); Product product=new Product();
+	 * product=productRegistryService.createProduct(entity); return new
+	 * ResponseEntity<Product>(product,new HttpHeaders(),HttpStatus.CREATED); }
+	 */
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@PostMapping("/add-to-cart")
 	public ResponseEntity<ResponseOutDTO> addToCart(@RequestBody AddCartMainDTO entity){
 		logger.info("ProductRegistryController |  createProduct method invoked");
 		logger.debug("data :: "+ entity);
-		List<AddCartDTO> AddCartList = entity.getAddCartList();
-		String userId = entity.getUserId();
+		List<AddCartDTO> addCartList = entity.getAddCartList();
+		String username = entity.getUserId();
 		ResponseOutDTO outputData=new ResponseOutDTO();
-		outputData = productRegistryService.addCartService(AddCartList);
+		outputData = productRegistryService.addCartService(addCartList, username);
 	return ConfigMethods.resourseUtils(outputData);
 	}
 	
@@ -184,6 +193,16 @@ public class ProductRegistryController {
 		ResponseOutDTO out = new ResponseOutDTO();
 		out = productRegistryService.submitFeedack(feedback);
 		return ConfigMethods.resourseUtils(out);
+	}
+    
+    @GetMapping("/get-profile")
+	public ResponseEntity<ResponseOutDTO> getProfile(@RequestParam("username")String username){
+		logger.info("ProductRegistryController |  getProfile method invoked");
+		logger.debug("data "+ username);
+		Map<String, Integer> user = productRegistryService.getRole(username);
+		AuthenticationResponse response = new AuthenticationResponse("NA", user.get("userId"), user.get("userRole"), username);
+		response.setStatus_obj(new ResponseDTO("Success", true));
+		return ConfigMethods.resourseUtils(response);
 	}
     
 }

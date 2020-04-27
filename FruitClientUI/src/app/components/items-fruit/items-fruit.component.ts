@@ -58,7 +58,7 @@ export class ItemsFruitComponent implements OnInit {
       this.searchText = store.itemFruit.fruit_vege;
     const temp = store.itemFruit.item_list;
     console.log('Item list ' + temp);
-    let qty1 = [];
+    const qty1 = [];
     temp.forEach(list => {
       qty1.push({...list, qty : 0});
       });
@@ -170,18 +170,16 @@ export class ItemsFruitComponent implements OnInit {
     }
 }
 
-  close() {
- }
 
   decrementQty(item_id: number) {
     for (let i = 0; i < this.product_list.length; i++) {
-      if (this.product_list[i] === item_id) {
+      if (this.product_list[i].item_id === item_id) {
         if (this.product_list[i].qty - 1 < 0) {
           this.product_list[i].qty = 0;
-          break;
         } else {
           this.product_list[i].qty -= 1;
         }
+        break;
       }
     }
   }
