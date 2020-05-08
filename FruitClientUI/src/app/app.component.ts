@@ -2,6 +2,8 @@ import { Component} from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 import { DataShareService } from './services/data-share.service';
+import { NgRedux } from 'ng2-redux';
+import { IItemFruitState } from './components/items-fruit/item.fruit.reducer';
 
 
 @Component({
@@ -14,18 +16,24 @@ import { DataShareService } from './services/data-share.service';
 
 export class AppComponent {
 public data: any;
+public isLoggedIn: boolean;
 constructor(
   private modalService: NgbModal,
   private route: Router,
-  private service: DataShareService
+  private ngRedux: NgRedux<IItemFruitState>
   ) {}
 
 // tslint:disable-next-line: use-life-cycle-interface
 ngOnInit() {
   console.log('Current url ' + this.route.url);
   const s = location.href;
-  console.log('path ' + s.substring(0, s.lastIndexOf('0') + 1));
-  this.service.setUrl( s.substring(0, s.lastIndexOf('0') + 1));
+
+  this.ngRedux.subscribe(() => {
+    const store: any = this.ngRedux.getState();
+    this.isLoggedIn = store.itemFruit.isLoggedIn;
+  });
+
+
 }
 
 }

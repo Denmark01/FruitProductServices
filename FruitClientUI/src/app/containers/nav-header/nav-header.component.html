@@ -5,27 +5,27 @@
   </button>
   
   <div class="collapse navbar-collapse" id="navbarTogglerDemo01" *ngIf="isLoggedIn">
+    <!-- <div class="collapse navbar-collapse" id="navbarTogglerDemo01" > -->
     <ul class="navbar-nav mt-2 mt-lg-0">
       <!-- <li class="nav-item">
         <a class="nav-link" routerLink="/" routerLinkActive="active">Home <span class="sr-only">(current)</span></a>
       </li> -->
-      <li class="nav-item">
-        <a class="nav-link" (click)="select('FRUITS')" [ngClass]="selectChoice === 'FRUITS' ?'cursor':'onlyPointer'">Fruits</a>
+      <li [ngClass]="selectChoice === 'FRUITS' ?'nav-item cursor active':'nav-item cursor'">
+        <a class="nav-link" (click)="select('FRUITS')">Fruits</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" (click)="select('VEGETABLES')" [ngClass]="selectChoice === 'VEGETABLES' ?'cursor':'onlyPointer'">Vegetables</a>
+      <li [ngClass]="selectChoice === 'VEGETABLES' ?'nav-item cursor active':'nav-item cursor'">
+        <a class="nav-link" (click)="select('VEGETABLES')" >Vegetables</a>
       </li>
       <!-- <li class="nav-item"> -->
       <li class="nav-item" *ngIf="isAdmin === true">
         <a class="nav-link" routerLink="/upload" routerLinkActive="active">Upload Item</a>
-        <!-- <a class="nav-link" routerLink="/upload" routerLinkActive="active">Upload Item</a> -->
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">
       <li class="nav-item active" *ngIf="token!=''">
-        <a class="nav-link">Hello {{username | async}}!</a>
+        <a class="nav-link" >Hello {{username | async}}!</a>
       </li>
-      <li class="nav-item" placement="bottom" ngbTooltip="Click to Login!" *ngIf="!sLoggedIn">
+      <li class="nav-item" placement="bottom" ngbTooltip="Click to Login!" *ngIf="!isLoggedIn">
         <a class="nav-link"  routerLink="/login" routerLinkActive="active" (click)="toggle()">
           <i class="fa fa-sign-in fa-lg" aria-hidden="true"></i></a>
       </li>

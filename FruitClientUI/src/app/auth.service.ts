@@ -7,7 +7,7 @@ import {environment } from '../environments/environment';
 import { Router } from '@angular/router';
 import { NgRedux } from 'ng2-redux';
 import { LoginState } from './containers/login/login.reducer';
-import { SAVE_PROFILE, LOGIN_LOADER } from './containers/login/login.action';
+import { SAVE_PROFILE, LOGIN_LOADER, LOGIN } from './containers/login/login.action';
 @Injectable({
   providedIn: 'root'
 })
@@ -47,6 +47,7 @@ export class AuthService {
         this.saveToken = user;
         localStorage.setItem('token', this.saveToken.jwt);
         localStorage.setItem('userId', this.saveToken.user);
+        this.ngRedux.dispatch({type: LOGIN});
         this.router.navigate(['']);
       }
     });

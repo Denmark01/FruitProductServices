@@ -3,6 +3,7 @@ import { DataShareService } from 'src/app/services/data-share.service';
 import { select, NgRedux } from 'ng2-redux';
 import { IItemFruitState } from '../items-fruit/item.fruit.reducer';
 import { AppReduxService } from 'src/app/services/app-redux.service';
+import { INCREMENT, DECREMENT, DELETE_CART, UPDATE_QTY } from '../items-fruit/item-fruit.action';
 
 @Component({
   selector: 'app-add-cart',
@@ -11,68 +12,64 @@ import { AppReduxService } from 'src/app/services/app-redux.service';
 })
 export class AddCartComponent implements OnInit, OnDestroy {
 
-  public product_list: any;
+  public cart = [];
 
-  @select(s => s.itemFruit.item_list) item_list;
+  // @select(s => s.itemFruit.item_list) item_list;
   @select(s => s.login.user_id) userId;
+  // @select(s => s.itemFruit.cart_item)product_list;
 
-  constructor(private dataShare: DataShareService,
-    private service: DataShareService,
+  constructor(
     private reduxService: AppReduxService,
     private ngRedux: NgRedux<IItemFruitState>,
     ) { }
 
   ngOnInit() {
-    this.product_list = this.dataShare.getCart();
-    if (this.product_list.length === 0) {
-      this.service.changeMessage(0 + '');
-    }
+
+    this. ngRedux.subscribe(() => {
+      const store: any = this.ngRedux.getState();
+      this.cart = store.itemFruit.cart_item;
+    });
+
+    const user = localStorage.getItem('userId');
+    this.reduxService.getProfileReduxOnly(user);
 }
 
   delete(index) {
-    this.product_list[index].qty = 0;
-    this.product_list.splice(index, 1);
-    console.log('Card product list ' + this.product_list.length);
-    if (this.product_list.length === 0) {
-      this.service.changeMessage(this.product_list.length + '');
-    } else {
-      this.service.changeMessage(this.product_list.length + '');
-    }
+    this.ngRedux.dispatch({type: DELETE_CART, index: index});
   }
 
 
   decrementQty(item_id: number) {
-    for (let i = 0; i < this.product_list.length; i++) {
-      if (this.product_list[i].item_id === item_id) {
-        if (this.product_list[i].qty - 1 < 1) {
-          this.product_list[i].qty = 1;
-          break;
-        } else {
-          this.product_list[i].qty -= 1;
-        }
-      }
-    }
+    this.ngRedux.dispatch({type: DECREMENT, item_id: item_id});
   }
 
   incrementQty(item_id: number) {
-    for (let i = 0; i < this.product_list.length; i++) {
-      if (this.product_list[i].item_id === item_id) {
-        if (this.product_list[i].qty + 1 <= this.product_list[i].max_qty) {
-          this.product_list[i].qty += 1;
-          break;
-        }
-      }
-    }
+    this.ngRedux.dispatch({type: INCREMENT, item_id: item_id});
   }
 
   ngOnDestroy() {
-    this.dataShare.replaceCart(this.product_list);
-    console.log(this.dataShare.getCart());
-    // this.reduxService.addToCart(this.service.getCart());
-  }
+    this.reduxService.addToCart(this.cart);
+   /*  let counter = 0;
+    for (let i = 0 ; i < this.product_list.length; i++) {
+      const val = this.product_list.filter(e => e.item_id === this.cart_list[i].item_id);
+       if (val.length > 0) {
+        this.product_list.forEach(data => {
+               if (data.item_id === this.cart_list[i].item_id) {
+                   data.qty = this.cart_list[i].qty;
+                   counter ++;
+               }
+           });
+       } */
+    /*    if (counter > 0) {
+        this.ngRedux.dispatch({type : UPDATE_QTY, for: 'ITEM_UPDATE', item_list: this.product_list});
+      }
+      this.ngRedux.dispatch({type: UPDATE_QTY});
+    } */
+    }
+
 
   checkout(item) {
-    if (this.product_list.length > 0) {
+    if (this.cart.length > 0) {
 
     }
   }

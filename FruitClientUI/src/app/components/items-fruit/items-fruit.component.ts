@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, isDevMode} from '@angular/core';
 import { Subject } from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
 import { NgbAlertConfig } from '@ng-bootstrap/ng-bootstrap';
@@ -8,7 +8,7 @@ import { AppServiceService } from 'src/app/services/app-service.service';
 import {alertType, alertMsg} from '../../utils/config';
 import { NgRedux, select } from 'ng2-redux';
 import { IItemFruitState } from './item.fruit.reducer';
-import { INCREMENT, NOTIFICATION } from './item-fruit.action';
+import { INCREMENT, NOTIFICATION, UPDATE_CART_ITEM, DECREMENT, UPDATE_QTY } from './item-fruit.action';
 import { AppReduxService } from 'src/app/services/app-redux.service';
 @Component({
   selector: 'app-items-fruit',
@@ -34,6 +34,8 @@ export class ItemsFruitComponent implements OnInit {
     public isLoading: boolean;
     public added_cart: any;
     @select(s => s.itemFruit.counter) counter;
+    isLoggedIn: boolean;
+    isLogged: boolean;
     // @select(s => s.itemFruit.item_loader)isLoading;
     // @select(s => s.itemFruit.item_list) item_list;
     constructor(
@@ -50,48 +52,51 @@ export class ItemsFruitComponent implements OnInit {
       }
 
   ngOnInit() {
-    this.reduxService.getItemListRedux();
 
-    this. ngRedux.subscribe(() => {
+    this.ngRedux.subscribe(() => {
       const store: any = this.ngRedux.getState();
       this.isLoading = store.itemFruit.item_loader;
+      this.isLoggedIn = store.itemFruit.isLoggedIn;
       this.searchText = store.itemFruit.fruit_vege;
-    const temp = store.itemFruit.item_list;
-    console.log('Item list ' + temp);
-    const qty1 = [];
-    temp.forEach(list => {
-      qty1.push({...list, qty : 0});
-      });
-      this.product_list = qty1;
-
-      this.temp_item = this.dataShare.getCart();
-      for (let i = 0; i < this.temp_item.length; i++) {
-      const val = this.product_list.filter(e => e.item_id === this.temp_item[i].item_id);
-      if (val.length > 0) {
-        this.product_list.forEach(data => {
-          if (this.temp_item[i].item_id === data.item_id) {
-            data.qty = this.temp_item[i].qty;
-          }
-        });
-      }
-    }
+      this.product_list = store.itemFruit.item_list;
+      this.added_cart = store.itemFruit.cart_item;
+      this.isLogged = store.login.isLogin;
     });
 
-    this.product_list1 = [
-      {image : '/fruit.jpg',
-      name : 'Onion / Pyaaz', delivery: 'Delivery within 1 hour',
-      price : '30', weight : 'KG', qty: 0, item_id: 101},
-      {image : 'assets/image/399.jpg', name : 'Deluxe Wedding Basket', delivery: 'Delivery within two days',
-       price : '1020.00', weight : 'NA', qty: 0, item_id: 102}
-    ];
+    if (isDevMode()) {
+      this.product_list = [
+        {
+          image: '/fruit.jpg',
+          name: 'Onion / Pyaaz', delivery: 'Delivery within 1 hour',
+          price: '30', weight: 'KG', qty: 0, item_id: 101
+        },
+        {
+          image: 'assets/image/399.jpg', name: 'Deluxe Wedding Basket', delivery: 'Delivery within two days',
+          price: '1020.00', weight: 'NA', qty: 0, item_id: 102
+        }
+      ];
+    } else {
+        this.reduxService.getItemListRedux();
 
+    }
 
+    /* let counter = 0;
+    for (let i = 0 ; i < this.product_list.length; i++) {
+      const val = this.product_list.filter(e => e.item_id === this.added_cart[i].item_id);
+       if (val.length > 0) {
+        this.product_list.forEach(data => {
+               if (data.item_id === this.added_cart[i].item_id) {
+                   data.qty = this.added_cart[i].qty;
+                   counter ++;
+               }
+           });
+       }
+    }
+    console.log('Counter ' + counter);
+    if (counter > 0) {
+      this.ngRedux.dispatch({type : UPDATE_QTY, for: 'ITEM_UPDATE', item_list: this.product_list});
+    } */
 
-    // setTimeout(() => this.staticAlertClosed = true, 20000);
-    this._success.subscribe((message) => this.successMessage = message);
-    this._success.pipe(
-      debounceTime(3000)
-    ).subscribe(() => this.successMessage = null);
   }
 
   increment() {
@@ -110,60 +115,21 @@ export class ItemsFruitComponent implements OnInit {
   }
  */
 
-  addToCart123(item) {
-      if (item.qty === 0) {
-        this.reduxService.notification(alertMsg.addQty, alertType.warning);
-      } else {
-        const sameItem = this.service.getCart().filter(e => e.qty === item.qty && e.item_id === item.item_id);
-        console.log('Same item added ' + sameItem + ' ' + sameItem.length);
-        if (sameItem.length > 0) {
-          this.reduxService.notification(alertMsg.alreadyAdded, alertType.warning);
-        } else {
-          const qtyChange = this.service.getCart().filter(e => e.qty !== item.qty && e.item_id === item.item_id);
-          if (qtyChange.length > 0 && this.service.getCart().length > 0) {
-            this.service.getCart().forEach(data => {
-              if (data.item_id === item.item_id) {
-                data.qty = item.qty;
-              }
-            });
-            this.reduxService.addToCart(this.service.getCart());
-            // this.reduxService.notification(alertMsg.cartUpadted, alertType.success);
-          } else {
-            this.service.setCart({...item});
-            this.reduxService.addToCart({...this.service.getCart()});
-            // this.reduxService.notification(alertMsg.itemAdded, alertType.success);
-          }
-        }
-      }
-  }
-
   addToCart(item) {
     if (item.qty === 0) {
       this.reduxService.notification(alertMsg.addQty, alertType.warning);
     } else {
-      const sameItem = this.service.getCart().filter(e => e.qty === item.qty && e.item_id === item.item_id);
+      const sameItem = this.added_cart.filter(e => e.qty === item.qty && e.item_id === item.item_id);
       console.log('Same item added ' + sameItem + ' ' + sameItem.length);
       if (sameItem.length > 0) {
         this.reduxService.notification(alertMsg.alreadyAdded, alertType.warning);
       } else {
-        const qtyChange = this.service.getCart().filter(e => e.qty !== item.qty && e.item_id === item.item_id);
-        if (qtyChange.length > 0 && this.service.getCart().length > 0) {
-          this.service.getCart().forEach(data => {
-            if (data.item_id === item.item_id) {
-              data.qty = item.qty;
-            }
-          });
-          // this.reduxService.addToCart(this.service.getCart());
+        const qtyChange =  this.added_cart.filter(e => e.qty !== item.qty && e.item_id === item.item_id);
+        if (qtyChange.length > 0 &&  this.added_cart.length > 0) {
+          this.ngRedux.dispatch({type: UPDATE_CART_ITEM, action: 'UPDATE', item: item});
           this.reduxService.notification(alertMsg.cartUpadted, alertType.success);
         } else {
-          this.service.setCart({...item});
-          // this.reduxService.addToCart(this.service.getCart());
-          const len = this.service.getCart().length;
-          this.service.currentMessage.subscribe(message => this.countCart = message);
-          this.service.changeMessage(len + '');
-          console.log('Cart ' + JSON.stringify(this.service.getCart()));
-          // this._success.next('Added in cart');
-          // this.alertColor = alertType.success;
+          this.ngRedux.dispatch({type: UPDATE_CART_ITEM, action: 'ADD', item: item});
           this.reduxService.notification(alertMsg.itemAdded, alertType.success);
         }
       }
@@ -172,26 +138,10 @@ export class ItemsFruitComponent implements OnInit {
 
 
   decrementQty(item_id: number) {
-    for (let i = 0; i < this.product_list.length; i++) {
-      if (this.product_list[i].item_id === item_id) {
-        if (this.product_list[i].qty - 1 < 0) {
-          this.product_list[i].qty = 0;
-        } else {
-          this.product_list[i].qty -= 1;
-        }
-        break;
-      }
-    }
+    this.ngRedux.dispatch({type: DECREMENT, item_id: item_id, action : 'MAIN'});
   }
 
   incrementQty(item_id: number) {
-    for (let i = 0; i < this.product_list.length; i++) {
-      if (this.product_list[i].item_id === item_id) {
-        if (this.product_list[i].qty + 1 <= this.product_list[i].max_qty) {
-          this.product_list[i].qty += 1;
-          break;
-        }
-      }
-    }
+    this.ngRedux.dispatch({type: INCREMENT, item_id: item_id,  action : 'MAIN'});
   }
 }

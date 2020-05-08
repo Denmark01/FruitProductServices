@@ -19,7 +19,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 // import { NgDatepickerModule } from 'ng2-datepicker';
 import { DataShareService } from './services/data-share.service';
 import { AddCartComponent } from './components/add-cart/add-cart.component';
-import { CartComponent } from './components/cart/cart.component';
 import { ItemUploadComponent } from './components/item-upload/item-upload.component';
 import {AuthGuard} from './auth.guard';
 import { AuthInterceptor } from './utils/auth-interceptor';
@@ -30,6 +29,7 @@ import {NgRedux, NgReduxModule, DevToolsExtension} from 'ng2-redux';
 import { IAppState, rootReducer, InitialState } from './store';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import {SpinnerComponent} from './containers/spinner/spinner.component';
+import { NavHeaderOnlyComponent } from './containers/nav-header-only/nav-header-only.component';
 
 @NgModule({
   declarations: [
@@ -44,12 +44,12 @@ import {SpinnerComponent} from './containers/spinner/spinner.component';
     SearchBarComponent,
     LoginComponent,
     AddCartComponent,
-    CartComponent,
     ItemUploadComponent,
     ErrorPageComponent,
     ServerErrorComponent,
     FeedbackComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    NavHeaderOnlyComponent
   ],
   imports: [
     BrowserModule,

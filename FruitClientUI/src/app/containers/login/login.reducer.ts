@@ -1,6 +1,7 @@
 
 import {tassign} from 'tassign';
-import { SAVE_PROFILE, CHK_ADMIN, LOGIN_LOADER } from './login.action';
+import { SAVE_PROFILE, CHK_ADMIN, LOGIN_LOADER, LOGIN } from './login.action';
+import { LOGOUT } from 'src/app/components/items-fruit/item-fruit.action';
 export interface LoginState {
     isLoggedIn: boolean;
     is_admin: boolean;
@@ -8,6 +9,7 @@ export interface LoginState {
     login_loader: boolean;
     username: string;
     user_id: number;
+    isLogin: boolean;
 }
 
 export const LOGIN_INITIAL_STATE: LoginState = {
@@ -16,7 +18,8 @@ export const LOGIN_INITIAL_STATE: LoginState = {
     user_profile: {},
     login_loader: false,
     username: '',
-    user_id: 0
+    user_id: 0,
+    isLogin: false
 };
 
 export function LoginSignupReducer(state: LoginState= LOGIN_INITIAL_STATE, action): LoginState {
@@ -31,6 +34,12 @@ export function LoginSignupReducer(state: LoginState= LOGIN_INITIAL_STATE, actio
 
         case LOGIN_LOADER:
             return tassign( state, {login_loader: true});
+
+        case LOGIN:
+            return tassign(state, {isLogin: true});
+
+        case LOGOUT:
+            return tassign(state, {isLogin: false});
     }
     return state;
 }

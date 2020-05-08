@@ -1,9 +1,9 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, isDevMode } from '@angular/core';
 import { DataShareService } from 'src/app/services/data-share.service';
 import { Router } from '@angular/router';
 import { NgRedux, select } from 'ng2-redux';
 import { IItemFruitState } from 'src/app/components/items-fruit/item.fruit.reducer';
-import { LOGOUT, SELECT_ITEM, NOTIFICATION_DISAPPEAR } from 'src/app/components/items-fruit/item-fruit.action';
+import { LOGOUT, SELECT_ITEM, NOTIFICATION_DISAPPEAR, } from 'src/app/components/items-fruit/item-fruit.action';
 import { NgbAlertConfig } from '@ng-bootstrap/ng-bootstrap';
 import { debounceTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -28,12 +28,16 @@ export class NavHeaderComponent implements OnInit {
   public token: string;
   public isLoggedIn: boolean;
   public isAdmin = false;
+  // public selectChoice: string;
   public selectChoice: string;
   public cart_item: any;
+  public userId = 0;
   @ViewChild('navbarToggler') navbarToggler: ElementRef;
 
   @select(s => s.login.username) username;
-  @select(s => s.login.user_id) userId;
+  navTrue: boolean;
+  loggIn: boolean;
+  // @select(s => s.login.user_id) userId;
   constructor(
     private service: DataShareService,
     private route: Router,
@@ -47,21 +51,17 @@ export class NavHeaderComponent implements OnInit {
       debounceTime(3000)
     ).subscribe(() => {
     this.successMessage = null;
+    // this.ngRedux.dispatch({ type: NOTIFICATION_DISAPPEAR});
     }
     );
   }
 
   ngOnInit() {
-    const user = localStorage.getItem('userId');
-    if (user) {
-      this.reduxService.getProfileRedux(user);
+    if (isDevMode) {
+      this.selectChoice = 'FRUITS';
+      this.navTrue = true;
     }
 
-    // this.reduxService.getCartRedux(this.userId);
-    this.token = '';
-    this.item_cart = this.service.getCart();
-    this.service.currentMessage.subscribe(message => this.count = Number(message));
-    console.log(' Message Items-fruits' + this.count);
     this.token = localStorage.getItem('token');
 
     this.ngRedux.subscribe(() => {
@@ -71,12 +71,11 @@ export class NavHeaderComponent implements OnInit {
       this.selectChoice = store.itemFruit.fruit_vege;
       this._success.next(store.itemFruit.growlMsg);
       this.alertColor = store.itemFruit.growlType;
-      this.service.replaceCart([]);
-      console.log('Replace cart empty ' + this.service.getCart());
-      this.service.setCart(store.itemFruit.cart_item);
-      console.log('Set api call ' + this.service.getCart());
+      this.count = store.itemFruit.cart_qty;
+      this.loggIn = store.login.isLogin;
     });
-
+    const user = localStorage.getItem('userId');
+    this.reduxService.getProfileRedux(user);
 
   }
 
@@ -98,9 +97,9 @@ export class NavHeaderComponent implements OnInit {
 
   logout() {
     this.ngRedux.dispatch({ type: LOGOUT });
+    this.navTrue = false;
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
-    this.service.replaceCart([]);
     this.route.navigate(['feedback']);
   }
   alert() {

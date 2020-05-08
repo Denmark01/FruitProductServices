@@ -6,7 +6,7 @@
       <th>Quantity</th>
       <th>Price</th>
     </thead>
-    <tbody *ngFor="let item of product_list; let i = index">
+    <tbody *ngFor="let item of cart; let i = index">
       <td>{{i+1}}</td>
       <td>{{item.name}}</td>
       <td>
@@ -20,10 +20,10 @@
   </table>
   
   <div>
-    <span *ngIf="product_list.length === 0" class="noItemCart">No Item added in the Cart</span>
+    <span *ngIf="cart.length === 0" class="noItemCart">No Item added in the Cart</span>
     <div class="displayInLine">
-      <button (click)="checkout(product_list)" [ngClass]="product_list.length > 0?'btn btn-primary':'btn btn-primary disabled'">Checkout</button>
-      <button (click)="save(product_list)" [ngClass]="product_list.length > 0?'btn btn-primary':'btn btn-primary disabled'">Save Cart</button>
+      <button (click)="checkout(cart)" [ngClass]="cart.length > 0?'btn btn-primary':'btn btn-primary disabled'">Checkout</button>
+      <button (click)="save(cart)" [ngClass]="cart.length > 0?'btn btn-primary':'btn btn-primary disabled'">Save Cart</button>
     </div>
     
   </div>
