@@ -14,8 +14,20 @@ export class DataShareService {
 
   public add_cart = [];
   public apiUrl: string;
+  public growl = {growlMsg: '', growlType: ''};
+  public growlMsg: string;
+  public growlType: string;
 
   constructor() { }
+
+  public setGrowl (growlMsg, growlType) {
+    this.growl.growlMsg = growlMsg;
+    this.growl.growlType = growlType;
+  }
+
+  public getGrowl() {
+    return this.growl;
+  }
 
   changeMessage(message: string) {
     this.messageSource.next(message);

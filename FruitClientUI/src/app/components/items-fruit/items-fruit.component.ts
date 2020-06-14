@@ -8,7 +8,7 @@ import { AppServiceService } from 'src/app/services/app-service.service';
 import {alertType, alertMsg} from '../../utils/config';
 import { NgRedux, select } from 'ng2-redux';
 import { IItemFruitState } from './item.fruit.reducer';
-import { INCREMENT, NOTIFICATION, UPDATE_CART_ITEM, DECREMENT, UPDATE_QTY } from './item-fruit.action';
+import { INCREMENT, NOTIFICATION, UPDATE_CART_ITEM, DECREMENT } from './item-fruit.action';
 import { AppReduxService } from 'src/app/services/app-redux.service';
 @Component({
   selector: 'app-items-fruit',
@@ -63,41 +63,15 @@ export class ItemsFruitComponent implements OnInit {
       this.isLogged = store.login.isLogin;
     });
 
-    if (isDevMode()) {
-      this.product_list = [
-        {
-          image: '/fruit.jpg',
-          name: 'Onion / Pyaaz', delivery: 'Delivery within 1 hour',
-          price: '30', weight: 'KG', qty: 0, item_id: 101
-        },
-        {
-          image: 'assets/image/399.jpg', name: 'Deluxe Wedding Basket', delivery: 'Delivery within two days',
-          price: '1020.00', weight: 'NA', qty: 0, item_id: 102
-        }
-      ];
-    } else {
-        this.reduxService.getItemListRedux();
 
-    }
-
-    /* let counter = 0;
-    for (let i = 0 ; i < this.product_list.length; i++) {
-      const val = this.product_list.filter(e => e.item_id === this.added_cart[i].item_id);
-       if (val.length > 0) {
-        this.product_list.forEach(data => {
-               if (data.item_id === this.added_cart[i].item_id) {
-                   data.qty = this.added_cart[i].qty;
-                   counter ++;
-               }
-           });
-       }
-    }
-    console.log('Counter ' + counter);
-    if (counter > 0) {
-      this.ngRedux.dispatch({type : UPDATE_QTY, for: 'ITEM_UPDATE', item_list: this.product_list});
-    } */
+      this.reduxService.getItemListRedux();
+      const userUid = localStorage.getItem('userUid');
+      const user = localStorage.getItem('userId');
+      this.reduxService.getProfileReduxOnly(user);
+        this.reduxService.getCartRedux(userUid);
 
   }
+
 
   increment() {
     this.ngRedux.dispatch({type: INCREMENT});

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AppServiceService } from './app-service.service';
 import { NgRedux } from 'ng2-redux';
 import { IItemFruitState } from '../components/items-fruit/item.fruit.reducer';
-import { START_LOADER, GET_FRUIT_LIST, NOTIFICATION, SAVE_CART, NOTIFICATION_DISAPPEAR, UPDATE_QTY} from '../components/items-fruit/item-fruit.action';
+import { START_LOADER, GET_FRUIT_LIST, NOTIFICATION, SAVE_CART, NOTIFICATION_DISAPPEAR, CART_LIST} from '../components/items-fruit/item-fruit.action';
 import { Router } from '@angular/router';
 import { NgbAlertConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
@@ -21,7 +21,7 @@ export class AppReduxService {
   successMessage: string;
   staticAlert = false;
   public alertColor: string;
-
+  public reduxMessage: string;
   constructor(
     private appService: AppServiceService,
     private dataShare: DataShareService,
@@ -29,22 +29,38 @@ export class AppReduxService {
     private ngRedux: NgRedux<IItemFruitState>,
     private alertConfig: NgbAlertConfig,
   ) {
-    alertConfig.dismissible = true;
-    this._success.subscribe((message) => this.successMessage = message);
-    this._success.pipe(
-      debounceTime(3000)
-    ).subscribe(() => this.successMessage = null);
+    // alertConfig.dismissible = true;
+    // this._success.subscribe((message) => this.successMessage = message);
+    // this._success.pipe(
+    //   debounceTime(3000)
+    // ).subscribe(() => this.successMessage = null);
   }
 
   ngOnit() {
-    if (this.successMessage === null) {
-      this.ngRedux.dispatch({type: NOTIFICATION_DISAPPEAR});
-    }
+     this.ngRedux.subscribe(() => {
+      const store: any = this.ngRedux.getState();
+      this.reduxMessage = store.itemFruit.growlMsg;
+      this.alertColor = store.itemFruit.growlType;
+    });
   }
 
   notification(msg, msgType) {
+    // this.dataShare.setGrowl(msg, msgType);
+    // this._success.next(msg);
+    // this.alertColor = msgType;
     this.ngRedux.dispatch({type: NOTIFICATION, msg: msg, msgType: msgType});
+    // this._success.pipe(
+    //   debounceTime(3000)
+    // ).subscribe(() => {
+    // this.ngRedux.dispatch({ type: NOTIFICATION_DISAPPEAR, message:  this.successMessage});
+    // });
   }
+
+/*   public GetCurrentUserDelayedTest(): Observable<User>
+{
+    return of(new User(""))
+       .pipe(delay(2000));
+} */
 
   notificationDisapper() {
     this.ngRedux.dispatch({type: NOTIFICATION_DISAPPEAR});
@@ -58,7 +74,6 @@ export class AppReduxService {
         qty1.push({...list, qty : 0});
         });
       this.ngRedux.dispatch({type: GET_FRUIT_LIST, payload: qty1});
-      this.ngRedux.dispatch({type: UPDATE_QTY});
     }, err => {
       console.log('ERROr calling apii....');
       this.notification(alertMsg.internalError, alertType.danger);
@@ -112,10 +127,7 @@ export class AppReduxService {
   getCartRedux(userId) {
     this.appService.getAddedCart(userId).subscribe((data) => {
       if (data) {
-        // const cart = data.cart;
-        // this.dataShare.replaceCart(cart);
-        // this.dataShare.changeMessage(cart.length + '');
-        // console.log(JSON.stringify('Get Cart by user id ' + this.dataShare.getCart()));
+        this.ngRedux.dispatch({type: CART_LIST, cart_item: data.cart});
         this.ngRedux.dispatch({type: SAVE_CART, cart_item: data.cart});
       }
     }, error => {

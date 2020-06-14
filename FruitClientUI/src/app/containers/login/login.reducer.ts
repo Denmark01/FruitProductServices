@@ -26,7 +26,7 @@ export function LoginSignupReducer(state: LoginState= LOGIN_INITIAL_STATE, actio
     switch (action.type) {
 
         case SAVE_PROFILE:
-            return tassign( state, {username: action.username, login_loader: false,
+            return tassign( state, {username: action.username, login_loader: false, isLogin: true,
                 user_id: action.userId, is_admin: action.roleId === 1 ? true : false});
 
         case CHK_ADMIN:

@@ -47,6 +47,7 @@ export class AuthService {
         this.saveToken = user;
         localStorage.setItem('token', this.saveToken.jwt);
         localStorage.setItem('userId', this.saveToken.user);
+        localStorage.setItem('userUid', this.saveToken.userId);
         this.ngRedux.dispatch({type: LOGIN});
         this.router.navigate(['']);
       }

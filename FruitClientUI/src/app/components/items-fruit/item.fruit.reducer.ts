@@ -2,7 +2,7 @@
 import { tassign } from 'tassign';
 import {
     INCREMENT, GET_FRUIT_LIST, START_LOADER, LOGOUT, NOTIFICATION, SAVE_CART,
-    SELECT_ITEM, NOTIFICATION_DISAPPEAR, DECREMENT, DELETE_CART, UPDATE_CART_ITEM, UPDATE_QTY,
+    SELECT_ITEM, NOTIFICATION_DISAPPEAR, DECREMENT, DELETE_CART, UPDATE_CART_ITEM, EMPTY_ALL, CART_LIST, DETECT_CART_CHANGE,
 } from './item-fruit.action';
 export interface IItemFruitState {
     counter: number;
@@ -16,6 +16,8 @@ export interface IItemFruitState {
     cart_item: any;
     fruit_vege: string;
     cart_qty: number;
+    in_cart_comp: boolean;
+    chn_in_cart: boolean;
 }
 
 export const ITEM_INITIAL_STATE: IItemFruitState = {
@@ -29,7 +31,9 @@ export const ITEM_INITIAL_STATE: IItemFruitState = {
     growlType: '',
     cart_item: [],
     fruit_vege: 'FRUITS',
-    cart_qty: 0
+    cart_qty: 0,
+    in_cart_comp: false,
+    chn_in_cart: false
 };
 
 export function ItemFruitReducer(state: IItemFruitState = ITEM_INITIAL_STATE, action): IItemFruitState {
@@ -51,23 +55,46 @@ export function ItemFruitReducer(state: IItemFruitState = ITEM_INITIAL_STATE, ac
             return tassign(state, { item_loader: true });
 
         case LOGOUT:
-            return tassign(state, { isLoggedIn: false, cart_item: [], item_list: [] });
+            return tassign(state, { isLoggedIn: false, cart_item: [], item_list: [], fruit_vege: 'FRUITS'});
 
         case NOTIFICATION:
             return tassign(state, { growlMsg: action.msg, growlType: action.msgType });
 
         case SAVE_CART:
-            if (action.cart_item) {
-                return tassign(state, { cart_item: action.cart_item, cart_qty: action.cart_item.length});
-            }
-        return tassign(state);
+                const product_list = state.item_list;
+                const added_cart = state.cart_item;
+                    for (let i = 0 ; i < product_list.length; i++) {
+                    const val = product_list.filter(e => e.item_id === added_cart[i].item_id);
+                    if (val.length > 0) {
+                        product_list.forEach(data => {
+                            if (data.item_id === added_cart[i].item_id) {
+                                data.qty = added_cart[i].qty;
+                            }
+                        });
+                    }
+                    }
+                    let is_changed = false;
+                    if (state.in_cart_comp) {
+                      is_changed = true;
+                    }
+                return tassign(state, { item_list: product_list, cart_item: added_cart, cart_qty: added_cart.length,
+                    growlMsg: null, growlType: null, chn_in_cart: is_changed});
+
+        case CART_LIST:
+            return tassign (state, {cart_item: action.cart_item, cart_qty: action.cart_item.length, growlMsg: null, growlType: null});
+
+        case EMPTY_ALL:
+            return tassign(state, {cart_item: [], item_list: []});
 
         case SELECT_ITEM:
             return tassign(state, { fruit_vege: action.fruit_vege });
 
 
         case NOTIFICATION_DISAPPEAR:
-            return tassign(state, { growlMsg: null, growlType: null });
+            if (action.msg) {
+                return tassign(state, { growlMsg: null, growlType: null });
+            }
+            return tassign(state);
 
         case INCREMENT:
             let temp_cart = state.cart_item;
@@ -92,7 +119,12 @@ export function ItemFruitReducer(state: IItemFruitState = ITEM_INITIAL_STATE, ac
                     }
                 }
             }
-            return tassign(state, { cart_item: temp_cart, item_list: temp_item });
+            is_changed = false;
+                    if (state.in_cart_comp) {
+                      is_changed = true;
+                    }
+            return tassign(state, { cart_item: temp_cart, item_list: temp_item, growlMsg: null, growlType: null,
+                chn_in_cart: is_changed });
 
         case DECREMENT:
             temp_cart = state.cart_item;
@@ -120,14 +152,23 @@ export function ItemFruitReducer(state: IItemFruitState = ITEM_INITIAL_STATE, ac
                     }
                 }
             }
-            return tassign(state, { cart_item: temp_cart, item_list: temp_item });
+            is_changed = false;
+                    if (state.in_cart_comp) {
+                      is_changed = true;
+                    }
+            return tassign(state, { cart_item: temp_cart, item_list: temp_item, growlMsg: null, growlType: null, 
+                chn_in_cart: is_changed });
 
         case DELETE_CART:
             temp_cart = state.cart_item;
             const index = action.index;
             temp_cart[index].qty = 0;
             temp_cart.splice(index, 1);
-            return tassign(state, { cart_item: temp_cart, cart_qty: action.cart_item.length});
+            is_changed = false;
+            if (state.in_cart_comp) {
+              is_changed = true;
+            }
+            return tassign(state, { cart_item: temp_cart, cart_qty: action.cart_item.length, chn_in_cart: is_changed});
 
         case UPDATE_CART_ITEM:
             temp_cart = state.cart_item;
@@ -143,37 +184,14 @@ export function ItemFruitReducer(state: IItemFruitState = ITEM_INITIAL_STATE, ac
                 const item = action.item;
                 temp_cart.push({ ...item });
             }
-            return tassign(state, { cart_item: temp_cart , cart_qty: temp_cart.length});
-
-
-        case UPDATE_QTY:
-           /*  temp_item = state.item_list;
-            temp_cart = state.cart_item;
-            for (let i = 0; i < temp_cart.length; i++) {
-                for (let j = 0; j < temp_cart.length; j++) {
-                    if (temp_item[j].item_id === this.temp_cart[i].item_id) {
-                        temp_item.forEach(data => {
-                            if (temp_cart[i].item_id === data.item_id) {
-                                data.qty = temp_cart[i].qty;
-                            }
-                        });
-                        break;
-                    }
-                } */
-                // const val = temp_item.filter(e => e.item_id === this.temp_cart[i].item_id);
-               /*  if (val > 0) {
-                    temp_item.forEach(data => {
-                        if (temp_cart[i].item_id === data.item_id) {
-                            data.qty = temp_cart[i].qty;
-                        }
-                    });
-                } */
-            // }
-            if (action.for === 'ITEM_UPDATE') {
-                return tassign(state, { item_list: action.item_list});
-            } else if (action.for === 'CART_UPDATE') {
-                return tassign(state, { cart_item: action.cart_item });
+            is_changed = false;
+            if (state.in_cart_comp) {
+              is_changed = true;
             }
+            return tassign(state, { cart_item: temp_cart , cart_qty: temp_cart.length, chn_in_cart: is_changed});
+
+        case DETECT_CART_CHANGE:
+            return tassign(state, {in_cart_comp: action.in_cart_comp});
 
     }
     return state;

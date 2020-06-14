@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../auth.service';
 import { Observable } from 'rxjs';
@@ -13,7 +13,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-        if (this.authService.isLoggedIn()) {
+        if (this.authService.isLoggedIn() &&  !isDevMode()) {
             const authToken = this.authService.getAuthorizationToken();
             req = req.clone({
                 setHeaders:
