@@ -1,0 +1,38 @@
+<nav class="navbar navbar-expand-lg fixed-top navbar-expand-md  navbar-expand-sm navbar-dark bg-dark">
+  <a class="navbar-brand" routerLink="/"><img src="assets/image/fruit_logo.jpg" class="img_logo"></a>
+
+  <a class="nav-link cart" routerLink="/cart" routerLinkActive="active" *ngIf="loggIn"
+        ><i class="fa fa-cart-arrow-down fa-lg" aria-hidden="true"></i><span class="badge badge-light" *ngIf="count>0">{{count}}</span></a>
+
+  <button #navbarToggler id="toggleButton" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo01" *ngIf="isLoggedIn">
+    <ul class="navbar-nav mt-2 mt-lg-0">
+      <li class="nav-item" *ngIf="isAdmin === true">
+        <a class="nav-link" routerLink="/upload" routerLinkActive="active" (click)="toggle()">Upload Item</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item" placement="bottom" ngbTooltip="Click to Login!" *ngIf="!loggIn">
+        <a class="nav-link"  routerLink="/login" routerLinkActive="active" (click)="toggle()">
+         Log In <i class="fa fa-sign-in fa-lg" aria-hidden="true"></i></a>
+      </li>
+      <li class="nav-item" placement="bottom" ngbTooltip="Click to Sign Up!" *ngIf="!loggIn">
+        <a class="nav-link" routerLinkActive="active" routerLink="/signup" (click)="toggle()">
+          Sign Up <i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></a>
+     
+      <li class="nav-item" *ngIf="loggIn">
+        <a class="nav-link cursor" (click)="logout()">Logout</a>
+      </li>
+    </ul>
+
+  </div>
+</nav>
+
+<div class="position">
+  <ngb-alert *ngIf="successMessage" (close)="successMessage = null" [type]="alertColor">
+    {{ successMessage}}
+     </ngb-alert>
+</div>

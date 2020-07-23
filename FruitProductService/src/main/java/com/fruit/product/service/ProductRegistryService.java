@@ -112,28 +112,38 @@ public class ProductRegistryService {
 		return product;
 	}
 	
-	public ResponseOutDTO signUp(String email, String last, String name, String pass) {
+	public ResponseOutDTO signUp(String email, String mobno, String name, String pass, String gender) {
 		logger.info("ProductRegistryService |  signUp method invoked");
 		
-		int roleId = 2;
+		int roleId = Integer.valueOf(myProps.getVariable());
 		ResponseStatusDTO responseDto = new ResponseStatusDTO();
 		String userRecordQuery = QueryConstants.userRecordInsert;
 		try {
-		int userRecordInsertVal = jdbcTemplate.update(userRecordQuery,new Object[] {1, email, last, name, pass});
+			
+			int userExist = jdbcTemplate.queryForObject(QueryConstants.userCheckExist, new Object[] {name}, Integer.class);
+			
+			if (userExist > 0) {
+				responseDto.setStatus(0);
+				responseDto.setMessage("User name is already Exists");
+				responseDto.setStatus_obj(new ResponseDTO("Success", true));
+				return responseDto;
+			}
+			
+		int userRecordInsertVal = jdbcTemplate.update(userRecordQuery,new Object[] {1, email, name, pass, mobno, gender});
 		logger.info("query "+ userRecordQuery);
 		
 		if (userRecordInsertVal > 0) {
-			int userId = jdbcTemplate.queryForObject(QueryConstants.userId, new Object[] {name, pass}, Integer.class);
+			int userId = jdbcTemplate.queryForObject(QueryConstants.userId, new Object[] {name}, Integer.class);
 			String userRoleQuery = QueryConstants.userRoleInsert;
 			logger.info("query "+ userRoleQuery);
 			int userRoleInsertVal = jdbcTemplate.update(userRoleQuery, new Object[] {userId, roleId});
 			if (userRoleInsertVal > 0) {
 				responseDto.setStatus(1);
-				responseDto.setMessage("User successfully updated");
+				responseDto.setMessage("User successfully updated. Please Login");
 				responseDto.setStatus_obj(new ResponseDTO("Success", true));
 			} else {
 				responseDto.setStatus(0);
-				responseDto.setMessage("Error");
+				responseDto.setMessage("Something went wrong.. Please try again");
 				responseDto.setStatus_obj(new ResponseDTO("Success", true));
 			}
 		} else {
@@ -180,7 +190,7 @@ public class ProductRegistryService {
 		ResponseStatusDTO outputData = new ResponseStatusDTO();
 		String deleteCartByUserId = QueryConstants.deleteCartByUserId;
 			try {
-				if (addCartList.size() > 0) {
+				if (addCartList.size() >= 0) {
 					logger.info("query:: userId::  "+ QueryConstants.userId);
 					int userId = jdbcTemplate.queryForObject(QueryConstants.userId, new Object[] {username}, Integer.class);
 					logger.info("Customer id "+ userId);
@@ -313,6 +323,61 @@ public class ProductRegistryService {
 		
 		return output;
 	}
+
+	public ResponseOutDTO deleteItemService(int itemId) {
+		logger.info("ProductRegistryService |  deleteItemService method invoked");
+		ResponseStatusDTO output = new ResponseStatusDTO();
+		String deleteByItemId = QueryConstants.deleteByItemId;
+		logger.info("query:: deleteByItemId::  " + deleteByItemId);
+		try {
+			int delCount = jdbcTemplate.update(deleteByItemId, itemId);
+			logger.info("Delete Count "+delCount);
+			if (delCount > 0) {
+				output.setStatus(1);
+				output.setMessage("Product Item Deleted " + delCount);
+				output.setStatus_obj(new ResponseDTO("Success", true));
+			} else {
+				output.setStatus(0);
+				output.setMessage("Product Item not deleted " + delCount);
+			}
+		} catch(EmptyResultDataAccessException e) {
+			output.setStatus_obj(new ResponseDTO("Failure", false));
+			logger.error("ProductRegistryService |  deleteItemService | DataAccessException ", e);
+		} catch (Exception e) {
+			output.setStatus_obj(new ResponseDTO("Failure", false));
+			logger.error("ProductRegistryService |  deleteItemService | Exception ", e);
+		} finally {
+			logger.info("ProductRegistryService |  deleteItemService method exit");
+		}
+		return output;
+	}
 	
-	
+	public ResponseOutDTO updateItemService(String name, int itemId, float price, int maxQty, String delivery, String weight) {
+		logger.info("ProductRegistryService |  updateItemService method invoked");
+		ResponseStatusDTO output = new ResponseStatusDTO();
+		String updateItem = QueryConstants.editPriceItem;
+		logger.debug("query:: udpateItemId::  " + updateItem);
+		try {
+			int updateCount = jdbcTemplate.update(updateItem, name, maxQty, weight, price, delivery, itemId);
+			logger.info("Update Count "+updateCount);
+			if (updateCount > 0) {
+				output.setStatus(1);
+				output.setMessage("Product Item Updated " + updateCount);
+				output.setStatus_obj(new ResponseDTO("Success", true));
+			} else {
+				output.setStatus(0);
+				output.setMessage("Product Item not updated " + updateCount);
+			}
+		} catch(EmptyResultDataAccessException e) {
+			output.setStatus_obj(new ResponseDTO("Failure", false));
+			logger.error("ProductRegistryService |  updateItemService | DataAccessException ", e);
+		} catch (Exception e) {
+			output.setStatus_obj(new ResponseDTO("Failure", false));
+			logger.error("ProductRegistryService |  updateItemService | Exception ", e);
+		} finally {
+			logger.info("ProductRegistryService |  updateItemService method exit");
+		}
+		return output;
+	}
+
 }

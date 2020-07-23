@@ -16,8 +16,9 @@ export interface IItemFruitState {
     cart_item: any;
     fruit_vege: string;
     cart_qty: number;
-    in_cart_comp: boolean;
-    chn_in_cart: boolean;
+    // in_cart_comp: boolean;
+    // chn_in_cart: boolean;
+    change_in_item: boolean;
 }
 
 export const ITEM_INITIAL_STATE: IItemFruitState = {
@@ -32,8 +33,9 @@ export const ITEM_INITIAL_STATE: IItemFruitState = {
     cart_item: [],
     fruit_vege: 'FRUITS',
     cart_qty: 0,
-    in_cart_comp: false,
-    chn_in_cart: false
+    // in_cart_comp: false,
+    // chn_in_cart: false
+    change_in_item: false
 };
 
 export function ItemFruitReducer(state: IItemFruitState = ITEM_INITIAL_STATE, action): IItemFruitState {
@@ -73,12 +75,8 @@ export function ItemFruitReducer(state: IItemFruitState = ITEM_INITIAL_STATE, ac
                         });
                     }
                     }
-                    let is_changed = false;
-                    if (state.in_cart_comp) {
-                      is_changed = true;
-                    }
                 return tassign(state, { item_list: product_list, cart_item: added_cart, cart_qty: added_cart.length,
-                    growlMsg: null, growlType: null, chn_in_cart: is_changed});
+                    growlMsg: null, growlType: null,  change_in_item: action.change_in_item});
 
         case CART_LIST:
             return tassign (state, {cart_item: action.cart_item, cart_qty: action.cart_item.length, growlMsg: null, growlType: null});
@@ -119,12 +117,8 @@ export function ItemFruitReducer(state: IItemFruitState = ITEM_INITIAL_STATE, ac
                     }
                 }
             }
-            is_changed = false;
-                    if (state.in_cart_comp) {
-                      is_changed = true;
-                    }
             return tassign(state, { cart_item: temp_cart, item_list: temp_item, growlMsg: null, growlType: null,
-                chn_in_cart: is_changed });
+                change_in_item: action.change_in_item });
 
         case DECREMENT:
             temp_cart = state.cart_item;
@@ -152,23 +146,15 @@ export function ItemFruitReducer(state: IItemFruitState = ITEM_INITIAL_STATE, ac
                     }
                 }
             }
-            is_changed = false;
-                    if (state.in_cart_comp) {
-                      is_changed = true;
-                    }
-            return tassign(state, { cart_item: temp_cart, item_list: temp_item, growlMsg: null, growlType: null, 
-                chn_in_cart: is_changed });
+            return tassign(state, { cart_item: temp_cart, item_list: temp_item, growlMsg: null, growlType: null,
+                change_in_item: action.change_in_item});
 
         case DELETE_CART:
             temp_cart = state.cart_item;
             const index = action.index;
             temp_cart[index].qty = 0;
             temp_cart.splice(index, 1);
-            is_changed = false;
-            if (state.in_cart_comp) {
-              is_changed = true;
-            }
-            return tassign(state, { cart_item: temp_cart, cart_qty: action.cart_item.length, chn_in_cart: is_changed});
+            return tassign(state, { cart_item: temp_cart, cart_qty: action.cart_item.length, change_in_item: action.change_in_item});
 
         case UPDATE_CART_ITEM:
             temp_cart = state.cart_item;
@@ -184,14 +170,10 @@ export function ItemFruitReducer(state: IItemFruitState = ITEM_INITIAL_STATE, ac
                 const item = action.item;
                 temp_cart.push({ ...item });
             }
-            is_changed = false;
-            if (state.in_cart_comp) {
-              is_changed = true;
-            }
-            return tassign(state, { cart_item: temp_cart , cart_qty: temp_cart.length, chn_in_cart: is_changed});
+            return tassign(state, { cart_item: temp_cart , cart_qty: temp_cart.length,  change_in_item: action.change_in_item});
 
         case DETECT_CART_CHANGE:
-            return tassign(state, {in_cart_comp: action.in_cart_comp});
+            return tassign(state, {change_in_item: action.change_in_item});
 
     }
     return state;

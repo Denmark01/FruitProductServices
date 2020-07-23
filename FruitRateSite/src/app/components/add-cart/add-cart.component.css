@@ -1,0 +1,23 @@
+.textBox {
+    width: 50px;
+    text-align: center;
+    margin: 0px 4px;
+}
+
+.noItemCart {
+    color: whitesmoke;
+    background-color: #86657d;
+    display: block;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.displayInLine {
+    justify-content: space-evenly;
+    display: flex;
+}
+
+.mt-63 {
+    margin-top: 63px
+}

@@ -15,21 +15,25 @@ export class AddCartComponent implements OnInit, OnDestroy {
   public cart = [];
   public change_in_cart: boolean;
   // @select(s => s.itemFruit.item_list) item_list;
-  @select(s => s.login.user_id) userId;
+  // @select(s => s.login.user_id) userId;
+  // @select(s => s.login.username) username;
   // @select(s => s.itemFruit.cart_item)product_list;
-
+    public username: string;
+    public user_id: string;
   constructor(
     private reduxService: AppReduxService,
     private ngRedux: NgRedux<IItemFruitState>,
     ) { }
 
   ngOnInit() {
-    this.ngRedux.dispatch({type: DETECT_CART_CHANGE, in_cart_comp: true});
+    // this.ngRedux.dispatch({type: DETECT_CART_CHANGE, in_cart_comp: true});
 
     this. ngRedux.subscribe(() => {
       const store: any = this.ngRedux.getState();
       this.cart = store.itemFruit.cart_item;
-      this.change_in_cart = store.itemFruit.chn_in_cart;
+      this.change_in_cart = store.itemFruit.change_in_item;
+      this.username = store.login.username;
+      this.user_id = store.login.userId;
     });
 
     const user = localStorage.getItem('userId');
@@ -37,16 +41,16 @@ export class AddCartComponent implements OnInit, OnDestroy {
 }
 
   delete(index) {
-    this.ngRedux.dispatch({type: DELETE_CART, index: index});
+    this.ngRedux.dispatch({type: DELETE_CART, index: index, change_in_item: true});
   }
 
 
   decrementQty(item_id: number) {
-    this.ngRedux.dispatch({type: DECREMENT, item_id: item_id});
+    this.ngRedux.dispatch({type: DECREMENT, item_id: item_id, change_in_item: true});
   }
 
   incrementQty(item_id: number) {
-    this.ngRedux.dispatch({type: INCREMENT, item_id: item_id});
+    this.ngRedux.dispatch({type: INCREMENT, item_id: item_id, change_in_item: true});
   }
 
   checkout(item) {
@@ -56,13 +60,15 @@ export class AddCartComponent implements OnInit, OnDestroy {
   }
 
   save(item) {
-    this.reduxService.addToCart(item);
+    if (this.change_in_cart) {
+    this.reduxService.addToCart(item, this.username);
+    }
   }
 
   ngOnDestroy() {
-    this.ngRedux.dispatch({type: DETECT_CART_CHANGE, in_cart_comp: false});
+    // this.ngRedux.dispatch({type: DETECT_CART_CHANGE, in_cart_comp: false});
     if (this.change_in_cart) {
-      this.reduxService.addToCart(this.cart);
+      this.reduxService.addToCart(this.cart, this.username);
     }
     }
 

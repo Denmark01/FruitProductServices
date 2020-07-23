@@ -1,0 +1,34 @@
+<nav class="navbar navbar-expand-lg navbar-expand-md  navbar-expand-sm navbar-dark bg-dark">
+  <a class="navbar-brand" routerLink="/" (click)="toggle()"><img src="assets/image/fruit_logo.jpg" class="img_logo"></a>
+  <button #navbarToggler id="toggleButton" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+    <!-- <ul class="navbar-nav mt-2 mt-lg-0">
+      <li [ngClass]="selectChoice === 'FRUITS' ?'nav-item cursor active':'nav-item cursor'">
+        <a class="nav-link" (click)="select('FRUITS')">Fruits</a>
+      </li>
+      <li [ngClass]="selectChoice === 'VEGETABLES' ?'nav-item cursor active':'nav-item cursor'">
+        <a class="nav-link" (click)="select('VEGETABLES')" >Vegetables</a>
+      </li>
+    </ul> -->
+
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item active">
+        <a class="nav-link" >Hello Guest Welcome!</a>
+      </li>
+      <li class="nav-item" placement="bottom" ngbTooltip="Click to Login!">
+        <a class="nav-link"  routerLink="/login" routerLinkActive="active" (click)="toggle()">
+          <i class="fa fa-sign-in fa-lg" aria-hidden="true"></i></a>
+      </li>
+      <li class="nav-item" placement="bottom" ngbTooltip="Click to Sign Up!">
+        <a class="nav-link" routerLinkActive="active" routerLink="/signup">
+          <i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></a>
+      </li>
+    </ul>
+
+  </div>
+
+</nav>

@@ -1,0 +1,42 @@
+<!-- <app-carousel></app-carousel> -->
+<div class="container left">
+  <!-- <ngb-alert *ngIf="!staticAlert" (close)="staticAlertClosed = true" class="overlapTop">
+    Check out our awesome new features!</ngb-alert> -->
+    <ngb-alert *ngIf="successMessage" (close)="successMessage = null" [type]="alertColor">
+     {{ successMessage}}
+      </ngb-alert>
+    <h4>Welcome {{username?username:'Guest'}} !</h4>
+    <div class="positionAbs">
+      <span [ngClass]="searchText === ''? 'badge badge-warning mr-2':'badge badge-info mr-2'" (click)="select('ALL')">ALL</span>
+        <span [ngClass]="searchText === 'VEGETABLES'? 'badge badge-warning mr-2':'badge badge-info mr-2'" (click)="select('VEGETABLES')">Vegetables</span>
+        <span [ngClass]="searchText === 'FRUITS'? 'badge badge-warning':'badge badge-info'" (click)="select('FRUITS')">Fruits</span>
+    </div>
+  <app-search-bar (messageEvent)="receiveMessage($event)"></app-search-bar>
+  <app-loader *ngIf="isLoading"></app-loader>
+  <!-- <p>{{counter | async}}<button (click)="increment()">Increment</button></p> -->
+  <div class="row mar_bottom"  *ngIf="!isLoading">
+    <div class="image col-lg-2 col-md-3 col-sm-4 col-5 mw-182px"
+      *ngFor="let item of product_list | grdFilter: {name: searchText, delivery:searchText,  price: searchText, category: searchText};let i = index;">
+      <ul>
+        <li>
+          <img [src]="item.image" />
+          <i class="fa fa-pencil-square-o position" aria-hidden="true" (click)="open(item)" *ngIf="isAdmin"></i>
+        </li>
+        <li class="font-bold-600">{{item.name}}</li>
+        <li *ngIf="isLogged">
+          <b>Delivery : </b>{{item.delivery}}</li>
+        <li id="green" class="font-bold-600" style="min-height: 20px;">Rs : {{item.price}} / {{item.weight}}</li>
+        <li *ngIf="isLogged">
+          Qty :
+          <i class="fa fa-minus-circle" aria-hidden="true" (click)="decrementQty(item.item_id)"></i>
+            <input type="text" [(ngModel)]="item.qty" class="textBox" />
+          <i class="fa fa-plus-circle" aria-hidden="true" (click)="incrementQty(item.item_id)"></i>
+          <span *ngIf="item.qty === item.max_qty" id="red">Maximum qty</span>
+        </li>
+        <li *ngIf="isLogged">
+          <button class="btn btn-primary btn-sm-4" (click)="addToCart(item, 'notCss')">{{item.qty > 0?'Click to add': 'Add to Cart'}}</button>
+        </li>
+      </ul>
+    </div>
+    </div>
+</div>

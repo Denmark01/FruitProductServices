@@ -1,0 +1,85 @@
+.image{
+    text-align: left;
+    /* outline: 1px solid #c7c4c4; */
+    box-shadow: 1px 1px 2px 0px darkslategrey;
+    margin-right: 9px;
+    /* min-width: 16%; */
+    /* overflow-wrap: break-word; */
+   margin-bottom: 13px;
+}
+
+img {
+    width: 125px;
+    height: 110px;
+    margin-top: 7px;
+}
+ul{
+    list-style-type: none;
+    padding-left: 22px;
+}
+ul li{
+    padding-bottom: 7px;
+    min-height: 53px;
+}
+.image:hover{
+    box-shadow: 1px 1px 2px 1px darkslategrey;
+}
+#green{
+    color: #2a9407b3;
+}
+.mar_bottom{
+    margin-bottom: 100px;
+}
+
+.left {
+position : relative;
+left: 20px;
+top: 65px;
+}
+
+@media screen and (min-width: 480px) {
+    .left {
+        position : relative;
+        left: 3%;
+        }
+}
+
+.open.dropdown .dropdown-menu ng-select{ display: block; transform: none; }
+.overlapTop {
+    z-index : 1;
+}
+
+::ng-deep .ngx-datepicker-calendar-container {
+    z-index:1
+    }
+
+.textBox {
+    width: 50px;
+    text-align: center;
+    margin: 0px 4px;
+}
+.mw-182px {
+    min-width: 177px;
+    max-width: 177px;
+}
+
+.alert ::ng-deep {
+    min-width: 50%;
+    max-width: 70%;
+}
+
+.positionAbs {
+    position: absolute;
+    top: 52px;
+}
+.position {
+    position: absolute;
+}
+
+.badge {
+    cursor: pointer;
+}
+
+.font-bold-600 {
+    font-weight: 600
+}

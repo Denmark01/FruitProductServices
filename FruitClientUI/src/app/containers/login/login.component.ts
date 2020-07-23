@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
   public logUser: string;
   public isSignInLoading: boolean;
   public isAdmin: boolean;
+  public isGuest: boolean;
 
   constructor(private http: HttpClient,
     private route: Router,
@@ -43,8 +44,15 @@ export class LoginComponent implements OnInit {
 
   submitLogin(email, password) {
     console.log('Email and password ' + email + ' ' + password);
+    if (this.isGuest) {
+      password = 'guest';
+    }
     const param = { 'email': email, 'password': password};
     this.authService.login(email, password);
+  }
+
+  signInGuest() {
+    this.isGuest = true;
   }
 
   submitLogin1(pin) {

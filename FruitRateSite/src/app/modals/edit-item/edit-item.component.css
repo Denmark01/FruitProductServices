@@ -1,0 +1,8 @@
+.form-group {
+    display: inline-flex;
+    justify-content: space-between;
+}
+
+input {
+    width: 60%;
+}

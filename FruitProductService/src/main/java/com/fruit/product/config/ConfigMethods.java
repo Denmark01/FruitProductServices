@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 
 import com.fruit.product.dto.ResponseOutDTO;
 
+import antlr.StringUtils;
+
 public class ConfigMethods {
 	
 	public static ResponseEntity<ResponseOutDTO> resourseUtils(ResponseOutDTO response) {
@@ -20,6 +22,19 @@ public class ConfigMethods {
 			
 		}
 		return new ResponseEntity<ResponseOutDTO>(response,new HttpHeaders(),headers);
+	}
+	
+	public static ResponseEntity<ResponseOutDTO> paramsCheck(String... params) {
+		HttpStatus headers = HttpStatus.OK;
+		
+		
+		for(String val: params) {
+			if(val.trim().isEmpty()) {
+				headers = HttpStatus.FORBIDDEN;
+			}
+		}
+		
+		return new ResponseEntity<ResponseOutDTO>(new HttpHeaders(),headers);
 	}
 
 }

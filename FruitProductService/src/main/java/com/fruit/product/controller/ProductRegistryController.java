@@ -1,24 +1,14 @@
 package com.fruit.product.controller;
 
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,11 +30,8 @@ import com.fruit.product.dto.AddCartMainDTO;
 import com.fruit.product.dto.AuthenticationRequest;
 import com.fruit.product.dto.AuthenticationResponse;
 import com.fruit.product.dto.MyProperty;
-import com.fruit.product.dto.Product;
-import com.fruit.product.dto.ProductRespDTO;
 import com.fruit.product.dto.ResponseDTO;
 import com.fruit.product.dto.ResponseOutDTO;
-import com.fruit.product.dto.ResponseStatusDTO;
 import com.fruit.product.model.Feedback;
 import com.fruit.product.service.CustomUserDetailsService;
 import com.fruit.product.service.ProductRegistryService;
@@ -107,7 +94,7 @@ public class ProductRegistryController {
 
 		final String jwt = jwtTokenUtil.generateToken(userDetails);
 		Map<String, Integer> user = productRegistryService.getRole(authenticationRequest.getUsername());
-		AuthenticationResponse response = new AuthenticationResponse(jwt, user.get("userId"), user.get("userRole"), authenticationRequest.getUsername());
+		AuthenticationResponse response = new AuthenticationResponse(jwt, user.get("userRole"),user.get("userId"),  authenticationRequest.getUsername());
 		response.setStatus_obj(new ResponseDTO(output.getStatus_obj().getStatus_msg(), output.getStatus_obj().isStatus_flag()));
 		return ConfigMethods.resourseUtils(response);
 	}
@@ -178,11 +165,12 @@ public class ProductRegistryController {
     	logger.debug("inputs "+ map);
     	ResponseOutDTO outputData = new ResponseOutDTO();
     	HttpStatus status = HttpStatus.OK;
-    	String name = map.get("fistname");
-    	String pass = map.get("password");
+    	String name = map.get("name");
+    	String pass = map.get("pass");
     	String email = map.get("email");
-    	String last = map.get("lastname");
-    	outputData = productRegistryService.signUp(email, last, name, pass);
+    	String mobno = map.get("mob_no");
+    	String gender = map.get("gender");
+    	outputData = productRegistryService.signUp(email, mobno, name, pass, gender);
     	return ConfigMethods.resourseUtils(outputData);
 	}
     
@@ -200,9 +188,43 @@ public class ProductRegistryController {
 		logger.info("ProductRegistryController |  getProfile method invoked");
 		logger.debug("data "+ username);
 		Map<String, Integer> user = productRegistryService.getRole(username);
-		AuthenticationResponse response = new AuthenticationResponse("NA", user.get("userId"), user.get("userRole"), username);
+		AuthenticationResponse response = new AuthenticationResponse("NA", user.get("userRole"),user.get("userId"), username);
 		response.setStatus_obj(new ResponseDTO("Success", true));
 		return ConfigMethods.resourseUtils(response);
+	}
+    
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/delete-item")
+	public ResponseEntity<ResponseOutDTO> deleteItem(@RequestParam("item_id")int itemId){
+		logger.info("ProductRegistryController |  deleteItem method invoked");
+		logger.debug("Item Id "+ itemId);
+		ResponseOutDTO out = new ResponseOutDTO();
+		out = productRegistryService.deleteItemService(itemId);
+		return ConfigMethods.resourseUtils(out);
+	}
+    
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping("/update-item")
+	public ResponseEntity<ResponseOutDTO> updateItem(@RequestBody Map<String, String> map){
+		logger.info("ProductRegistryController |  updateItem method invoked");
+		logger.debug("data:: "+ map);
+		ResponseOutDTO out = new ResponseOutDTO();
+		int itemId = Integer.valueOf(map.get("item_id"));
+		int maxQty =  Integer.valueOf(map.get("max_qty"));
+		float price =  Float.valueOf(map.get("price"));
+		String delivery = map.get("delivery");
+		String weight = map.get("weight");
+		String name = map.get("name");
+		out = productRegistryService.updateItemService(name, itemId, price, maxQty, delivery, weight);
+		return ConfigMethods.resourseUtils(out);
+	}
+    
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/temp")
+	public String temp(){
+    	ResponseOutDTO out = new ResponseOutDTO();
+		logger.info("ProductRegistryController |  t method invoked");
+		return "success";
 	}
     
 }

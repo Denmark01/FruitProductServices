@@ -1,0 +1,14 @@
+<div class="container marginHeader">
+  <form>
+    <h2>Please provide feedback</h2>
+    <p>This will enable us to improve....</p>
+    <label for="name">Your Name</label>
+    <input type="text" #name  placeholder="Your name..">
+
+    <label for="subject">Subject</label>
+    <textarea id="subject" #subject placeholder="Write something.." style="height:150px"></textarea>
+
+    <button class="btn btn-success" (click)="feedbackSubmit(name.value, subject.value)">Submit</button>
+
+  </form>
+</div>

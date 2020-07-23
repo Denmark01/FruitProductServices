@@ -1,0 +1,20 @@
+.box {
+    border: 1px solid;
+    padding: 27px;
+    box-shadow: 4px 3px #948787;
+    margin: auto;
+    max-height: 500px;
+}
+
+.container {
+    margin-top:6%;
+}
+
+select {
+    margin-left: 10px;
+    height: 30px;
+}
+
+.mt-75 {
+    margin-top:75px
+}

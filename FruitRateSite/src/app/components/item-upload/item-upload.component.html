@@ -1,0 +1,58 @@
+<div class="container mt-75">
+  <div class="box col-lg-5 col-md-6 col-sm-10">
+    <!-- <div class="box"> -->
+    <form [formGroup]="profileForm" class="form-horizontal">
+      <b></b>
+      <div class="form-group">
+        <label class="control-label" for="itemName1">Item name</label>
+        <input type="text" class="form-control" formControlName="itemName" id="itemName1" aria-describedby="emailHelp"
+          placeholder="Enter Item name" required>
+      </div>
+      <div class="form-group">
+        <label for="maxQty">Quantity Max(Capacity)</label>
+        <input type="number" class="form-control" id="maxQty1" formControlName="maxQty" placeholder="Max quantity"
+          required>
+      </div>
+      <div class="form-group">
+        <label for="price1">Price per unit</label>
+        <input type="number" class="form-control" id="price1" formControlName="price" placeholder="Enter amount in Rs"
+          required>
+      </div>
+      <div class="form-group">
+        <span class="mr-5">
+          <label for="unit">Unit</label>
+          <select id="category" formControlName="unit">
+            <option *ngFor="let u of unit" [ngValue]="u">{{u}}</option>
+          </select>
+        </span>
+        <span>
+          <label for="category">Category</label>
+          <select id="category" formControlName="itemCatgry">
+            <option *ngFor="let c of category" [ngValue]="c">{{c}}</option>
+          </select>
+        </span>
+      </div>
+      <!-- <div class="form-group">
+        <label for="unit1">Unit</label>
+        <input type="text" class="form-control" id="unit1" formControlName="unit" placeholder="Enter unit, KG, Gms, Pkt" [maxlength]="10" required>
+      </div> -->
+      <!-- <div class="form-group">
+        <label for="category">Category</label>
+        <select id="category" formControlName="itemCatgry"> 
+          <option *ngFor="let c of category" [ngValue]="c">{{c}}</option>
+          
+        </select>
+      </div> -->
+      <div class="form-group">
+        <input type="file" name="files" (change)="upload($event.target.files)" required>
+        <span *ngIf="percentDone > 0">
+          Upload Percent: {{percentDone}}% <br />
+        </span>
+        <span *ngIf="uploadSuccess">
+          Upload Successful
+        </span>
+      </div>
+    </form>
+    <button type="submit" (click)="onSubmit()" class="btn btn-primary">Submit</button>
+  </div>
+</div>

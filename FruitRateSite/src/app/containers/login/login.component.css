@@ -1,0 +1,10 @@
+.box {
+    border: 1px solid;
+    padding: 27px;
+    box-shadow: 4px 3px #948787;
+    margin: auto;
+}
+
+.container {
+    margin-top: 100px;
+}

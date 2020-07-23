@@ -1,0 +1,15 @@
+export const GET_FRUIT_LIST = 'GET_FRUIT_LIST';
+export const INCREMENT = 'INCREMENT';
+export const DECREMENT = 'DECREMENT';
+export const DELETE_CART = 'DELETE_CART';
+// export const UPDATE_QTY = 'UPDATE_QTY';
+export const START_LOADER = 'START_LOADER';
+export const LOGOUT = 'LOGOUT';
+export const NOTIFICATION = 'NOTIFICATION';
+export const SAVE_CART = 'SAVE_CART';
+export const SELECT_ITEM = 'SELECT_ITEM';
+export const NOTIFICATION_DISAPPEAR = 'NOTIFICATION_DISAPPEAR';
+export const UPDATE_CART_ITEM = 'UPDATE_CART_ITEM';
+export const EMPTY_ALL = 'EMPTY_ALL';
+export const CART_LIST = 'CART_LIST';
+export const DETECT_CART_CHANGE = 'DETECT_CART_CHANGE';

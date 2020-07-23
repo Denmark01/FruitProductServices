@@ -1,4 +1,4 @@
-package com.fruit.product.config;
+ package com.fruit.product.config;
 
 
 
@@ -55,7 +55,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     @Override
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     protected void configure(HttpSecurity http) throws Exception {
 
 //        http.csrf().disable();
@@ -66,8 +65,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .formLogin().permitAll();
         
         http.csrf().disable()
-//		.authorizeRequests().antMatchers("/authenticate", "/validate-token", "/sign-up", "/feedback").permitAll().
-		.authorizeRequests().antMatchers("/authenticate", "/getAll", "/get-profile", "/get-cart", "/add-to-cart").permitAll().
+		.authorizeRequests().antMatchers("/authenticate", "/validate-token", "/sign-up", "/feedback", "/getAll").permitAll().
+//		.authorizeRequests().antMatchers("/authenticate", "/getAll","/sign-up", "/get-profile", "/get-cart", "/add-to-cart", "/temp", "/update-item", "/delete-item").permitAll().
 				anyRequest().authenticated().and().
 				exceptionHandling().and().sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

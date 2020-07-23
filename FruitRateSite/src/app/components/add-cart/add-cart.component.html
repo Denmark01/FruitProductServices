@@ -1,0 +1,33 @@
+<div class="container-fluid table-responsive mt-63">
+  <table class="table table-striped">
+    <thead>
+      <th>S.no</th>
+      <th>Item Name</th>
+      <th>Quantity</th>
+      <th>Price</th>
+      <th>Weight</th>
+    </thead>
+    <tbody *ngFor="let item of cart; let i = index">
+      <td>{{i+1}}</td>
+      <td>{{item.name}}</td>
+      <td>
+        <i class="fa fa-minus-circle" aria-hidden="true" (click)="decrementQty(item.item_id)"></i>
+        <input type="text" [(ngModel)]="item.qty" class="textBox" />
+      <i class="fa fa-plus-circle" aria-hidden="true" (click)="incrementQty(item.item_id)"></i>
+      </td>
+      <td>{{item.price}}</td>
+      <td>{{item.weight}}</td>
+      <td><span (click)="delete(i)"><i class="fa fa-times" aria-hidden="true"></i></span></td>
+    </tbody>
+  </table>
+  
+  <div>
+    <span *ngIf="cart.length === 0" class="noItemCart">No Item added in the Cart</span>
+    <div class="displayInLine">
+      <button (click)="checkout(cart)" [ngClass]="cart.length > 0?'btn btn-primary':'btn btn-primary disabled'">Checkout</button>
+      <button (click)="save(cart)" [ngClass]="cart.length > 0?'btn btn-primary':'btn btn-primary disabled'">Save Cart</button>
+    </div>
+    
+  </div>
+ 
+</div>

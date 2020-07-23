@@ -10,12 +10,21 @@ import { START_LOADER } from '../components/items-fruit/item-fruit.action';
   providedIn: 'root'
 })
 export class AppServiceService {
+  public userId: string;
+  public unique_id: string;
 constructor(private http: HttpClient,
   private app: DataShareService,
   private ngRedux: NgRedux<IItemFruitState>) {
+
+    this. ngRedux.subscribe(() => {
+      const store: any = this.ngRedux.getState();
+      this.userId = store.login.username;
+      this.unique_id = store.login.userId;
+    });
 }
 
-public userId: string = localStorage.getItem('userId');
+// public userId: string = localStorage.getItem('userId');
+
 
   getItemList() {
     const url = environment.apiUrl + config.api.getItems;
@@ -45,7 +54,7 @@ public userId: string = localStorage.getItem('userId');
   }
 
   login(user, pass) {
-    const data = {username: user, password: pass, userId: this.userId};
+    const data = {username: user, password: pass};
     const url = environment.apiUrl + config.api.auth;
     const response: any = this.http.post(url, data);
     return response;
@@ -59,9 +68,9 @@ public userId: string = localStorage.getItem('userId');
   }
 
   addToCart(payload) {
-    const data = {addCartList: payload, userId: this.userId};
+    // const data = {addCartList: payload, userId: this.userId};
     const url = environment.apiUrl + config.api.addToCart;
-    const response: any = this.http.post(url, data);
+    const response: any = this.http.post(url, payload);
     return response;
   }
 

@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <span class=textBackRed>{{noChangeMsg}}</span>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div>
+    <form>
+      <b></b>
+      <div class="form-group">
+        <label for="name">Name</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="text" #name class="form-control" id="name" [value]="item.name">
+      </div>
+      <div class="form-group">
+        <label for="delivery">Delivery</label>&nbsp;&nbsp;
+        <input type="text" #delivery class="form-control" id="delivery" [value]="item.delivery">
+      </div>
+      <div class="form-group">
+        <label for="Price">Price</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="text" #price class="form-control" id="price" [value]="item.price">
+      </div>
+      <div class="form-group">
+        <label for="weight">Weight CGI</label>
+        <input type="text" #weight class="form-control" id="weight" [value]="item.weight">
+      </div>
+      <div class="form-group">
+        <label for="maxQty">Max Qty</label>&nbsp;&nbsp;&nbsp;
+        <input type="text" #maxQty class="form-control" id="maxQty" [value]="item.max_qty">
+      </div>
+      <button (click)="delete(item.item_id)" class="btn btn-danger">Delete</button>&nbsp;&nbsp;
+      <button (click)="update(name.value, delivery.value, price.value, weight.value, maxQty.value)" class="btn btn-primary">Update Item</button>
+    </form>
+  </div>
+</div>

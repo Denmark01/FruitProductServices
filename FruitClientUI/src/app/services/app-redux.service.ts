@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AppServiceService } from './app-service.service';
 import { NgRedux } from 'ng2-redux';
 import { IItemFruitState } from '../components/items-fruit/item.fruit.reducer';
-import { START_LOADER, GET_FRUIT_LIST, NOTIFICATION, SAVE_CART, NOTIFICATION_DISAPPEAR, CART_LIST} from '../components/items-fruit/item-fruit.action';
+import { START_LOADER, GET_FRUIT_LIST, NOTIFICATION, SAVE_CART, NOTIFICATION_DISAPPEAR, CART_LIST, DETECT_CART_CHANGE} from '../components/items-fruit/item-fruit.action';
 import { Router } from '@angular/router';
 import { NgbAlertConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
@@ -109,15 +109,14 @@ export class AppReduxService {
     });
   }
 
-  addToCart(item) {
-    this.appService.addToCart(item).subscribe((data) => {
-      if (data) {
+  addToCart(item, username) {
+    this.appService.addToCart({addCartList: item, userId: username}).subscribe((data) => {
         if (data.status === 1) {
           this.notification(data.message, alertType.success);
+          this.ngRedux.dispatch({type: DETECT_CART_CHANGE, change_in_item: false});
         } else {
           this.notification(data.message, alertType.warning);
         }
-      }
     }, error => {
       this.notification(alertMsg.internalError, alertType.danger);
     });

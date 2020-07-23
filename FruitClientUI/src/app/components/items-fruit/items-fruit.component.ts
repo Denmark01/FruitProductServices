@@ -8,7 +8,7 @@ import { AppServiceService } from 'src/app/services/app-service.service';
 import {alertType, alertMsg} from '../../utils/config';
 import { NgRedux, select } from 'ng2-redux';
 import { IItemFruitState } from './item.fruit.reducer';
-import { INCREMENT, NOTIFICATION, UPDATE_CART_ITEM, DECREMENT } from './item-fruit.action';
+import { INCREMENT, NOTIFICATION, UPDATE_CART_ITEM, DECREMENT, DETECT_CART_CHANGE } from './item-fruit.action';
 import { AppReduxService } from 'src/app/services/app-redux.service';
 @Component({
   selector: 'app-items-fruit',
@@ -100,10 +100,10 @@ export class ItemsFruitComponent implements OnInit {
       } else {
         const qtyChange =  this.added_cart.filter(e => e.qty !== item.qty && e.item_id === item.item_id);
         if (qtyChange.length > 0 &&  this.added_cart.length > 0) {
-          this.ngRedux.dispatch({type: UPDATE_CART_ITEM, action: 'UPDATE', item: item});
+          this.ngRedux.dispatch({type: UPDATE_CART_ITEM, action: 'UPDATE', item: item, change_in_item: true});
           this.reduxService.notification(alertMsg.cartUpadted, alertType.success);
         } else {
-          this.ngRedux.dispatch({type: UPDATE_CART_ITEM, action: 'ADD', item: item});
+          this.ngRedux.dispatch({type: UPDATE_CART_ITEM, action: 'ADD', item: item, change_in_item: true});
           this.reduxService.notification(alertMsg.itemAdded, alertType.success);
         }
       }

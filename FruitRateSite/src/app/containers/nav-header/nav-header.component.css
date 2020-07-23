@@ -1,0 +1,40 @@
+
+.img_logo{
+    width: 151px;
+    height: 37px;
+}
+    
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+  }
+  
+  .alert ::ng-deep {
+    margin-left: 30%;
+    margin-right: 30%;
+    min-width: 65%;
+    max-width: 100%;
+}
+
+@media screen and (max-width: 350px) {
+  .img_logo{
+    width: 90px;
+}
+}
+
+.cart {
+  color: burlywood;
+}
+
+.cart :active {
+  color: white;
+}
+
+.position {
+  z-index: 1;
+    position: relative;
+    top: 70px;
+}
