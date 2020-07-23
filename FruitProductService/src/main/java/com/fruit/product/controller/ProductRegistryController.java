@@ -112,7 +112,7 @@ public class ProductRegistryController {
 		return ConfigMethods.resourseUtils(response);
 	}
     
-	@CrossOrigin(origins = "*", allowedHeaders = "*")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
 	  @RequestMapping(value = "/getAll", method = RequestMethod.GET)
 	public ResponseEntity<ResponseOutDTO> getAllProducts() {
     	logger.info("ProductRegistryController |  getAllProducts method invoked");
@@ -121,7 +121,7 @@ public class ProductRegistryController {
 		return ConfigMethods.resourseUtils(response);
 	}
 	
-	@CrossOrigin(origins = "*", allowedHeaders = "*")
+	
 	@GetMapping("/validate-token")
 	public ResponseEntity validateToken(@RequestHeader("Authorization") String token) {
 		logger.info("ProductRegistryController |  validateToken method invoked");
@@ -138,7 +138,7 @@ public class ProductRegistryController {
 	 * product=productRegistryService.createProduct(entity); return new
 	 * ResponseEntity<Product>(product,new HttpHeaders(),HttpStatus.CREATED); }
 	 */
-	@CrossOrigin(origins = "*", allowedHeaders = "*")
+	
 	@PostMapping("/add-to-cart")
 	public ResponseEntity<ResponseOutDTO> addToCart(@RequestBody AddCartMainDTO entity){
 		logger.info("ProductRegistryController |  createProduct method invoked");
@@ -159,7 +159,7 @@ public class ProductRegistryController {
 		return ConfigMethods.resourseUtils(response);
 	}
     
-	@CrossOrigin(origins = "*", allowedHeaders = "*")
+	
     @RequestMapping("/uploadItem")
     public ResponseEntity<ResponseOutDTO> uploadItem(@RequestParam("files")MultipartFile[] files, @RequestParam Map<String, String> fdata) {
     	logger.info("ProductRegistryController |  uploadItem method invoked");
@@ -171,7 +171,7 @@ public class ProductRegistryController {
     }
     
     
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    
     @PostMapping("/sign-up")
 	public ResponseEntity<ResponseOutDTO> signUp(@RequestBody Map<String, String> map){
     	logger.info("ProductRegistryController |  signUp method invoked");
@@ -194,7 +194,7 @@ public class ProductRegistryController {
 		out = productRegistryService.submitFeedack(feedback);
 		return ConfigMethods.resourseUtils(out);
 	}
-    
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/get-profile")
 	public ResponseEntity<ResponseOutDTO> getProfile(@RequestParam("username")String username){
 		logger.info("ProductRegistryController |  getProfile method invoked");

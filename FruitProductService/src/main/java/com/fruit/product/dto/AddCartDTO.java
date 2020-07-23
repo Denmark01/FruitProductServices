@@ -51,6 +51,18 @@ public class AddCartDTO {
 	
 	@Column(name="cart_time")
 	private String cartTime;
+	
+	@JsonProperty("max_qty")
+	@Column(name="max_qty")
+	private int maxQty;
+
+	public int getMaxQty() {
+		return maxQty;
+	}
+
+	public void setMaxQty(int maxQty) {
+		this.maxQty = maxQty;
+	}
 
 	public int getCart_id() {
 		return cart_id;
@@ -141,7 +153,7 @@ public class AddCartDTO {
 	}
 
 	public AddCartDTO(int cart_id, int cstmerId, @NotNull int itemId, int itemQty, String category, String cstmerName,
-			String itemName, float price, String unit) {
+			String itemName, float price, String unit, int maxQty) {
 		super();
 		this.cart_id = cart_id;
 		this.cstmerId = cstmerId;
@@ -152,6 +164,7 @@ public class AddCartDTO {
 		this.itemName = itemName;
 		this.price = price;
 		this.unit = unit;
+		this.maxQty = maxQty;
 	}
 	public AddCartDTO() {}
 	

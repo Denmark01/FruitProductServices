@@ -16,5 +16,5 @@ public class QueryConstants {
 	
 	public static final String deleteCartByUserId  = "delete from add_cart where customer_id = ?";
 	
-	public static final String insertCart = "insert into add_cart (category, customer_id, customer_name, item_id, item_name, item_qty, item_price, item_unit, cart_time) values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	public static final String insertCart = "insert into add_cart (category, customer_id, customer_name, item_id, item_name, item_qty, item_price, item_unit, cart_time, max_qty) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 }

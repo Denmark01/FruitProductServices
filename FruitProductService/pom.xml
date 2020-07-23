@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.fruit.product</groupId>
 	<artifactId>FruitProductService</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>war</packaging>
 	<name>FruitProductService</name>
 	<description>product api </description>

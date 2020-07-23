@@ -83,7 +83,8 @@ public class ProductRegistryService {
 		List<AddCartDTO> list = (List<AddCartDTO>) jdbcTemplate.query(query, new Object[] {userId}, (rs, rowNum) -> 
 		new AddCartDTO (
 				rs.getInt("cart_id"), rs.getInt("customer_id"), rs.getInt("item_id"), rs.getInt("item_qty"),
-				rs.getString("category"),rs.getString("customer_name"),rs.getString("item_name"),rs.getFloat("item_price"), rs.getString("item_unit")
+				rs.getString("category"),rs.getString("customer_name"),rs.getString("item_name"),
+				rs.getFloat("item_price"), rs.getString("item_unit"), rs.getInt("max_qty")
 				));
 //		product	=(List<Product>) productRepository.findAll();
 		outDto.setCart(list);
@@ -229,6 +230,7 @@ public class ProductRegistryService {
 					ps.setFloat(7, addCart.get(i).getPrice());
 					ps.setString(8, addCart.get(i).getUnit());
 					ps.setString(9, dateAndTime);
+					ps.setInt(10, addCart.get(i).getMaxQty());
 				}
 
 				public int getBatchSize() {
