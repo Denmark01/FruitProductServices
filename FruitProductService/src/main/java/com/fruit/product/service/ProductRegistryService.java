@@ -274,7 +274,7 @@ public class ProductRegistryService {
     				
     				product.setCreatedDT(current.format(format));   				
     				product.setName(fdata.get("itemName"));
-    				product.setImage("assets/image/"+file.getOriginalFilename());
+    				product.setImage("/images/"+file.getOriginalFilename());
     				product.setMax_qty(Integer.valueOf(fdata.get("maxQty")));
     				product.setPrice(Float.valueOf(fdata.get("price")));
     				product.setWeight(fdata.get("unit"));
