@@ -4,7 +4,7 @@ public class QueryConstants {
 	
 	public static final String userRoleInsert = "insert into user_role (user_id, role_id) values(?, ?)";
 	
-	public static final String userRecordInsert = "insert into user (active, email, name, password, mob_no, gender) values(?, ?, ?, ?, ?, ?)";
+	public static final String userRecordInsert = "insert into user (active, email, name, password, mob_no, gender, shop_name) values(?, ?, ?, ?, ?, ?, ?)";
 	
 	public static final String userId = "select user_id from user where name = ?";
 	

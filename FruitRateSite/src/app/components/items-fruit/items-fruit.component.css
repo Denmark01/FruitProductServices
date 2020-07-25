@@ -83,3 +83,15 @@ top: 65px;
 .font-bold-600 {
     font-weight: 600
 }
+
+kbd {
+    background-color:darkcyan !important;
+}
+
+.shop_name {
+    transform: rotate(270deg);
+        position: absolute;  
+        top: 112px;
+        left: -88px;
+        width: 199px;
+}

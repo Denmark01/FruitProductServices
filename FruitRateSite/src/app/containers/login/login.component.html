@@ -30,7 +30,7 @@
 
 <div class="container" *ngIf="!mode">
   <app-loader *ngIf="isSignInLoading"></app-loader>
-  <div class="box col-lg-5 col-md-6 col-sm-10" *ngIf="!isSignInLoading">
+  <div class="box col-lg-5 col-md-10 col-sm-10 pb-2 mb-2 p-3 signup" *ngIf="!isSignInLoading">
     <form>
       <div class="form-group">
         <label for="name1">Your Full Name</label>
@@ -48,6 +48,18 @@
         <label for="exampleInputPassword1">Password</label>
         <input type="password" #pass class="form-control" id="exampleInputPassword1" placeholder="choose password" >
       </div>
+      <div class="form-check"  *ngIf="!isShopActive">
+        <input type="checkbox" class="form-check-input" id="shopcheckbox" (click)="enableShop(true)" [checked]="isShopActive">
+        <label class="form-check-label" for="shopcheckbox">Are you a shopkeeper</label>
+      </div>
+      <div class="form-check"  *ngIf="isShopActive">
+        <input type="checkbox" class="form-check-input" id="shopcheckbox" (click)="enableShop(false)" [checked]="isShopActive">
+        <label class="form-check-label" for="shopcheckbox">Are you a shopkeeper</label>
+      </div>
+       <div class="form-group" *ngIf="isShopActive">
+        <label for="shopname">Shop Name</label>
+        <input type="textbox" [(ngModel)]="shopName" [ngModelOptions]="{standalone: true}" class="form-control" id="shopname" placeholder="your shop name">
+      </div>
       <div class="form-check-inline">
         <label class="form-check-label">
           <input type="radio" class="form-check-input" name="optradio" (change)="gender('MALE')">Male
@@ -63,11 +75,8 @@
           <input type="radio" class="form-check-input" name="optradio" (change)="gender('OTHER')" >Other
         </label>
       </div>
-      <!-- <div class="form-group">
-        <label for="address">Email address</label>
-        <input type="textbox" #email class="form-control" id="address" placeholder="your address">
-      </div>
-      <div class="form-group">
+
+    <!--  <div class="form-group">
         <label for="hno">House No & Building</label>
         <input type="text" #pin class="form-control" id="hno" placeholder="H.no & Building">
       </div>
@@ -79,7 +88,7 @@
     </form>
 
     <div>
-      <button class="btn btn-link" routerLink="/login">Hit to login page</button>
+      <button class="btn btn-link" routerLink="/login">GO to login page</button>
     </div>
 
   </div>

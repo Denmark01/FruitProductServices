@@ -68,7 +68,6 @@ public class ProductRegistryService {
 	public ResponseOutDTO getAll() {
 		ProductRespDTO outDto = new ProductRespDTO();
 		List<Product> product=new ArrayList<>();
-//		product	=(List<Product>) productRepository.findAll();
 		outDto.setProduct_list((List<Product>)productRepository.findAll());
 		outDto.setStatus_obj((new ResponseDTO("success", true)));
 		logger.info("ProductRegistryService |  getAllProducts method exit");
@@ -86,7 +85,6 @@ public class ProductRegistryService {
 				rs.getString("category"),rs.getString("customer_name"),rs.getString("item_name"),
 				rs.getFloat("item_price"), rs.getString("item_unit"), rs.getInt("max_qty")
 				));
-//		product	=(List<Product>) productRepository.findAll();
 		outDto.setCart(list);
 		outDto.setStatus_obj((new ResponseDTO("success", true)));
 		logger.info("ProductRegistryService |  getAddedCart method exit");
@@ -112,10 +110,15 @@ public class ProductRegistryService {
 		return product;
 	}
 	
-	public ResponseOutDTO signUp(String email, String mobno, String name, String pass, String gender) {
+	public ResponseOutDTO signUp(String email, String mobno, String name, String pass, String gender, String shopName) {
 		logger.info("ProductRegistryService |  signUp method invoked");
+		int roleId = 0;
+		if (shopName != null) {
+			 roleId = Integer.valueOf(myProps.getVariable()) + 1;
+		} else {
+			 roleId = Integer.valueOf(myProps.getVariable());
+		}
 		
-		int roleId = Integer.valueOf(myProps.getVariable());
 		ResponseStatusDTO responseDto = new ResponseStatusDTO();
 		String userRecordQuery = QueryConstants.userRecordInsert;
 		try {
@@ -129,7 +132,7 @@ public class ProductRegistryService {
 				return responseDto;
 			}
 			
-		int userRecordInsertVal = jdbcTemplate.update(userRecordQuery,new Object[] {1, email, name, pass, mobno, gender});
+		int userRecordInsertVal = jdbcTemplate.update(userRecordQuery,new Object[] {1, email, name, pass, mobno, gender, shopName});
 		logger.info("query "+ userRecordQuery);
 		
 		if (userRecordInsertVal > 0) {
@@ -249,6 +252,44 @@ public class ProductRegistryService {
 
 			});
     }
+
+	public ResponseOutDTO uploadImageService(MultipartFile[] files) {
+		logger.info("ProductRegistryService |  uploadImageService method invoked");
+		StringBuilder fileNames = new StringBuilder();
+		ResponseStatusDTO outputData = new ResponseStatusDTO();
+		
+		for(MultipartFile file: files) {
+			Path fileNameAndPath = Paths.get(myProps.getUploadPath(), file.getOriginalFilename());
+    		logger.info("File size in mb "+ file.getSize()/1024+" kb");
+    		logger.info("File type " + file.getContentType());
+    		logger.info("File type ori " + file.getResource());
+        	logger.info("fileNameAndPath "+ fileNameAndPath);
+    		fileNames.append(file.getOriginalFilename());
+    		
+    		try {
+    			if (file.getContentType().equals("image/jpeg") || file.getContentType().equals("image/png")) {
+    				Files.write(fileNameAndPath, file.getBytes());
+    			} else {
+    				outputData.setStatus(0);
+    				outputData.setMessage("type not matched");
+    			}
+    			outputData.setStatus_obj(new ResponseDTO("Success", true));
+    			
+			}  catch(FileNotFoundException e) {
+				logger.error("ProductRegistryController | upload ", e);
+				outputData.setStatus_obj(new ResponseDTO("Failure", false));
+				logger.info("ProductRegistryService |  uploadImageService | FileNotFoundException",e);
+			} catch (IOException e) {
+				logger.error("ProductRegistryController | upload ", e);
+				outputData.setStatus_obj(new ResponseDTO("Failure", false));
+				logger.info("ProductRegistryService |  uploadImageService | IOException",e);
+			} finally {
+				logger.info("ProductRegistryService |  uploadImageService method invoked");
+			}
+    	}
+		
+		return outputData;
+	}
 	
 	public ResponseOutDTO uploadService(Map<String, String> fdata, MultipartFile[] files) {
 		logger.info("ProductRegistryService |  uploadService method invoked");

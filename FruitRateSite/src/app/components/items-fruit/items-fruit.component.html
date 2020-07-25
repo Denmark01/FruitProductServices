@@ -13,10 +13,10 @@
     </div>
   <app-search-bar (messageEvent)="receiveMessage($event)"></app-search-bar>
   <app-loader *ngIf="isLoading"></app-loader>
-  <!-- <p>{{counter | async}}<button (click)="increment()">Increment</button></p> -->
   <div class="row mar_bottom"  *ngIf="!isLoading">
     <div class="image col-lg-2 col-md-3 col-sm-4 col-5 mw-182px"
       *ngFor="let item of product_list | grdFilter: {name: searchText, delivery:searchText,  price: searchText, category: searchText};let i = index;">
+      
       <ul>
         <li>
           <img [src]="item.image" />
@@ -36,6 +36,7 @@
         <li *ngIf="isLogged">
           <button class="btn btn-primary btn-sm-4" (click)="addToCart(item, 'notCss')">{{item.qty > 0?'Click to add': 'Add to Cart'}}</button>
         </li>
+        <span class="shop_name" *ngIf="item.shop_name"><kbd>{{item.shop_name}}</kbd></span>
       </ul>
     </div>
     </div>

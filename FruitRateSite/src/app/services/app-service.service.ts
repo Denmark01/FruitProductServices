@@ -53,6 +53,13 @@ constructor(private http: HttpClient,
     return response;
   }
 
+  uploadMultipleImage(formData, val) {
+    const url = environment.apiUrl + config.api.uploadImage;
+    console.log(url);
+    const response: any = this.http.post(url, formData, val);
+    return response;
+  }
+
   login(user, pass) {
     const data = {username: user, password: pass};
     const url = environment.apiUrl + config.api.auth;

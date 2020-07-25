@@ -13,7 +13,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,8 +36,6 @@ import com.fruit.product.service.CustomUserDetailsService;
 import com.fruit.product.service.ProductRegistryService;
 import com.fruit.product.util.JwtUtil;
 
-//@RequestMapping("/FruitProductService")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class ProductRegistryController {
 	
@@ -46,11 +43,6 @@ public class ProductRegistryController {
 	MyProperty myProps;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProductRegistryController.class);
-//	public static String uploadDirectory = System.getProperty("user.dir")+"/uploads";
-//	public static String uploadDirectory = "C:/Angular 4/FruitWeb/FinalCodeCommit/src/assets/image";
-//	public static String uploadDirectory = "C:/apache-tomcat-9.0.30-windows-x64/apache-tomcat-9.0.30/webapps/FruitUiClient/assets/image";
-//	public static String uploadDirectory = "/opt/tomcat/apache-tomcat-9.0.30/webapps/ConfigServer/assets/image";
-//	public static String uploadDirectory = myProps.getUploadPath();
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -67,7 +59,7 @@ public class ProductRegistryController {
     private ProductRegistryService productRegistryService;
 	 
 
-	@CrossOrigin(origins = "*", allowedHeaders = "*")
+	
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
 	public ResponseEntity<ResponseOutDTO> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
 		logger.info("ProductRegistryController |  createAuthenticationToken method invoked");
@@ -99,12 +91,11 @@ public class ProductRegistryController {
 		return ConfigMethods.resourseUtils(response);
 	}
     
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    
 	  @RequestMapping(value = "/getAll", method = RequestMethod.GET)
 	public ResponseEntity<ResponseOutDTO> getAllProducts() {
     	logger.info("ProductRegistryController |  getAllProducts method invoked");
     	ResponseOutDTO response = productRegistryService.getAll();
-//		return new ResponseEntity<ResponseOutDTO>(item,new HttpHeaders(),HttpStatus.OK);
 		return ConfigMethods.resourseUtils(response);
 	}
 	
@@ -117,15 +108,6 @@ public class ProductRegistryController {
     	return ConfigMethods.resourseUtils(response);
 	}
 	
-	/*
-	 * @PostMapping("/save-item") public ResponseEntity<Product>
-	 * createProduct(@RequestBody Product entity){
-	 * logger.info("ProductRegistryController |  createProduct method invoked");
-	 * logger.debug("data :: "+ entity); Product product=new Product();
-	 * product=productRegistryService.createProduct(entity); return new
-	 * ResponseEntity<Product>(product,new HttpHeaders(),HttpStatus.CREATED); }
-	 */
-	
 	@PostMapping("/add-to-cart")
 	public ResponseEntity<ResponseOutDTO> addToCart(@RequestBody AddCartMainDTO entity){
 		logger.info("ProductRegistryController |  createProduct method invoked");
@@ -137,7 +119,7 @@ public class ProductRegistryController {
 	return ConfigMethods.resourseUtils(outputData);
 	}
 	
-	@CrossOrigin(origins = "*", allowedHeaders = "*")
+	
 	@GetMapping("/get-cart")
 	public ResponseEntity<ResponseOutDTO> getAddedCart(@RequestParam("userid")int userId) {
     	logger.info("ProductRegistryController |  getAddedCart method invoked");
@@ -156,6 +138,16 @@ public class ProductRegistryController {
     	
     	return ConfigMethods.resourseUtils(outputData);
     }
+
+	@RequestMapping("/uploadImage")
+    public ResponseEntity<ResponseOutDTO> uploadImage(@RequestParam("files")MultipartFile[] files, @RequestParam Map<String, String> fdata) {
+    	logger.info("ProductRegistryController |  uploadImage method invoked");
+    	logger.debug("Request param data "+ fdata);
+    	
+    	ResponseOutDTO outputData = productRegistryService.uploadImageService(files);
+    	
+    	return ConfigMethods.resourseUtils(outputData);
+    }
     
     
     
@@ -170,7 +162,8 @@ public class ProductRegistryController {
     	String email = map.get("email");
     	String mobno = map.get("mob_no");
     	String gender = map.get("gender");
-    	outputData = productRegistryService.signUp(email, mobno, name, pass, gender);
+    	String shopName = map.get("shop_name");
+    	outputData = productRegistryService.signUp(email, mobno, name, pass, gender, shopName);
     	return ConfigMethods.resourseUtils(outputData);
 	}
     
@@ -182,7 +175,7 @@ public class ProductRegistryController {
 		out = productRegistryService.submitFeedack(feedback);
 		return ConfigMethods.resourseUtils(out);
 	}
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    
     @GetMapping("/get-profile")
 	public ResponseEntity<ResponseOutDTO> getProfile(@RequestParam("username")String username){
 		logger.info("ProductRegistryController |  getProfile method invoked");
@@ -193,7 +186,7 @@ public class ProductRegistryController {
 		return ConfigMethods.resourseUtils(response);
 	}
     
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    
     @GetMapping("/delete-item")
 	public ResponseEntity<ResponseOutDTO> deleteItem(@RequestParam("item_id")int itemId){
 		logger.info("ProductRegistryController |  deleteItem method invoked");
@@ -203,7 +196,7 @@ public class ProductRegistryController {
 		return ConfigMethods.resourseUtils(out);
 	}
     
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    
     @PostMapping("/update-item")
 	public ResponseEntity<ResponseOutDTO> updateItem(@RequestBody Map<String, String> map){
 		logger.info("ProductRegistryController |  updateItem method invoked");
@@ -219,7 +212,7 @@ public class ProductRegistryController {
 		return ConfigMethods.resourseUtils(out);
 	}
     
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    
     @GetMapping("/temp")
 	public String temp(){
     	ResponseOutDTO out = new ResponseOutDTO();

@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name="product_details")
 public class Product{
@@ -138,12 +140,28 @@ public class Product{
 	@Column(name="created_dt")
 	private String createdDT;
 	
+	@Column(name="shop_name")
+	@JsonProperty("shop_name")
+	private String shopName;
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+
 	@Override
 	public String toString() {
 		return "Product [item_id=" + item_id + ", name=" + name + ", image=" + image + ", delivery=" + delivery
-				+ ", price=" + price + ", max_qty=" + max_qty + ", weight=" + weight + ", category=" + category + "]";
+				+ ", price=" + price + ", max_qty=" + max_qty + ", weight=" + weight + ", category=" + category
+				+ ", createdDT=" + createdDT + ", shopName=" + shopName + "]";
 	}
 	
+	
+	
+
 	
 	
 	

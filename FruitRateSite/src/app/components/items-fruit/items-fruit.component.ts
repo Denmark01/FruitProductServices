@@ -61,14 +61,14 @@ export class ItemsFruitComponent implements OnInit {
 
   ngOnInit() {
 
-    // this.reduxService.getItemListRedux();
+    this.reduxService.getItemListRedux();
 
     this.ngRedux.subscribe(() => {
       const store: any = this.ngRedux.getState();
       this.isLoading = store.itemFruit.item_loader;
       this.isLoggedIn = store.itemFruit.isLoggedIn;
       this.searchText = store.itemFruit.fruit_vege;
-      // this.product_list = store.itemFruit.item_list;
+      this.product_list = store.itemFruit.item_list;
       this.added_cart = store.itemFruit.cart_item;
       this.isLogged = store.login.isLogin;
       this.username = store.login.username;
@@ -81,7 +81,7 @@ export class ItemsFruitComponent implements OnInit {
     this.reduxService.getProfileRedux(decoded.sub);
     }
 
-    this.product_list = [
+    this.product_list1 = [
       {image : 'Denmark.jpg',
       name : 'Onion / Pyaaz', delivery: 'Delivery within 1 hour',
       price : '30', weight : 'KG', qty: 0, item_id: 101},

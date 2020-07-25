@@ -10,7 +10,8 @@ export const config = {
         callApi: 'temp',
         updateItem : 'update-item',
         deleteItem: 'delete-item',
-        signUp: 'sign-up'
+        signUp: 'sign-up',
+        uploadImage: 'uploadImage',
     }
 
 };
@@ -37,5 +38,8 @@ export const alertMsg ={
     noCartChange: 'No change on cart',
     uploadSuccess: 'Item uploaded successfully',
     editNoChangeItem: 'No item where updated',
-    fillDetails: 'Please fill all details'
+    fillDetails: 'Please fill all details',
+    mobno: 'Please enter 10 digit mob no',
+    shopName: 'Please fill shop name',
+    max25Char: 'Shop Name: Character limit less than 25 Character'
 }

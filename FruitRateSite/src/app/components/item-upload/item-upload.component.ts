@@ -15,6 +15,7 @@ export class ItemUploadComponent implements OnInit {
   uploadSuccess: boolean;
   category: String[];
   unit: String[];
+  onlyImage = true;
   profileForm = new FormGroup({
     itemName: new FormControl(''),
     maxQty: new FormControl(''),
@@ -60,13 +61,39 @@ submit() {
               this.percentDone = Math.round(100 * event.loaded / event.total);
             } else if (event instanceof HttpResponse) {
               this.uploadSuccess = true;
+            }
+            if (event.status === 200) {
               this.reduxService.notification(alertMsg.uploadSuccess, alertType.success);
             }
           }
+        }, error => {
+          this.reduxService.notification(alertMsg.internalError, alertType.danger);
         });
     } else {
       this.reduxService.notification(alertMsg.fillDetails, alertType.danger);
     }
+  }
+
+  showImage(val) {
+    this.onlyImage = val;
+  }
+
+  onlyImageSubmit() {
+    this.appService.uploadMultipleImage(this.formData, { reportProgress: true, observe: 'events' })
+        .subscribe(event => {
+          if (event) {
+            if (event.type === HttpEventType.UploadProgress) {
+              this.percentDone = Math.round(100 * event.loaded / event.total);
+            } else if (event instanceof HttpResponse) {
+              this.uploadSuccess = true;
+            }
+            if (event.status === 200) {
+              this.reduxService.notification(alertMsg.uploadSuccess, alertType.success);
+            }
+          }
+        }, error => {
+          this.reduxService.notification(alertMsg.internalError, alertType.danger);
+        });
   }
 
   upload(files: File[]) {

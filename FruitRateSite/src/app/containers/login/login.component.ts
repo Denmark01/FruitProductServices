@@ -6,7 +6,7 @@ import { AuthService } from 'src/app/auth.service';
 import { NgRedux } from 'ng2-redux';
 import { LoginState } from './login.reducer';
 import { AppReduxService } from 'src/app/services/app-redux.service';
-import { alertType } from 'src/app/utils/config';
+import { alertType, alertMsg } from 'src/app/utils/config';
 
 
 @Component({
@@ -21,8 +21,9 @@ export class LoginComponent implements OnInit {
   public logUser: string;
   public isSignInLoading: boolean;
   public isAdmin: boolean;
-  public isGuest = false;
+  public isShopActive = false;
   public gend: string;
+  public shopName = '';
 
   constructor(private http: HttpClient,
     private route: Router,
@@ -60,13 +61,24 @@ export class LoginComponent implements OnInit {
 
   signUp(name, email, mobno, pass) {
     if (name && email && mobno && pass && this.gend) {
-      if (mobno.length === 10) {
-        this.reduxService.signUp({name: name, email: email, mob_no: mobno, pass: pass, gender: this.gend});
+      console.log(this.shopName);
+      if (mobno.length !== 10) {
+        this.reduxService.notification(alertMsg.mobno, alertType.danger);
+      } else  if (this.isShopActive && this.shopName && this.shopName.length > 0) {
+        if (this.shopName.length > 25) {
+          this.reduxService.notification(alertMsg.max25Char, alertType.danger);
+          return;
+        }
+        if (this.shopName.length === 0) {
+          this.reduxService.notification(alertMsg.shopName, alertType.danger);
+          return;
+        }
+        this.reduxService.signUp({name: name, email: email, mob_no: mobno, pass: pass, gender: this.gend, shop_name: this.shopName});
       } else {
-        this.reduxService.notification('Please enter 10 digit mob no', alertType.danger);
+        this.reduxService.signUp({name: name, email: email, mob_no: mobno, pass: pass, gender: this.gend});
       }
     }  else {
-      this.reduxService.notification('Please fill all fields', alertType.danger);
+      this.reduxService.notification(alertMsg.fillDetails, alertType.danger);
     }
   }
 
@@ -79,8 +91,8 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  signInGuest() {
-    this.isGuest = true;
+  enableShop(val) {
+    this.isShopActive = val;
   }
 
   submitLogin1(pin) {

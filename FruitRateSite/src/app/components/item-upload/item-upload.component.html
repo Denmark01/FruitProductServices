@@ -1,6 +1,5 @@
 <div class="container mt-75">
-  <div class="box col-lg-5 col-md-6 col-sm-10">
-    <!-- <div class="box"> -->
+  <div class="box col-lg-5 col-md-6 col-sm-10" *ngIf="onlyImage">
     <form [formGroup]="profileForm" class="form-horizontal">
       <b></b>
       <div class="form-group">
@@ -53,6 +52,23 @@
         </span>
       </div>
     </form>
-    <button type="submit" (click)="onSubmit()" class="btn btn-primary">Submit</button>
+    <button type="submit" (click)="onSubmit()" class="btn btn-primary">Submit</button>&nbsp;&nbsp;
+    <button type="submit" (click)="showImage(false)" class="btn btn-secondary">Multiple Upload</button>
+  </div>
+
+  <div class="box col-lg-5 col-md-6 col-sm-10" *ngIf="!onlyImage">
+    <form>
+      <div class="form-group">
+        <input type="file" name="files" (change)="upload($event.target.files)" multiple>
+        <span *ngIf="percentDone > 0">
+          Upload Percent: {{percentDone}}% <br />
+        </span>
+        <span *ngIf="uploadSuccess">
+          Upload Successful
+        </span>
+      </div>
+    </form>
+    <button type="submit" (click)="onlyImageSubmit()" class="btn btn-primary">Submit</button>&nbsp;&nbsp;
+    <button type="submit" (click)="showImage(true)" class="btn btn-secondary">Back</button>
   </div>
 </div>
