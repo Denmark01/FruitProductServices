@@ -6,8 +6,6 @@ import org.springframework.http.ResponseEntity;
 
 import com.fruit.product.dto.ResponseOutDTO;
 
-import antlr.StringUtils;
-
 public class ConfigMethods {
 	
 	public static ResponseEntity<ResponseOutDTO> resourseUtils(ResponseOutDTO response) {

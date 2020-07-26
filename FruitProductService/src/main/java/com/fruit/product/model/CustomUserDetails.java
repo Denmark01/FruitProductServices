@@ -9,7 +9,12 @@ import java.util.stream.Collectors;
 
 public class CustomUserDetails extends Users implements UserDetails {
 
-    public CustomUserDetails(final Users users) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public CustomUserDetails(final Users users) {
         super(users);
     }
 

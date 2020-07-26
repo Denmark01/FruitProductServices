@@ -10,6 +10,8 @@ export interface LoginState {
     username: string;
     user_id: number;
     isLogin: boolean;
+    roleId: number;
+    shopName: string;
 }
 
 export const LOGIN_INITIAL_STATE: LoginState = {
@@ -19,7 +21,9 @@ export const LOGIN_INITIAL_STATE: LoginState = {
     login_loader: false,
     username: '',
     user_id: 0,
-    isLogin: false
+    isLogin: false,
+    roleId: 0,
+    shopName: ''
 };
 
 export function LoginSignupReducer(state: LoginState= LOGIN_INITIAL_STATE, action): LoginState {
@@ -27,7 +31,7 @@ export function LoginSignupReducer(state: LoginState= LOGIN_INITIAL_STATE, actio
 
         case SAVE_PROFILE:
             return tassign( state, {username: action.username, login_loader: false, isLogin: true,
-                user_id: action.userId, is_admin: action.roleId === 1 ? true : false});
+                user_id: action.userId, is_admin: action.roleId === 1 ? true : false, roleId: action.roleId, shopName: action.shopName});
 
         case CHK_ADMIN:
             return tassign( state, {is_admin: action.is_admin});
@@ -42,7 +46,8 @@ export function LoginSignupReducer(state: LoginState= LOGIN_INITIAL_STATE, actio
             return tassign(state, {isLogin: true, username: action.username, user_id: action.user_id, login_loader: false});
 
         case LOGOUT:
-            return tassign(state, {isLogin: false, is_admin: false, username: null, user_id: 0});
+            return tassign(state, {isLogin: false, is_admin: false, username: null, user_id: 0, roleId: 0,
+                shopName: ''});
     }
     return state;
 }

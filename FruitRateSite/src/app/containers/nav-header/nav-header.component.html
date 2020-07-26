@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg fixed-top navbar-expand-md  navbar-expand-sm navbar-dark bg-dark">
   <a class="navbar-brand" routerLink="/"><img src="assets/image/fruit_logo.jpg" class="img_logo"></a>
 
-  <a class="nav-link cart" routerLink="/cart" routerLinkActive="active" *ngIf="loggIn"
+  <a class="nav-link cart" routerLink="/cart" routerLinkActive="active" *ngIf="loggIn && roleId === 2"
         ><i class="fa fa-cart-arrow-down fa-lg" aria-hidden="true"></i><span class="badge badge-light" *ngIf="count>0">{{count}}</span></a>
 
   <button #navbarToggler id="toggleButton" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">

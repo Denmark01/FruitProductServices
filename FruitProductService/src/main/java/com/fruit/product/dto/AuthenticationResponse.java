@@ -1,20 +1,25 @@
 package com.fruit.product.dto;
 
 import java.io.Serializable;
-import java.util.Map;
 
 public class AuthenticationResponse extends ResponseOutDTO implements Serializable  {
 
-    private final String jwt;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private final String jwt;
     private int roleId;
     private int userId;
     private String user;
+    private String shopName;
     
-    public AuthenticationResponse(String jwt, int roleId, int userId, String user) {
+    public AuthenticationResponse(String jwt, int roleId, int userId, String user, String shopName) {
         this.jwt = jwt;
         this.roleId = roleId;
         this.userId = userId;
         this.user = user;
+        this.shopName = shopName;
     }
 
 
@@ -44,6 +49,16 @@ public class AuthenticationResponse extends ResponseOutDTO implements Serializab
 
 	public void setUser(String user) {
 		this.user = user;
+	}
+
+
+	public String getShopName() {
+		return shopName;
+	}
+
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
 	}
     
     

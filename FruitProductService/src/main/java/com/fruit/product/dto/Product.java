@@ -143,6 +143,10 @@ public class Product{
 	@Column(name="shop_name")
 	@JsonProperty("shop_name")
 	private String shopName;
+	
+	@Column(name="username")
+	private String username;
+	
 	public String getShopName() {
 		return shopName;
 	}
@@ -152,12 +156,22 @@ public class Product{
 	}
 
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
 	@Override
 	public String toString() {
 		return "Product [item_id=" + item_id + ", name=" + name + ", image=" + image + ", delivery=" + delivery
 				+ ", price=" + price + ", max_qty=" + max_qty + ", weight=" + weight + ", category=" + category
-				+ ", createdDT=" + createdDT + ", shopName=" + shopName + "]";
+				+ ", createdDT=" + createdDT + ", shopName=" + shopName + ", username=" + username + "]";
 	}
+
+
 	
 	
 	

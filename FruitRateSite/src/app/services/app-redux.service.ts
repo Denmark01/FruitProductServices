@@ -24,6 +24,7 @@ export class AppReduxService {
   public alertColor: string;
   public reduxMessage: string;
   public loggIn: string;
+  change_in_cart: any;
   constructor(
     private appService: AppServiceService,
     private dataShare: DataShareService,
@@ -39,6 +40,7 @@ export class AppReduxService {
       this.reduxMessage = store.itemFruit.growlMsg;
       this.alertColor = store.itemFruit.growlType;
       this.loggIn = store.login.isLogin;
+      this.change_in_cart = store.itemFruit.change_in_item;
     });
   }
 
@@ -58,7 +60,7 @@ export class AppReduxService {
         qty1.push({...list, qty : 0});
         });
       this.ngRedux.dispatch({type: GET_FRUIT_LIST, payload: qty1});
-      if (this.loggIn) {
+      if (this.loggIn && this.change_in_cart) {
         this.ngRedux.dispatch({type: SAVE_CART});
       }
     }, err => {
@@ -69,14 +71,16 @@ export class AppReduxService {
   getProfileRedux(username: string) {
     this.appService.getProfile(username).subscribe(data => {
       this.getCartRedux(data.userId);
-      this.ngRedux.dispatch({type: SAVE_PROFILE, roleId: data.roleId, username: data.user, userId: data.userId});
+      this.ngRedux.dispatch({type: SAVE_PROFILE, roleId: data.roleId, username: data.user, userId: data.userId,
+         shopName: data.shopName});
     }, err => {
       this.notification(alertMsg.internalError, alertType.danger);
     });
   }
   getProfileReduxOnly(username: string) {
     this.appService.getProfile(username).subscribe(data => {
-      this.ngRedux.dispatch({type: SAVE_PROFILE, roleId: data.roleId, username: data.user, userId: data.userId});
+      this.ngRedux.dispatch({type: SAVE_PROFILE, roleId: data.roleId, username: data.user, userId: data.userId,
+        shopName: data.shopName});
     }, err => {
       this.notification(alertMsg.internalError, alertType.danger);
     });
@@ -100,6 +104,9 @@ export class AppReduxService {
           this.ngRedux.dispatch({type: DETECT_CART_CHANGE, change_in_item: false});
         } else {
           this.notification(data.message, alertType.warning);
+        }
+        if (this.change_in_cart) {
+          this.ngRedux.dispatch({type: SAVE_CART});
         }
     }, error => {
       this.notification(alertMsg.internalError, alertType.danger);

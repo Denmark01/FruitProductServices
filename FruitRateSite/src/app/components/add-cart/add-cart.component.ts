@@ -15,12 +15,8 @@ export class AddCartComponent implements OnInit, OnDestroy {
 
   public cart = [];
   public change_in_cart: boolean;
-  // @select(s => s.itemFruit.item_list) item_list;
-  // @select(s => s.login.user_id) userId;
-  // @select(s => s.login.username) username;
-  // @select(s => s.itemFruit.cart_item)product_list;
-    public username: string;
-    public user_id: string;
+  public username: string;
+  public user_id: string;
   constructor(
     private reduxService: AppReduxService,
     private ngRedux: NgRedux<IItemFruitState>,

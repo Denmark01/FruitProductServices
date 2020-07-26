@@ -59,12 +59,16 @@ export class LoginComponent implements OnInit {
     this.gend = gender;
   }
 
+  onKey(event) {
+    this.shopName = event.target.value;
+  }
+
   signUp(name, email, mobno, pass) {
+    console.log('shop name ' + this.shopName);
     if (name && email && mobno && pass && this.gend) {
-      console.log(this.shopName);
       if (mobno.length !== 10) {
         this.reduxService.notification(alertMsg.mobno, alertType.danger);
-      } else  if (this.isShopActive && this.shopName && this.shopName.length > 0) {
+      } else  if (this.isShopActive) {
         if (this.shopName.length > 25) {
           this.reduxService.notification(alertMsg.max25Char, alertType.danger);
           return;
@@ -93,6 +97,9 @@ export class LoginComponent implements OnInit {
 
   enableShop(val) {
     this.isShopActive = val;
+    if (this.isShopActive === false) {
+      this.shopName = null;
+    }
   }
 
   submitLogin1(pin) {

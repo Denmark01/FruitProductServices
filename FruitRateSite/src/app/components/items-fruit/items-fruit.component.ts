@@ -43,6 +43,8 @@ export class ItemsFruitComponent implements OnInit {
     public username: string;
     public userId: string;
     public isAdmin: boolean;
+  shopname: string;
+  roleId: number;
     // @select(s => s.itemFruit.item_loader)isLoading;
     // @select(s => s.itemFruit.item_list) item_list;
     constructor(
@@ -73,7 +75,9 @@ export class ItemsFruitComponent implements OnInit {
       this.isLogged = store.login.isLogin;
       this.username = store.login.username;
       this.userId = store.login.user_id;
-       this.isAdmin = store.login.is_admin;
+      this.isAdmin = store.login.is_admin;
+      this.shopname = store.login.shopName;
+      this.roleId = store.login.roleId;
     });
     const token = localStorage.getItem('token');
     if (token) {

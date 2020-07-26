@@ -39,6 +39,7 @@ export class NavHeaderComponent implements OnInit {
 
   navTrue: boolean;
   loggIn: boolean;
+  roleId: number;
   // @select(s => s.login.user_id) userId;
   constructor(
     private service: DataShareService,
@@ -80,6 +81,7 @@ export class NavHeaderComponent implements OnInit {
       this._success.next(store.itemFruit.growlMsg);
       this.alertColor = store.itemFruit.growlType;
       this.username = store.login.username;
+      this.roleId = store.login.roleId;
     });
 
     const token = localStorage.getItem('token');

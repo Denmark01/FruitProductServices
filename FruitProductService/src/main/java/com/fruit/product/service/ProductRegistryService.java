@@ -7,10 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,17 +18,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fruit.product.config.QueryConstants;
 import com.fruit.product.dto.AddCartDTO;
-import com.fruit.product.dto.AuthenticationRequest;
 import com.fruit.product.dto.CartRespDTO;
 import com.fruit.product.dto.MyProperty;
 import com.fruit.product.dto.Product;
@@ -67,17 +61,15 @@ public class ProductRegistryService {
 	
 	public ResponseOutDTO getAll() {
 		ProductRespDTO outDto = new ProductRespDTO();
-		List<Product> product=new ArrayList<>();
 		outDto.setProduct_list((List<Product>)productRepository.findAll());
 		outDto.setStatus_obj((new ResponseDTO("success", true)));
 		logger.info("ProductRegistryService |  getAllProducts method exit");
 		return outDto;
 	}
-	@SuppressWarnings("unchecked")
+	
 	public ResponseOutDTO getAddedCartService(int userId) {
 		logger.info("ProductRegistryService |  getAddedCart method invoked");
 		CartRespDTO outDto = new CartRespDTO();
-		List<AddCartDTO> cart=new ArrayList<>();
 		String query = QueryConstants.getAddedCartById;
 		List<AddCartDTO> list = (List<AddCartDTO>) jdbcTemplate.query(query, new Object[] {userId}, (rs, rowNum) -> 
 		new AddCartDTO (
@@ -114,17 +106,17 @@ public class ProductRegistryService {
 		logger.info("ProductRegistryService |  signUp method invoked");
 		int roleId = 0;
 		if (shopName != null) {
-			 roleId = Integer.valueOf(myProps.getVariable()) + 1;
+			 roleId = 3;
 		} else {
-			 roleId = Integer.valueOf(myProps.getVariable());
+			 roleId = 2;
 		}
-		
+		logger.info("Role Id:  "+ roleId);
 		ResponseStatusDTO responseDto = new ResponseStatusDTO();
 		String userRecordQuery = QueryConstants.userRecordInsert;
 		try {
-			
-			int userExist = jdbcTemplate.queryForObject(QueryConstants.userCheckExist, new Object[] {name}, Integer.class);
-			
+			logger.debug("user Exist query:: "+ QueryConstants.userCheckExist);
+			int userExist = jdbcTemplate.queryForObject(QueryConstants.userCheckExist, new Object[] {name}, Integer.class);			
+			logger.info("is User Exist:: "+ userExist);
 			if (userExist > 0) {
 				responseDto.setStatus(0);
 				responseDto.setMessage("User name is already Exists");
@@ -132,13 +124,30 @@ public class ProductRegistryService {
 				return responseDto;
 			}
 			
-		int userRecordInsertVal = jdbcTemplate.update(userRecordQuery,new Object[] {1, email, name, pass, mobno, gender, shopName});
-		logger.info("query "+ userRecordQuery);
-		
-		if (userRecordInsertVal > 0) {
+			
+			logger.debug("userRecordInsertVal query:: "+ userRecordQuery);
+			int userRecordInsertVal = jdbcTemplate.update(userRecordQuery,new Object[] {1, email, name, pass, mobno, gender, shopName});			
+			logger.info("User Record inserted Value:: "+ userRecordInsertVal);
+			
+			if (userRecordInsertVal == 0) {
+				responseDto.setStatus(0);
+				responseDto.setMessage("Something went wrong.. Please try again");
+				responseDto.setStatus_obj(new ResponseDTO("Success", true));
+				return responseDto;
+			}
+			
+			logger.debug("userId query:: "+ QueryConstants.userId);
 			int userId = jdbcTemplate.queryForObject(QueryConstants.userId, new Object[] {name}, Integer.class);
 			String userRoleQuery = QueryConstants.userRoleInsert;
-			logger.info("query "+ userRoleQuery);
+			logger.info("User Id:: "+ userId);
+			
+			if (userId == 0) {
+				responseDto.setStatus(0);
+				responseDto.setMessage("Something went wrong.. Please try again");
+				responseDto.setStatus_obj(new ResponseDTO("Success", true));
+				return responseDto;
+			}
+			
 			int userRoleInsertVal = jdbcTemplate.update(userRoleQuery, new Object[] {userId, roleId});
 			if (userRoleInsertVal > 0) {
 				responseDto.setStatus(1);
@@ -148,11 +157,7 @@ public class ProductRegistryService {
 				responseDto.setStatus(0);
 				responseDto.setMessage("Something went wrong.. Please try again");
 				responseDto.setStatus_obj(new ResponseDTO("Success", true));
-			}
-		} else {
-			responseDto.setStatus_obj(new ResponseDTO("Failure", false));
-			
-		}
+			} 
 		} catch(DataAccessException e) {
 			responseDto.setStatus_obj(new ResponseDTO("Failure", false));
 			logger.info("ProductRegistryService |  signUp | DataAccessException ", e);
@@ -187,6 +192,26 @@ public class ProductRegistryService {
 		map.put("userRole", userRole);
 		return map;
 	}
+	
+	public Map<String , String> getShopName(int userId) {
+		Map<String, String> map = new HashMap<>();
+		
+		String shopName = null;
+		try {
+		
+		 shopName = jdbcTemplate.queryForObject(QueryConstants.shopName, new Object[] {userId}, String.class);
+		}catch(EmptyResultDataAccessException e) {
+			
+			logger.info("ProductRegistryService |  getShopName | DataAccessException ", e);
+		} catch(Exception e) {
+			
+			logger.info("ProductRegistryService |  getShopName | Exception ", e);
+		} finally {
+			logger.info("ProductRegistryService |  getShopName method exit");
+		}
+		map.put("shop_name", shopName);
+		return map;
+	}
 
 	public ResponseOutDTO addCartService(List<AddCartDTO> addCartList, String username) {
 		logger.info("ProductRegistryService |  addCartService method invoked");
@@ -200,12 +225,18 @@ public class ProductRegistryService {
 					logger.info("query:: deleteCartByUserId::  "+ deleteCartByUserId);
 					int delCount = jdbcTemplate.update(deleteCartByUserId, userId);
 					logger.info("delete data count "+ delCount);
-				
+					if (addCartList.size() != 0) {
 					int insert[] = batchInsert(addCartList,userId, username);
 					if (insert.length > 0) {
 						outputData.setStatus_obj(new ResponseDTO("Success", true));
 						outputData.setStatus(1);
 						outputData.setMessage("Item added to cart: "+ insert.length);
+					}
+					
+					} else {
+						outputData.setStatus_obj(new ResponseDTO("Success", true));
+						outputData.setStatus(1);
+						outputData.setMessage("Cart is Empty ");
 					}
 				} else {
 					outputData.setStatus_obj(new ResponseDTO("Success", true));
@@ -295,7 +326,6 @@ public class ProductRegistryService {
 		logger.info("ProductRegistryService |  uploadService method invoked");
 		StringBuilder fileNames = new StringBuilder();
 		ResponseStatusDTO outputData = new ResponseStatusDTO();
-		HttpStatus status = HttpStatus.OK;
 		
 		for(MultipartFile file: files) {
 			Path fileNameAndPath = Paths.get(myProps.getUploadPath(), file.getOriginalFilename());
@@ -320,6 +350,8 @@ public class ProductRegistryService {
     				product.setPrice(Float.valueOf(fdata.get("price")));
     				product.setWeight(fdata.get("unit"));
     				product.setCategory(fdata.get("category"));
+    				product.setShopName(fdata.get("shopname"));
+    				product.setUsername(fdata.get("username"));
     				product=createProduct(product);
     				
     				outputData.setStatus(1);

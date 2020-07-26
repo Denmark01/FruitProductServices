@@ -5,6 +5,11 @@ import java.util.List;
 
 public class AddCartMainDTO implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private List<AddCartDTO> addCartList;
 	
 	private String userId;

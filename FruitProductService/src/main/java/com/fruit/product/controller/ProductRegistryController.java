@@ -7,7 +7,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -86,7 +85,7 @@ public class ProductRegistryController {
 
 		final String jwt = jwtTokenUtil.generateToken(userDetails);
 		Map<String, Integer> user = productRegistryService.getRole(authenticationRequest.getUsername());
-		AuthenticationResponse response = new AuthenticationResponse(jwt, user.get("userRole"),user.get("userId"),  authenticationRequest.getUsername());
+		AuthenticationResponse response = new AuthenticationResponse(jwt, user.get("userRole"),user.get("userId"),  authenticationRequest.getUsername(), "NA");
 		response.setStatus_obj(new ResponseDTO(output.getStatus_obj().getStatus_msg(), output.getStatus_obj().isStatus_flag()));
 		return ConfigMethods.resourseUtils(response);
 	}
@@ -101,7 +100,7 @@ public class ProductRegistryController {
 	
 	
 	@GetMapping("/validate-token")
-	public ResponseEntity validateToken(@RequestHeader("Authorization") String token) {
+	public ResponseEntity<ResponseOutDTO> validateToken(@RequestHeader("Authorization") String token) {
 		logger.info("ProductRegistryController |  validateToken method invoked");
     	logger.info("Token "+ token);
     	ResponseOutDTO response = productRegistryService.validateToken(token);
@@ -156,7 +155,6 @@ public class ProductRegistryController {
     	logger.info("ProductRegistryController |  signUp method invoked");
     	logger.debug("inputs "+ map);
     	ResponseOutDTO outputData = new ResponseOutDTO();
-    	HttpStatus status = HttpStatus.OK;
     	String name = map.get("name");
     	String pass = map.get("pass");
     	String email = map.get("email");
@@ -181,7 +179,9 @@ public class ProductRegistryController {
 		logger.info("ProductRegistryController |  getProfile method invoked");
 		logger.debug("data "+ username);
 		Map<String, Integer> user = productRegistryService.getRole(username);
-		AuthenticationResponse response = new AuthenticationResponse("NA", user.get("userRole"),user.get("userId"), username);
+		Map<String, String> shopName = productRegistryService.getShopName(user.get("userId"));
+		AuthenticationResponse response = new AuthenticationResponse("NA", user.get("userRole"),
+				user.get("userId"), username, shopName.get("shop_name"));
 		response.setStatus_obj(new ResponseDTO("Success", true));
 		return ConfigMethods.resourseUtils(response);
 	}
@@ -215,8 +215,6 @@ public class ProductRegistryController {
     
     @GetMapping("/temp")
 	public String temp(){
-    	ResponseOutDTO out = new ResponseOutDTO();
-		logger.info("ProductRegistryController |  t method invoked");
 		return "success";
 	}
     

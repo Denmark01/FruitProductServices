@@ -8,12 +8,12 @@
       <b></b>
       <div class="form-group">
         <label for="username">Username</label>
-        <input type="text" #username class="form-control" id="username" aria-describedby="emailHelp" placeholder="Enter email">
+        <input type="text" #username class="form-control" id="username" aria-describedby="emailHelp" placeholder="Enter email" autocomplete="off">
         <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
       </div>
       <div class="form-group">
         <label for="userpass">Password</label>
-        <input type="password" #pass class="form-control" id="userpass" placeholder="Password">
+        <input type="password" #pass class="form-control" id="userpass" placeholder="Password" autocomplete="off">
       </div>
       <!-- <div class="form-check">
         <input type="checkbox" class="form-check-input" id="exampleCheck1">
@@ -23,7 +23,7 @@
       <!-- <button *ngIf="isGuest" (click)="guestLogin(email.value)" class="btn btn-success">Proceed Guest</button> -->
     </form>
     <div>
-      <button class="btn btn-link" routerLink="/signup">Create a account</button>
+      <button class="btn btn-link" routerLink="/signup">Don't have account ? Sign Up</button>
     </div>
   </div>
 </div>
@@ -34,11 +34,11 @@
     <form>
       <div class="form-group">
         <label for="name1">Your Full Name</label>
-        <input type="text" #name class="form-control" id="name1" placeholder="your your full name" >
+        <input type="text" #name class="form-control" id="name1" placeholder="your your full name" autocomplete="off">
       </div>
       <div class="form-group">
         <label for="email1">Email address</label>
-        <input type="email" #email class="form-control" id="email1" placeholder="your email id" >
+        <input type="email" #email class="form-control" id="email1" placeholder="your email id" autocomplete="off">
       </div>
       <div class="form-group">
         <label for="mobno">Contact Number</label>
@@ -46,7 +46,7 @@
       </div>
       <div class="form-group">
         <label for="exampleInputPassword1">Password</label>
-        <input type="password" #pass class="form-control" id="exampleInputPassword1" placeholder="choose password" >
+        <input type="password" #pass class="form-control" id="exampleInputPassword1" placeholder="choose password" autocomplete="off">
       </div>
       <div class="form-check"  *ngIf="!isShopActive">
         <input type="checkbox" class="form-check-input" id="shopcheckbox" (click)="enableShop(true)" [checked]="isShopActive">
@@ -58,7 +58,7 @@
       </div>
        <div class="form-group" *ngIf="isShopActive">
         <label for="shopname">Shop Name</label>
-        <input type="textbox" [(ngModel)]="shopName" [ngModelOptions]="{standalone: true}" class="form-control" id="shopname" placeholder="your shop name">
+        <input type="textbox"(keyup)="onKey($event)" class="form-control" id="shopname" placeholder="your shop name" autocomplete="off">
       </div>
       <div class="form-check-inline">
         <label class="form-check-label">
@@ -84,11 +84,12 @@
         <label for="street"></label>
         <input type="text" #pin class="form-control" id="hno" placeholder="H.no">
       </div> -->
-      <button type="submit"  (click)="signUp(name.value, email.value, mobno.value, pass.value)" class="btn btn-primary">Sign Up</button>
+      <button type="submit" (click)="signUp(name.value, email.value, mobno.value, pass.value)" class="btn btn-primary">Sign Up</button>
+     
     </form>
 
     <div>
-      <button class="btn btn-link" routerLink="/login">GO to login page</button>
+      <button class="btn btn-link" routerLink="/login">Already have account ? Login</button>
     </div>
 
   </div>

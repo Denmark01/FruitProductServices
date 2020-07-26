@@ -65,6 +65,7 @@ export function ItemFruitReducer(state: IItemFruitState = ITEM_INITIAL_STATE, ac
         case SAVE_CART:
                 const product_list = state.item_list;
                 const added_cart = state.cart_item;
+                if (added_cart.length > 0) {
                     for (let i = 0 ; i < product_list.length; i++) {
                     const val = product_list.filter(e => e.item_id === added_cart[i].item_id);
                     if (val.length > 0) {
@@ -75,6 +76,7 @@ export function ItemFruitReducer(state: IItemFruitState = ITEM_INITIAL_STATE, ac
                         });
                     }
                     }
+                }
                 return tassign(state, { item_list: product_list, cart_item: added_cart, cart_qty: added_cart.length,
                     growlMsg: null, growlType: null,  change_in_item: action.change_in_item});
 

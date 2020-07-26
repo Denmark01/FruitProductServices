@@ -12,6 +12,8 @@ public class QueryConstants {
 	
 	public static final String userName = "select name from user where user_id = ?";
 	
+	public static final String shopName = "select shop_name from user where user_id = ?";
+	
 	public static final String userRole = "select role_id from user_role where user_id = ?";
 	
 	public static final String getAddedCartById = "select * from add_cart where customer_id = ?";
