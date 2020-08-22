@@ -15,29 +15,39 @@
   <app-search-bar (messageEvent)="receiveMessage($event)"></app-search-bar>
   <app-loader *ngIf="isLoading"></app-loader>
   <div class="row mar_bottom"  *ngIf="!isLoading">
-    <div class="image col-lg-2 col-md-3 col-sm-4 col-5 mw-182px"
-      *ngFor="let item of product_list | grdFilter: {name: searchText, delivery:searchText,  price: searchText, category: searchText, shop_name: searchText};let i = index;">
+    <div class="image col-lg-2 col-md-3 col-sm-4 col-5 mw-182px" [ngClass]="item.stock === 'Y'?'opacityHalf':''"
+      *ngFor="let item of product_list | grdFilter: {name: searchText, delivery:searchText,  price: searchText, category: searchText, shop_name: searchText, sub_category: searchText};let i = index;">
       
       <ul>
         <li>
+          <span>
+            <i class="fa fa-clone" [ngClass]="searchText===item.sub_category?'active':''" aria-hidden="true" (click)="compare(item.sub_category)"></i>
+            <i class="fa fa-backward back" aria-hidden="true" (click)="compare('ALL')" *ngIf="searchText===item.sub_category"></i>
+          </span>
           <img [src]="item.image" />
           <i class="fa fa-pencil-square-o position" aria-hidden="true" (click)="open(item)" *ngIf="isAdmin || (roleId===3 && shopname === item.shop_name)"></i>
         </li>
         <li class="font-bold-600">{{item.name}}</li>
-        <li *ngIf="isLogged">
+        <li *ngIf="false">
           <b>Delivery : </b>{{item.delivery}}</li>
+
+          <li *ngIf="item.isock"><b>Out of Stock</b></li>
+
         <li id="green" class="font-bold-600" style="min-height: 20px;">Rs : {{item.price}} / {{item.weight}}</li>
-        <li *ngIf="isLogged && roleId === 2">
+        <li *ngIf="isLogged && roleId === 1">
           Qty :
           <i class="fa fa-minus-circle" aria-hidden="true" (click)="decrementQty(item.item_id)"></i>
             <input type="text" [(ngModel)]="item.qty" class="textBox" />
           <i class="fa fa-plus-circle" aria-hidden="true" (click)="incrementQty(item.item_id)"></i>
           <span *ngIf="item.qty === item.max_qty" id="red">Maximum qty</span>
         </li>
-        <li *ngIf="isLogged && roleId === 2">
+        <li *ngIf="isLogged && isAdmin">
           <button class="btn btn-primary btn-sm-4" (click)="addToCart(item, 'notCss')">{{item.qty > 0?'Click to add': 'Add to Cart'}}</button>
         </li>
         <span class="shop_name" *ngIf="item.shop_name"><kbd>{{item.shop_name}}</kbd></span>
+        <li class="align-top">
+          <span *ngIf="item.stock === 'Y'"><kbd>Out of Stock</kbd></span>
+        </li>
       </ul>
     </div>
     </div>

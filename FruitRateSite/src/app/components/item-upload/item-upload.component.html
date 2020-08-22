@@ -1,39 +1,54 @@
 <div class="container mt-75">
-  <div class="box col-lg-5 col-md-6 col-sm-10" *ngIf="onlyImage">
+  <app-loader *ngIf="isLoading"></app-loader>
+  <span *ngIf="percentDone > 0 && isLoading" class="green ml40per">
+    <b>Upload Percent: {{percentDone}}% </b><br />
+  </span>
+  <div class="box col-lg-5 col-md-6 col-sm-10" *ngIf="onlyImage && !isLoading">
     <form [formGroup]="profileForm" class="form-horizontal">
       <b></b>
       <div class="form-group">
         <label class="control-label" for="itemName1">Item name</label>
         <input type="text" class="form-control" formControlName="itemName" id="itemName1" aria-describedby="emailHelp"
-          placeholder="Enter Item name" required>
+          placeholder="Enter Item name" >
       </div>
       <div class="form-group">
+        <label class="control-label" for="categoryName">Category name</label>
+        <input type="text" class="form-control" formControlName="categoryName" id="categoryName" aria-describedby="categoryName"
+          placeholder="eg:- Apple, Orange, Potato etc" >
+      </div>
+      <div class="form-group" *ngIf="isAdmin">
         <label for="maxQty">Quantity Max(Capacity)</label>
         <input type="number" class="form-control" id="maxQty1" formControlName="maxQty" placeholder="Max quantity"
-          required>
+          >
       </div>
       <div class="form-group">
         <label for="price1">Price per unit</label>
         <input type="number" class="form-control" id="price1" formControlName="price" placeholder="Enter amount in Rs"
-          required>
+          >
       </div>
       <div class="form-group">
-        <span class="mr-5">
-          <label for="unit">Unit</label>
-          <select id="category" formControlName="unit">
-            <option *ngFor="let u of unit" [ngValue]="u">{{u}}</option>
+        <span class="mr-5 d-flex mb-1">
+          <label>Unit</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <select formControlName="unit">
+            <option value="0" disabled selected hidden>Select Unit</option>
+            <option *ngFor="let u of unit" [ngValue]="u" >{{u}}</option>
           </select>
         </span>
         <span>
-          <label for="category">Category</label>
-          <select id="category" formControlName="itemCatgry">
+          <label>Category</label>&nbsp;
+          <select formControlName="itemCatgry">
+            <option value="0" disabled selected hidden>Select Category</option>
             <option *ngFor="let c of category" [ngValue]="c">{{c}}</option>
           </select>
         </span>
       </div>
+      <!-- <ng-select [items]="cities"
+      bindLabel="name"
+      placeholder="Select city">
+      </ng-select> -->
       <!-- <div class="form-group">
         <label for="unit1">Unit</label>
-        <input type="text" class="form-control" id="unit1" formControlName="unit" placeholder="Enter unit, KG, Gms, Pkt" [maxlength]="10" required>
+        <input type="text" class="form-control" id="unit1" formControlName="unit" placeholder="Enter unit, KG, Gms, Pkt" [maxlength]="10" >
       </div> -->
       <!-- <div class="form-group">
         <label for="category">Category</label>
@@ -42,33 +57,50 @@
           
         </select>
       </div> -->
-      <div class="form-group">
-        <input type="file" name="files" (change)="upload($event.target.files)" required>
-        <span *ngIf="percentDone > 0">
-          Upload Percent: {{percentDone}}% <br />
-        </span>
-        <span *ngIf="uploadSuccess">
+      <div class="form-check-inline mb-2">
+        <label class="form-check-label">
+          Select Image <input type="radio" class="form-check-input" name="optradio" (change)="chang(false)" [checked]="!show">
+        </label><b>OR</b>
+        <label class="form-check-label">
+         &nbsp; File Upload <input type="radio" class="form-check-input" name="optradio" (change)="chang(true)" [checked]="show">
+        </label>
+      </div>
+     
+      <div class="form-group d-flex">
+        <div class="mr-1run " *ngIf="!show">
+          <select formControlName="selectImage"> 
+            <option  disabled selected hidden>SELECT</option>
+            <option *ngFor="let c of imgList" [ngValue]="c">{{c}}</option> 
+            </select> 
+        </div>
+        <div *ngIf="show">
+        <input type="file" name="files" (change)="upload($event.target.files)" >
+
+        <span *ngIf="uploadSuccess" class="green">
           Upload Successful
         </span>
+        </div>
       </div>
     </form>
     <button type="submit" (click)="onSubmit()" class="btn btn-primary">Submit</button>&nbsp;&nbsp;
-    <button type="submit" (click)="showImage(false)" class="btn btn-secondary">Multiple Upload</button>
+    <button type="submit" (click)="showImage(false)" class="btn btn-secondary" *ngIf="isAdmin">Multiple Upload</button>
+    <button type="reset" (click)="reset()" class="btn btn-secondary">Reset</button>
   </div>
 
   <div class="box col-lg-5 col-md-6 col-sm-10" *ngIf="!onlyImage">
     <form>
       <div class="form-group">
         <input type="file" name="files" (change)="upload($event.target.files)" multiple>
-        <span *ngIf="percentDone > 0">
+        <span *ngIf="percentDone > 0" class="green">
           Upload Percent: {{percentDone}}% <br />
         </span>
-        <span *ngIf="uploadSuccess">
+        <span *ngIf="uploadSuccess" class="green">
           Upload Successful
         </span>
       </div>
     </form>
     <button type="submit" (click)="onlyImageSubmit()" class="btn btn-primary">Submit</button>&nbsp;&nbsp;
     <button type="submit" (click)="showImage(true)" class="btn btn-secondary">Back</button>
+    
   </div>
 </div>

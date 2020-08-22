@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,30 +65,43 @@ public class ProductRegistryController {
 		logger.info("ProductRegistryController |  createAuthenticationToken method invoked");
 		logger.debug("data :: "+ authenticationRequest);
 		ResponseOutDTO output = new ResponseOutDTO();
+		Authentication flag = null;
 		output.setStatus_obj(new ResponseDTO("Success", true));
 		try {
-			authenticationManager.authenticate(
+			 flag = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
 			);
+			
 		}
 		catch (BadCredentialsException e) {
-			output.setStatus_obj(new ResponseDTO("Bad Request", false));
-			logger.error("ProductRegistryController |  createAuthenticationToken | Bad Credential ", e);
+			logger.error("ProductRegistryController |  createAuthenticationToken | Bad Credential ");
+			output.setStatus_obj(new ResponseDTO("Bad Credentials", false));
+			return ConfigMethods.resourseUtils(output);
 			
 		} catch (Exception e) {
 			logger.error("ProductRegistryController |  createAuthenticationToken | Exception ", e);
-			output.setStatus_obj(new ResponseDTO("Excep", false));
+			output.setStatus_obj(new ResponseDTO("Failure", false));
 		}
-    	
-
-		final UserDetails userDetails = userDetailsServices
-				.loadUserByUsername(authenticationRequest.getUsername());
-
-		final String jwt = jwtTokenUtil.generateToken(userDetails);
-		Map<String, Integer> user = productRegistryService.getRole(authenticationRequest.getUsername());
-		AuthenticationResponse response = new AuthenticationResponse(jwt, user.get("userRole"),user.get("userId"),  authenticationRequest.getUsername(), "NA");
-		response.setStatus_obj(new ResponseDTO(output.getStatus_obj().getStatus_msg(), output.getStatus_obj().isStatus_flag()));
-		return ConfigMethods.resourseUtils(response);
+		 logger.info("Is authenticated "+flag.isAuthenticated());
+		if(flag.isAuthenticated()) {
+			final UserDetails userDetails = userDetailsServices.loadUserByUsername(authenticationRequest.getUsername());
+			
+			final String jwt = jwtTokenUtil.generateToken(userDetails);
+			
+			Map<String, Integer> user = productRegistryService.getRole(authenticationRequest.getUsername());
+			
+			AuthenticationResponse response = new AuthenticationResponse(jwt, user.get("userRole"),user.get("userId"),  authenticationRequest.getUsername(), "NA");
+			response.setStatus_obj(new ResponseDTO(output.getStatus_obj().getStatus_msg(), output.getStatus_obj().isStatus_flag()));
+			return ConfigMethods.resourseUtils(response);
+		} else {
+			output.setStatus_obj(new ResponseDTO("Bad Request", false));
+			return ConfigMethods.resourseUtils(output);
+		}
+		
+		
+		
+		
+		
 	}
     
     
@@ -196,6 +210,14 @@ public class ProductRegistryController {
 		return ConfigMethods.resourseUtils(out);
 	}
     
+    @GetMapping("/get-image")
+   	public ResponseEntity<ResponseOutDTO> getImage(){
+   		logger.info("ProductRegistryController |  getImage method invoked");
+   		ResponseOutDTO out = new ResponseOutDTO();
+   		out = productRegistryService.getImageService();
+   		return ConfigMethods.resourseUtils(out);
+   	}
+    
     
     @PostMapping("/update-item")
 	public ResponseEntity<ResponseOutDTO> updateItem(@RequestBody Map<String, String> map){
@@ -208,7 +230,8 @@ public class ProductRegistryController {
 		String delivery = map.get("delivery");
 		String weight = map.get("weight");
 		String name = map.get("name");
-		out = productRegistryService.updateItemService(name, itemId, price, maxQty, delivery, weight);
+		String isStock = map.get("stock");
+		out = productRegistryService.updateItemService(name, itemId, price, maxQty, delivery, weight, isStock);
 		return ConfigMethods.resourseUtils(out);
 	}
     

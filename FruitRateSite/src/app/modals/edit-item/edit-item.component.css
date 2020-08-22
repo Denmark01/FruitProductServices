@@ -6,3 +6,11 @@
 input {
     width: 60%;
 }
+
+.w-80 {
+    width: 80px;
+}
+
+.w-105 {
+    width: 105px !important;
+}

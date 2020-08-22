@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { config } from './utils/config';
+import { config, alertMsg, alertType } from './utils/config';
 import {environment } from '../environments/environment';
 import { Router } from '@angular/router';
 import { NgRedux } from 'ng2-redux';
 import { LoginState } from './containers/login/login.reducer';
-import { SAVE_PROFILE, LOGIN_LOADER, LOGIN } from './containers/login/login.action';
+import { SAVE_PROFILE, LOGIN_LOADER, LOGIN, LOADER_OFF } from './containers/login/login.action';
+import { AppReduxService } from './services/app-redux.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -20,7 +21,8 @@ export class AuthService {
 
   constructor(private http: HttpClient,
     private router: Router,
-    private ngRedux: NgRedux<LoginState>) { }
+    private ngRedux: NgRedux<LoginState>,
+    private reduxService: AppReduxService) { }
 
   redirectUrl: string;
 
@@ -51,6 +53,13 @@ export class AuthService {
         this.ngRedux.dispatch({type: LOGIN, username: this.saveToken.user, user_id : this.saveToken.userId});
         this.router.navigate(['']);
       }
+    }, err => {
+      if (err.status === 401) {
+        this.reduxService.notification(alertMsg.invalidPassUser, alertType.danger);
+      } else {
+        this.reduxService.notification(alertMsg.internalError, alertType.danger);
+      }
+      this.ngRedux.dispatch({type: LOADER_OFF});
     });
   }
 

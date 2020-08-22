@@ -21,7 +21,7 @@ public class AuthenticationResponse extends ResponseOutDTO implements Serializab
         this.user = user;
         this.shopName = shopName;
     }
-
+    
 
 	public String getJwt() {
         return jwt;

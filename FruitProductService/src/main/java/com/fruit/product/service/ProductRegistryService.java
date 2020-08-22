@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fruit.product.config.QueryConstants;
 import com.fruit.product.dto.AddCartDTO;
 import com.fruit.product.dto.CartRespDTO;
+import com.fruit.product.dto.ImageListDTO;
 import com.fruit.product.dto.MyProperty;
 import com.fruit.product.dto.Product;
 import com.fruit.product.dto.ProductRespDTO;
@@ -286,16 +289,16 @@ public class ProductRegistryService {
 
 	public ResponseOutDTO uploadImageService(MultipartFile[] files) {
 		logger.info("ProductRegistryService |  uploadImageService method invoked");
-		StringBuilder fileNames = new StringBuilder();
 		ResponseStatusDTO outputData = new ResponseStatusDTO();
 		
 		for(MultipartFile file: files) {
-			Path fileNameAndPath = Paths.get(myProps.getUploadPath(), file.getOriginalFilename());
+			String fname = file.getOriginalFilename();
+			fname = fname.substring(0,1).toUpperCase()+fname.substring(1).toLowerCase();
+			Path fileNameAndPath = Paths.get(myProps.getUploadPath(), fname);
     		logger.info("File size in mb "+ file.getSize()/1024+" kb");
     		logger.info("File type " + file.getContentType());
     		logger.info("File type ori " + file.getResource());
-        	logger.info("fileNameAndPath "+ fileNameAndPath);
-    		fileNames.append(file.getOriginalFilename());
+    		logger.info("fileNameAndPath & Renamed Name "+ fileNameAndPath+" "+fname);
     		
     		try {
     			if (file.getContentType().equals("image/jpeg") || file.getContentType().equals("image/png")) {
@@ -324,16 +327,17 @@ public class ProductRegistryService {
 	
 	public ResponseOutDTO uploadService(Map<String, String> fdata, MultipartFile[] files) {
 		logger.info("ProductRegistryService |  uploadService method invoked");
-		StringBuilder fileNames = new StringBuilder();
 		ResponseStatusDTO outputData = new ResponseStatusDTO();
-		
+		String flag = fdata.get("isUpload");
+		if ("Y".equals(flag)) {
 		for(MultipartFile file: files) {
-			Path fileNameAndPath = Paths.get(myProps.getUploadPath(), file.getOriginalFilename());
+			String fname = file.getOriginalFilename();
+			fname = fname.substring(0,1).toUpperCase()+fname.substring(1).toLowerCase();
+			Path fileNameAndPath = Paths.get(myProps.getUploadPath(), fname);
     		logger.info("File size in mb "+ file.getSize()/1024+" kb");
     		logger.info("File type " + file.getContentType());
     		logger.info("File type ori " + file.getResource());
-        	logger.info("fileNameAndPath "+ fileNameAndPath);
-    		fileNames.append(file.getOriginalFilename());
+        	logger.info("fileNameAndPath & Renamed Name "+ fileNameAndPath+" "+fname);
     		
     		try {
     			if (file.getContentType().equals("image/jpeg") || file.getContentType().equals("image/png")) {
@@ -345,13 +349,16 @@ public class ProductRegistryService {
     				
     				product.setCreatedDT(current.format(format));   				
     				product.setName(fdata.get("itemName"));
-    				product.setImage("/images/"+file.getOriginalFilename());
+    				product.setImage("/images/"+fname);
     				product.setMax_qty(Integer.valueOf(fdata.get("maxQty")));
     				product.setPrice(Float.valueOf(fdata.get("price")));
     				product.setWeight(fdata.get("unit"));
     				product.setCategory(fdata.get("category"));
     				product.setShopName(fdata.get("shopname"));
     				product.setUsername(fdata.get("username"));
+    				product.setDelivery("NA");
+    				product.setStock("N");
+    				product.setSubCategory(fdata.get("subCategory"));
     				product=createProduct(product);
     				
     				outputData.setStatus(1);
@@ -374,6 +381,27 @@ public class ProductRegistryService {
 				logger.info("ProductRegistryService |  uploadService method invoked");
 			}
     	}
+		} else {
+			LocalDateTime current = LocalDateTime.now();
+			DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+			Product product=new Product();
+			product.setCreatedDT(current.format(format));   				
+			product.setName(fdata.get("itemName"));
+			product.setImage("/images/"+fdata.get("selectImage"));
+			product.setMax_qty(Integer.valueOf(fdata.get("maxQty")));
+			product.setPrice(Float.valueOf(fdata.get("price")));
+			product.setWeight(fdata.get("unit"));
+			product.setCategory(fdata.get("category"));
+			product.setShopName(fdata.get("shopname"));
+			product.setUsername(fdata.get("username"));
+			product.setDelivery("NA");
+			product.setStock("N");
+			product=createProduct(product);
+			
+			outputData.setStatus(1);
+			outputData.setMessage("Item added successfully");
+			outputData.setStatus_obj(new ResponseDTO("Success", true));
+		}
 		
 		return outputData;
 	}
@@ -391,6 +419,33 @@ public class ProductRegistryService {
 		} else {
 			output.setStatus(0);
 			output.setMessage("Opps something went wrong. Please try again later..");
+			output.setStatus_obj(new ResponseDTO("Failure", false));
+		}
+		
+		return output;
+	}
+	
+	public String filterName(String s) {
+		if(s.toLowerCase().contains("img")) {
+			return null;
+		}
+		String temp = s.substring(s.lastIndexOf("/")+1);
+		return temp;
+		
+	}
+	
+	public ResponseOutDTO getImageService() {
+		logger.info("ProductRegistryService |  getImageService method invoked");
+		ImageListDTO output = new ImageListDTO();
+		logger.info("query:: userId::  "+ QueryConstants.imagePath);
+		List<String> list = new ArrayList<>();
+		jdbcTemplate.query(QueryConstants.imagePath, new Object[] {}, (rs, rowNum) -> list.add(filterName(rs.getString("image"))));
+		list.removeAll(Collections.singleton(null));
+		if(list.size() > 0) {
+			output.setImgName(list);
+			output.setStatus_obj(new ResponseDTO("Success", true));
+		} else {
+			
 			output.setStatus_obj(new ResponseDTO("Failure", false));
 		}
 		
@@ -425,13 +480,13 @@ public class ProductRegistryService {
 		return output;
 	}
 	
-	public ResponseOutDTO updateItemService(String name, int itemId, float price, int maxQty, String delivery, String weight) {
+	public ResponseOutDTO updateItemService(String name, int itemId, float price, int maxQty, String delivery, String weight, String stock) {
 		logger.info("ProductRegistryService |  updateItemService method invoked");
 		ResponseStatusDTO output = new ResponseStatusDTO();
 		String updateItem = QueryConstants.editPriceItem;
 		logger.debug("query:: udpateItemId::  " + updateItem);
 		try {
-			int updateCount = jdbcTemplate.update(updateItem, name, maxQty, weight, price, delivery, itemId);
+			int updateCount = jdbcTemplate.update(updateItem, name, maxQty, weight, price, delivery, stock , itemId);
 			logger.info("Update Count "+updateCount);
 			if (updateCount > 0) {
 				output.setStatus(1);

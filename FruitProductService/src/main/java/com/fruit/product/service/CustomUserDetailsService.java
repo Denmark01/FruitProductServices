@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.fruit.product.model.CustomUserDetails;
 import com.fruit.product.model.Users;
 import com.fruit.product.repository.UsersRepository;
-
 import java.util.Optional;
 
 @Service
@@ -20,13 +19,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UsersRepository usersRepository;
 
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Users> optionalUsers = usersRepository.findByName(username);
-
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		  Optional<Users> optionalUsers = usersRepository.findByName(username);
         optionalUsers
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
         return optionalUsers
                 .map(CustomUserDetails::new).get();
-    }
+	}
+	 
 }

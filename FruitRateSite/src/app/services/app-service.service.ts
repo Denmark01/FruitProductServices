@@ -111,6 +111,12 @@ constructor(private http: HttpClient,
     return response;
   }
 
+  getImageName() {
+    const url = environment.apiUrl + config.api.getImageName;
+    const response: any = this.http.get(url);
+    return response;
+  }
+
   signUpUser(payload) {
     const url = environment.apiUrl + config.api.signUp;
     const response: any = this.http.post(url, payload);

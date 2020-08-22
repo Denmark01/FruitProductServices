@@ -12,6 +12,9 @@ export class EditItemComponent implements OnInit {
   @Input() payload;
   public item: any;
   public noChangeMsg: string;
+  public isStock: string;
+  public deleteAction = false;
+
   constructor(public activeModal: NgbActiveModal,
     private reduxService: AppReduxService) {}
 
@@ -19,18 +22,27 @@ export class EditItemComponent implements OnInit {
     this.item = this.payload.item;
   }
 
+  stock(val) {
+    this.isStock = val;
+    console.log(this.isStock);
+  }
+
   update(name, delivery, price, weight, maxQty) {
-    const changeItem = [name, delivery, price, weight, maxQty];
+    const changeItem = [name, this.payload.item.delivery, price, weight, maxQty, this.isStock];
     const popupItem = [this.payload.item.name, this.payload.item.delivery, this.payload.item.price,
-      this.payload.item.weight, this.payload.item.max_qty];
+      this.payload.item.weight, this.payload.item.max_qty, this.payload.item.stock];
 
   if (popupItem.toString() !== changeItem.toString()) {
       this.reduxService.updateItem({name: name, delivery: delivery, price: price, weight: weight,
-        max_qty: maxQty, item_id: this.item.item_id});
+        max_qty: maxQty, item_id: this.item.item_id, stock: this.isStock});
         this.activeModal.close();
     } else {
   this.noChangeMsg = alertMsg.editNoChangeItem;
   }
+}
+
+deleteAct(val) {
+  this.deleteAction = val;
 }
 
   delete(itemId) {

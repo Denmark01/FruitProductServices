@@ -147,6 +147,14 @@ public class Product{
 	@Column(name="username")
 	private String username;
 	
+	@JsonProperty("stock")
+	@Column(name="stock")
+	private String isStock;
+	
+	@JsonProperty("sub_category")
+	@Column(name="sub_category")
+	private String subCategory;
+	
 	public String getShopName() {
 		return shopName;
 	}
@@ -164,12 +172,36 @@ public class Product{
 		this.username = username;
 	}
 
+	
+	public String isStock() {
+		return isStock;
+	}
+
+	public void setStock(String isStock) {
+		this.isStock = isStock;
+	}
+	
+	
+
+	public String getSubCategory() {
+		return subCategory;
+	}
+
+	public void setSubCategory(String subCategory) {
+		this.subCategory = subCategory;
+	}
+
 	@Override
 	public String toString() {
 		return "Product [item_id=" + item_id + ", name=" + name + ", image=" + image + ", delivery=" + delivery
 				+ ", price=" + price + ", max_qty=" + max_qty + ", weight=" + weight + ", category=" + category
-				+ ", createdDT=" + createdDT + ", shopName=" + shopName + ", username=" + username + "]";
+				+ ", createdDT=" + createdDT + ", shopName=" + shopName + ", username=" + username + ", isStock="
+				+ isStock + ", subCategory=" + subCategory + "]";
 	}
+
+	
+
+	
 
 
 	

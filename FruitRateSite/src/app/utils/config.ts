@@ -12,6 +12,7 @@ export const config = {
         deleteItem: 'delete-item',
         signUp: 'sign-up',
         uploadImage: 'uploadImage',
+        getImageName: 'get-image'
     }
 
 };
@@ -39,7 +40,9 @@ export const alertMsg ={
     uploadSuccess: 'Item uploaded successfully',
     editNoChangeItem: 'No item where updated',
     fillDetails: 'Please fill all details',
+    fileUpload: 'Please upload image file',
     mobno: 'Please enter 10 digit mob no',
     shopName: 'Please fill shop name',
-    max25Char: 'Shop Name: Character limit less than 25 Character'
+    max25Char: 'Shop Name: Character limit less than 25 Character',
+    invalidPassUser: 'Invalid Username and Password'
 }

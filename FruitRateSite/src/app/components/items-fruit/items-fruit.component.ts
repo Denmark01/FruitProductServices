@@ -113,6 +113,10 @@ export class ItemsFruitComponent implements OnInit {
     this.ngRedux.dispatch({ type: SELECT_ITEM, fruit_vege: choice });
   }
 
+  compare(item) {
+    this.ngRedux.dispatch({ type: SELECT_ITEM, fruit_vege: item });
+  }
+
   increment() {
     this.ngRedux.dispatch({type: INCREMENT});
   }

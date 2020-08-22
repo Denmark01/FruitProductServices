@@ -11,7 +11,7 @@ import { DataComponent } from './components/data/data.component';
 import { ItemsFruitComponent } from './components/items-fruit/items-fruit.component';
 import { GrdFilterPipe } from './grd-filter.pipe';
 import { CarouselComponent } from './containers/carousel/carousel.component';
-import {SelectModule} from 'ng2-select';
+// import {SelectModule} from 'ng2-select';
 import { SearchBarComponent } from './containers/search-bar/search-bar.component';
 import { LoginComponent } from './containers/login/login.component';
 import { NgxFileDropModule } from 'ngx-file-drop';
@@ -31,6 +31,9 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import {SpinnerComponent} from './containers/spinner/spinner.component';
 import { NavHeaderOnlyComponent } from './containers/nav-header-only/nav-header-only.component';
 import { EditItemComponent } from './modals/edit-item/edit-item.component';
+import { CartTableComponent } from './components/cart-table/cart-table.component';
+import {DataTableModule} from 'angular-6-datatable';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -51,7 +54,8 @@ import { EditItemComponent } from './modals/edit-item/edit-item.component';
     FeedbackComponent,
     SpinnerComponent,
     NavHeaderOnlyComponent,
-    EditItemComponent
+    EditItemComponent,
+    CartTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,13 +63,16 @@ import { EditItemComponent } from './modals/edit-item/edit-item.component';
     ReactiveFormsModule,
     FormsModule,
     NgbModule,
-    SelectModule,
+    // SelectModule,
     NgxFileDropModule,
     HttpClientModule,
     NgReduxModule,
     AngularSvgIconModule,
-    CommonModule
+    CommonModule,
     // NgDatepickerModule
+    DataTableModule,
+    NgSelectModule
+
   ],
   providers: [AuthGuard,
     DataShareService,

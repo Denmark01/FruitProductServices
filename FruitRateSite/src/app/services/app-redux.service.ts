@@ -3,7 +3,7 @@ import { AppServiceService } from './app-service.service';
 import { NgRedux } from 'ng2-redux';
 import { IItemFruitState } from '../components/items-fruit/item.fruit.reducer';
 import { START_LOADER, GET_FRUIT_LIST, NOTIFICATION, SAVE_CART, NOTIFICATION_DISAPPEAR,
-  CART_LIST, DETECT_CART_CHANGE} from '../components/items-fruit/item-fruit.action';
+  CART_LIST, DETECT_CART_CHANGE, IMAGE_NAME} from '../components/items-fruit/item-fruit.action';
 import { Router } from '@angular/router';
 import { NgbAlertConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
@@ -25,6 +25,7 @@ export class AppReduxService {
   public reduxMessage: string;
   public loggIn: string;
   change_in_cart: any;
+  public isAdmin: boolean;
   constructor(
     private appService: AppServiceService,
     private dataShare: DataShareService,
@@ -40,6 +41,7 @@ export class AppReduxService {
       this.reduxMessage = store.itemFruit.growlMsg;
       this.alertColor = store.itemFruit.growlType;
       this.loggIn = store.login.isLogin;
+      this.isAdmin = store.login.is_admin;
       this.change_in_cart = store.itemFruit.change_in_item;
     });
   }
@@ -60,7 +62,7 @@ export class AppReduxService {
         qty1.push({...list, qty : 0});
         });
       this.ngRedux.dispatch({type: GET_FRUIT_LIST, payload: qty1});
-      if (this.loggIn && this.change_in_cart) {
+      if (this.loggIn && this.change_in_cart && this.isAdmin) {
         this.ngRedux.dispatch({type: SAVE_CART});
       }
     }, err => {
@@ -115,6 +117,7 @@ export class AppReduxService {
   }
 
   getCartRedux(userId) {
+    if (this.isAdmin) {
     this.appService.getAddedCart(userId).subscribe((data) => {
       if (data) {
         this.ngRedux.dispatch({type: CART_LIST, cart_item: data.cart});
@@ -123,7 +126,7 @@ export class AppReduxService {
     }, error => {
       this.notification(alertMsg.internalError, alertType.danger);
     });
-
+  }
   }
   hitApi() {
     this.appService.hitApi().subscribe((data) => {
@@ -171,6 +174,14 @@ export class AppReduxService {
   }, error => {
     this.notification(alertMsg.internalError, alertType.danger);
     this.ngRedux.dispatch({type: LOADER_OFF});
+  });
+}
+
+getImageName() {
+  this.appService.getImageName().subscribe(data => {
+    this.ngRedux.dispatch({type: IMAGE_NAME, img_name: data.imgName});
+  }, err => {
+    this.notification(alertMsg.internalError, alertType.danger);
   });
 }
 

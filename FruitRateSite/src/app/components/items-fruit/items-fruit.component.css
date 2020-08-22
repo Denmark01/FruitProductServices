@@ -95,3 +95,26 @@ kbd {
         left: -88px;
         width: 199px;
 }
+
+.align-top {
+    position: absolute;
+    top:0px;
+}
+
+.align-top kbd {
+    background-color: coral !important;
+}
+
+.opacityHalf {
+    opacity: 0.6;
+}
+
+.back {
+    float: right;
+    color: green;
+    margin-top: 2px;
+}
+
+.active {
+    color: orangered;
+}

@@ -54,7 +54,7 @@ export class NavHeaderComponent implements OnInit {
     this._success.subscribe((message) => this.successMessage = message);
     this._success.pipe(
       debounceTime(3000)
-    ).subscribe(() => {
+    ).subscribe((data) => {
       if (this.successMessage) {
         this.ngRedux.dispatch({ type: NOTIFICATION_DISAPPEAR });
         // this.successMessage = null;

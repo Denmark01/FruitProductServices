@@ -13,3 +13,4 @@ export const UPDATE_CART_ITEM = 'UPDATE_CART_ITEM';
 export const EMPTY_ALL = 'EMPTY_ALL';
 export const CART_LIST = 'CART_LIST';
 export const DETECT_CART_CHANGE = 'DETECT_CART_CHANGE';
+export const IMAGE_NAME = 'IMAGE_NAME';

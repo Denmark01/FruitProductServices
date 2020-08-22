@@ -2,7 +2,7 @@
 import { tassign } from 'tassign';
 import {
     INCREMENT, GET_FRUIT_LIST, START_LOADER, LOGOUT, NOTIFICATION, SAVE_CART,
-    SELECT_ITEM, NOTIFICATION_DISAPPEAR, DECREMENT, DELETE_CART, UPDATE_CART_ITEM, EMPTY_ALL, CART_LIST, DETECT_CART_CHANGE,
+    SELECT_ITEM, NOTIFICATION_DISAPPEAR, DECREMENT, DELETE_CART, UPDATE_CART_ITEM, EMPTY_ALL, CART_LIST, DETECT_CART_CHANGE, IMAGE_NAME,
 } from './item-fruit.action';
 export interface IItemFruitState {
     counter: number;
@@ -19,6 +19,7 @@ export interface IItemFruitState {
     // in_cart_comp: boolean;
     // chn_in_cart: boolean;
     change_in_item: boolean;
+    img_name: any;
 }
 
 export const ITEM_INITIAL_STATE: IItemFruitState = {
@@ -35,7 +36,8 @@ export const ITEM_INITIAL_STATE: IItemFruitState = {
     cart_qty: 0,
     // in_cart_comp: false,
     // chn_in_cart: false
-    change_in_item: false
+    change_in_item: false,
+    img_name: []
 };
 
 export function ItemFruitReducer(state: IItemFruitState = ITEM_INITIAL_STATE, action): IItemFruitState {
@@ -176,6 +178,9 @@ export function ItemFruitReducer(state: IItemFruitState = ITEM_INITIAL_STATE, ac
 
         case DETECT_CART_CHANGE:
             return tassign(state, {change_in_item: action.change_in_item});
+
+        case IMAGE_NAME:
+            return tassign(state, {img_name: action.img_name});
 
     }
     return state;

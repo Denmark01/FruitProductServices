@@ -5,16 +5,25 @@
   </button>
 </div>
 <div class="modal-body">
-  <div>
+  <div *ngIf="!deleteAction">
     <form>
       <b></b>
       <div class="form-group">
         <label for="name">Name</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <input type="text" #name class="form-control" id="name" [value]="item.name">
       </div>
-      <div class="form-group">
+      <div class="form-group" *ngIf="false">
         <label for="delivery">Delivery</label>&nbsp;&nbsp;
         <input type="text" #delivery class="form-control" id="delivery" [value]="item.delivery">
+      </div>
+      <div class="form-check-inline mb-4">
+        <span class="w-105">Out of Stock</span>
+        <label class="form-check-label w-80">
+          Yes <input type="radio" class="form-check-input" name="optradio" (change)="stock('Y')" [checked]="item.stock === 'Y'">
+        </label>
+        <label class="form-check-label w-80">
+         No <input type="radio" class="form-check-input" name="optradio" (change)="stock('N')" [checked]="item.stock === 'N'">
+        </label>
       </div>
       <div class="form-group">
         <label for="Price">Price</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -28,8 +37,14 @@
         <label for="maxQty">Max Qty</label>&nbsp;&nbsp;&nbsp;
         <input type="text" #maxQty class="form-control" id="maxQty" [value]="item.max_qty">
       </div>
-      <button (click)="delete(item.item_id)" class="btn btn-danger">Delete</button>&nbsp;&nbsp;
-      <button (click)="update(name.value, delivery.value, price.value, weight.value, maxQty.value)" class="btn btn-primary">Update Item</button>
+      <button (click)="deleteAct(true)" class="btn btn-danger">Delete</button>&nbsp;&nbsp;
+      <button (click)="update(name.value, 'NA', price.value, weight.value, maxQty.value)" class="btn btn-primary">Update Item</button>
     </form>
+  </div>
+  <div *ngIf="deleteAction">
+    <h6>Item Name: {{item.name}}</h6>
+    <span>Are you sure your want to delete ?</span>
+    <button (click)="delete(item.item_id)" class="btn btn-danger">Delete</button>&nbsp;&nbsp;
+    <button (click)="deleteAct(false)" class="btn btn-secondary">Back</button>
   </div>
 </div>

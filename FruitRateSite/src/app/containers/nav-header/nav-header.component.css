@@ -29,7 +29,7 @@
   color: burlywood;
 }
 
-.cart :active {
+a.nav-link.cart.active {
   color: white;
 }
 

@@ -3,7 +3,9 @@
     padding: 27px;
     box-shadow: 4px 3px #948787;
     margin: auto;
-    max-height: 500px;
+    min-height: 500px;
+    margin-bottom: 11%;
+    max-height: 100%;
 }
 
 .container {
@@ -13,8 +15,21 @@
 select {
     margin-left: 10px;
     height: 30px;
+    width: 150px;
+    border: 1px solid lightgray;
 }
 
 .mt-75 {
     margin-top:75px
+}
+
+.widthAdj{
+    width: 100px;
+}
+
+.green {
+    color: green;
+}
+.ml40per {
+    margin-left: 40%
 }

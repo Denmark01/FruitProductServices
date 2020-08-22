@@ -10,6 +10,7 @@ import { AuthGuard } from './auth.guard';
 import { ErrorPageComponent } from './containers/error-page/error-page.component';
 import { ServerErrorComponent } from './containers/server-error/server-error.component';
 import { FeedbackComponent } from './containers/feedback/feedback.component';
+import { CartTableComponent } from './components/cart-table/cart-table.component';
 
 const routes: Routes = [
   {
@@ -25,7 +26,8 @@ const routes: Routes = [
           { path: 'upload', component: ItemUploadComponent },
           { path: 'error', component: ErrorPageComponent },
           { path: 'server/:code', component: ServerErrorComponent},
-           { path: 'feedback', component: FeedbackComponent}
+           { path: 'feedback', component: FeedbackComponent},
+           {path: 'table', component: CartTableComponent}
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes, { useHash: true })],

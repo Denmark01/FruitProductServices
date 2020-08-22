@@ -35,7 +35,7 @@ export class AuthInterceptor implements HttpInterceptor {
                     localStorage.removeItem('token');
                   }
                   if (err.status === 401) {
-                    this.router.navigate(['server', err.status]);
+                    // this.router.navigate(['server', err.status]);
                   }
                   if (err.status === 403) {
                     this.router.navigate(['server', 'ACCESS DENIED']);

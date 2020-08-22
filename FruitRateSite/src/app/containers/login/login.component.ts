@@ -7,7 +7,8 @@ import { NgRedux } from 'ng2-redux';
 import { LoginState } from './login.reducer';
 import { AppReduxService } from 'src/app/services/app-redux.service';
 import { alertType, alertMsg } from 'src/app/utils/config';
-
+// import * as bcrypt from 'bcrypt';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-login',
@@ -24,14 +25,14 @@ export class LoginComponent implements OnInit {
   public isShopActive = false;
   public gend: string;
   public shopName = '';
-
+  public encryptKey = '';
   constructor(private http: HttpClient,
     private route: Router,
     private service: DataShareService,
     private authService: AuthService,
     private reduxService: AppReduxService,
     private ngRedux: NgRedux<LoginState>) { }
-
+     secretKey = 'SlowAndSteadyWinsTheRace';
   ngOnInit() {
     const url = this.route.url;
     if (url.includes('login')) {
@@ -62,8 +63,19 @@ export class LoginComponent implements OnInit {
   onKey(event) {
     this.shopName = event.target.value;
   }
+  
+  encrypt(value) {
+    this.encryptKey = CryptoJS.AES.encrypt(value, this.secretKey.trim()).toString();
+    console.log(this.encryptKey);
+  }
+
+  decrypt() {
+    console.log(CryptoJS.AES.decrypt(this.encryptKey, this.secretKey.trim()).toString(CryptoJS.enc.Utf8));
+  }
 
   signUp(name, email, mobno, pass) {
+
+    // console.log('Encrypted ' + enc);
     console.log('shop name ' + this.shopName);
     if (name && email && mobno && pass && this.gend) {
       if (mobno.length !== 10) {
