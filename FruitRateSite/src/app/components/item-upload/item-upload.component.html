@@ -12,10 +12,24 @@
           placeholder="Enter Item name" >
       </div>
       <div class="form-group">
-        <label class="control-label" for="categoryName">Category name</label>
-        <input type="text" class="form-control" formControlName="categoryName" id="categoryName" aria-describedby="categoryName"
-          placeholder="eg:- Apple, Orange, Potato etc" >
+
+        <span class="mr-5 d-flex mb-1">
+          <label>Unit</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <select formControlName="unit">
+            <option value="0" disabled selected hidden>Select Unit</option>
+            <option *ngFor="let u of unit" [ngValue]="u" >{{u}}</option>
+          </select>
+        </span>
+
+        <span>
+          <label>Category</label>&nbsp;
+          <select formControlName="itemCatgry">
+            <option value="0" disabled selected hidden>Select Category</option>
+            <option *ngFor="let c of category" [ngValue]="c">{{c}}</option>
+          </select>
+        </span>
       </div>
+
       <div class="form-group" *ngIf="isAdmin">
         <label for="maxQty">Quantity Max(Capacity)</label>
         <input type="number" class="form-control" id="maxQty1" formControlName="maxQty" placeholder="Max quantity"
@@ -26,22 +40,24 @@
         <input type="number" class="form-control" id="price1" formControlName="price" placeholder="Enter amount in Rs"
           >
       </div>
+
+
       <div class="form-group">
-        <span class="mr-5 d-flex mb-1">
-          <label>Unit</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <select formControlName="unit">
-            <option value="0" disabled selected hidden>Select Unit</option>
-            <option *ngFor="let u of unit" [ngValue]="u" >{{u}}</option>
-          </select>
-        </span>
-        <span>
-          <label>Category</label>&nbsp;
-          <select formControlName="itemCatgry">
-            <option value="0" disabled selected hidden>Select Category</option>
-            <option *ngFor="let c of category" [ngValue]="c">{{c}}</option>
-          </select>
-        </span>
+        <div *ngIf="subCatStatus">
+          <label class="control-label" for="categoryName">Category Name &nbsp;<i class="fa fa-times red" aria-hidden="true" (click)="subCat(false)"></i></label>
+          <input type="text" class="form-control" formControlName="categoryName" id="categoryName" aria-describedby="categoryName"
+            placeholder="eg:- Apple, Orange, Potato etc" >
+        </div>
+          <span class="mr-5 d-flex mb-1" *ngIf="!subCatStatus">
+            <label>Category Name</label>
+            <select formControlName="categoryName" class="mr-3">
+              <option value="0" disabled selected hidden>Select Category Name</option>
+              <option *ngFor="let sub of subCatName" [ngValue]="sub" >{{sub}}</option>
+            </select>
+            <i class="fa fa-plus green" aria-hidden="true" (click)="subCat(true)"></i>
+          </span>
       </div>
+     
       <!-- <ng-select [items]="cities"
       bindLabel="name"
       placeholder="Select city">
@@ -83,7 +99,7 @@
       </div>
     </form>
     <button type="submit" (click)="onSubmit()" class="btn btn-primary">Submit</button>&nbsp;&nbsp;
-    <button type="submit" (click)="showImage(false)" class="btn btn-secondary" *ngIf="isAdmin">Multiple Upload</button>
+    <button type="submit" (click)="showImage(false)" class="btn btn-secondary mr-1" *ngIf="isAdmin">Multiple Upload</button>
     <button type="reset" (click)="reset()" class="btn btn-secondary">Reset</button>
   </div>
 

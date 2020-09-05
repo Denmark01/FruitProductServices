@@ -14,7 +14,10 @@ public class ConfigMethods {
 		if(!response.getStatus_obj().isStatus_flag()) {
 			if(response.getStatus_obj().getStatus_msg().equals("Bad Request")) {
 				headers = HttpStatus.BAD_GATEWAY;
-			} else {
+			} else if(response.getStatus_obj().getStatus_msg().equals("Bad Credentials")) {
+				headers = HttpStatus.UNAUTHORIZED;
+			}
+				else {
 				headers = HttpStatus.INTERNAL_SERVER_ERROR;
 			}
 			

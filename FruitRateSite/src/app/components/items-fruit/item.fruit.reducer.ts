@@ -20,6 +20,7 @@ export interface IItemFruitState {
     // chn_in_cart: boolean;
     change_in_item: boolean;
     img_name: any;
+    sub_cat: any;
 }
 
 export const ITEM_INITIAL_STATE: IItemFruitState = {
@@ -37,7 +38,8 @@ export const ITEM_INITIAL_STATE: IItemFruitState = {
     // in_cart_comp: false,
     // chn_in_cart: false
     change_in_item: false,
-    img_name: []
+    img_name: [],
+    sub_cat: []
 };
 
 export function ItemFruitReducer(state: IItemFruitState = ITEM_INITIAL_STATE, action): IItemFruitState {
@@ -180,7 +182,7 @@ export function ItemFruitReducer(state: IItemFruitState = ITEM_INITIAL_STATE, ac
             return tassign(state, {change_in_item: action.change_in_item});
 
         case IMAGE_NAME:
-            return tassign(state, {img_name: action.img_name});
+            return tassign(state, {img_name: action.img_name, sub_cat: action.sub_cat});
 
     }
     return state;

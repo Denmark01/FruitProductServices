@@ -12,8 +12,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -325,10 +327,20 @@ public class ProductRegistryService {
 		return outputData;
 	}
 	
+	public String getMobNo(String username) {
+		String query = QueryConstants.getMobno;
+		String mobNo = jdbcTemplate.queryForObject(query, new Object[] {username}, String.class);
+		return mobNo;
+	}
+	
 	public ResponseOutDTO uploadService(Map<String, String> fdata, MultipartFile[] files) {
 		logger.info("ProductRegistryService |  uploadService method invoked");
 		ResponseStatusDTO outputData = new ResponseStatusDTO();
 		String flag = fdata.get("isUpload");
+		
+		String username = fdata.get("username");
+    	String mobNo = getMobNo(username);
+    	
 		if ("Y".equals(flag)) {
 		for(MultipartFile file: files) {
 			String fname = file.getOriginalFilename();
@@ -354,11 +366,12 @@ public class ProductRegistryService {
     				product.setPrice(Float.valueOf(fdata.get("price")));
     				product.setWeight(fdata.get("unit"));
     				product.setCategory(fdata.get("category"));
-    				product.setShopName(fdata.get("shopname"));
-    				product.setUsername(fdata.get("username"));
+    				product.setShopName(fdata.get("shopname")== null?null:fdata.get("shopname"));
+    				product.setUsername(username);
     				product.setDelivery("NA");
     				product.setStock("N");
-    				product.setSubCategory(fdata.get("subCategory"));
+    				product.setSubCategory(fdata.get("categoryName").toUpperCase());
+    				product.setMobno(mobNo);
     				product=createProduct(product);
     				
     				outputData.setStatus(1);
@@ -391,11 +404,13 @@ public class ProductRegistryService {
 			product.setMax_qty(Integer.valueOf(fdata.get("maxQty")));
 			product.setPrice(Float.valueOf(fdata.get("price")));
 			product.setWeight(fdata.get("unit"));
-			product.setCategory(fdata.get("category"));
+			product.setCategory(fdata.get("cateory"));
+			product.setSubCategory(fdata.get("categoryName").toUpperCase());
 			product.setShopName(fdata.get("shopname"));
 			product.setUsername(fdata.get("username"));
 			product.setDelivery("NA");
 			product.setStock("N");
+			product.setMobno(mobNo);
 			product=createProduct(product);
 			
 			outputData.setStatus(1);
@@ -428,7 +443,7 @@ public class ProductRegistryService {
 	public String filterName(String s) {
 		if(s.toLowerCase().contains("img")) {
 			return null;
-		}
+		} 
 		String temp = s.substring(s.lastIndexOf("/")+1);
 		return temp;
 		
@@ -441,6 +456,10 @@ public class ProductRegistryService {
 		List<String> list = new ArrayList<>();
 		jdbcTemplate.query(QueryConstants.imagePath, new Object[] {}, (rs, rowNum) -> list.add(filterName(rs.getString("image"))));
 		list.removeAll(Collections.singleton(null));
+		 Set<String> set = new LinkedHashSet<>();
+		 set.addAll(list);
+		 list.clear();
+		 list.addAll(set);
 		if(list.size() > 0) {
 			output.setImgName(list);
 			output.setStatus_obj(new ResponseDTO("Success", true));

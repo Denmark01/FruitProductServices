@@ -33,7 +33,9 @@ import { NavHeaderOnlyComponent } from './containers/nav-header-only/nav-header-
 import { EditItemComponent } from './modals/edit-item/edit-item.component';
 import { CartTableComponent } from './components/cart-table/cart-table.component';
 import {DataTableModule} from 'angular-6-datatable';
-import { NgSelectModule } from '@ng-select/ng-select';
+// import { NgSelectModule } from '@ng-select/ng-select';
+import { PhoneFilterPipe } from '../app/utils/phone-filter.pipe';
+import {SelectModule} from 'ng2-select';
 
 @NgModule({
   declarations: [
@@ -56,6 +58,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     NavHeaderOnlyComponent,
     EditItemComponent,
     CartTableComponent,
+    PhoneFilterPipe,
   ],
   imports: [
     BrowserModule,
@@ -63,7 +66,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     ReactiveFormsModule,
     FormsModule,
     NgbModule,
-    // SelectModule,
+    SelectModule,
     NgxFileDropModule,
     HttpClientModule,
     NgReduxModule,
@@ -71,7 +74,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     CommonModule,
     // NgDatepickerModule
     DataTableModule,
-    NgSelectModule
+    // NgSelectModule
 
   ],
   providers: [AuthGuard,

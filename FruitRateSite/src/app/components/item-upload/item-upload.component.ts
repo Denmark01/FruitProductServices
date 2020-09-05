@@ -46,6 +46,8 @@ export class ItemUploadComponent implements OnInit {
   imgList: any;
   show: boolean;
   isLoading: boolean;
+  subCatStatus: any;
+  subCatName: any;
   constructor(
     private http: HttpClient,
     private appService: AppServiceService,
@@ -54,9 +56,9 @@ export class ItemUploadComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.category = ['FRUITS', 'VEGETABLES'];
-    this.unit = ['KG', 'PKT', 'GMS', 'PCS'];
-
+    this.category = ['FRUITS', 'VEGETABLES', 'CAKE'];
+    this.unit = ['KG', 'PKT', 'GMS', 'PCS', 'DOZEN'];
+    this.reduxService.getSubCatName('FRUITS');
     this.cities = [
       {id: 1, name: 'Vilnius'},
       {id: 2, name: 'Kaunas'},
@@ -64,6 +66,14 @@ export class ItemUploadComponent implements OnInit {
       {id: 4, name: 'Pabradė'},
       {id: 5, name: 'Klaipėda'}
   ];
+
+  this.profileForm.get('itemCatgry').valueChanges.subscribe(selectedValue => {
+    console.log(this.profileForm.get('itemCatgry').value);
+    this.reduxService.getSubCatName(this.profileForm.get('itemCatgry').value);
+    setTimeout(() => {
+      
+    });
+  });
 
      this.ngRedux.subscribe(() => {
       const store: any = this.ngRedux.getState();
@@ -74,16 +84,18 @@ export class ItemUploadComponent implements OnInit {
        this.roleId = store.login.roleId;
        this.imgList = store.itemFruit.img_name;
        this.isLoading = store.login.login_loader;
+       this.subCatName = store.itemFruit.sub_cat;
     });
-      this.reduxService.getImageName();
+  }
+
+  subCat(val) {
+    this.subCatStatus = val;
   }
 
 submit() {
   console.log(this.profileForm.value.itemCatgry);
 }
   onSubmit() {
-    console.log(this.profileForm.value);
-
     if (this.profileForm.value.itemName && this.profileForm.value.price
       && this.profileForm.value.itemCatgry && this.profileForm.value.unit && this.profileForm.value.itemCatgry 
       && this.profileForm.value.categoryName) {
@@ -99,10 +111,10 @@ submit() {
       this.formData.append('category', this.profileForm.value.itemCatgry);
       this.formData.append('username', this.username);
       this.formData.append('userId', this.userId);
-      this.formData.append('shopname', this.shopname ? null : this.shopname);
+      this.formData.append('shopname', this.shopname);
       this.formData.append('isUpload', this.show ? 'Y' : 'N');
       this.formData.append('selectImage', this.profileForm.value.selectImage);
-      this.formData.append('cateoryName', this.profileForm.value.categoryName);
+      this.formData.append('categoryName', this.profileForm.value.categoryName);
 
       this.ngRedux.dispatch({type: LOGIN_LOADER});
 

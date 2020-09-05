@@ -43,7 +43,7 @@
   </div>
   <div *ngIf="deleteAction">
     <h6>Item Name: {{item.name}}</h6>
-    <span>Are you sure your want to delete ?</span>
+    <span>Are you sure your want to delete ?</span><br>
     <button (click)="delete(item.item_id)" class="btn btn-danger">Delete</button>&nbsp;&nbsp;
     <button (click)="deleteAct(false)" class="btn btn-secondary">Back</button>
   </div>

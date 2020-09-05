@@ -185,4 +185,12 @@ getImageName() {
   });
 }
 
+getSubCatName(subCat) {
+  this.appService.getSubCatName(subCat).subscribe(data => {
+    this.ngRedux.dispatch({type: IMAGE_NAME, sub_cat: data.imgName});
+  }, err => {
+    this.notification(alertMsg.internalError, alertType.danger);
+  });
+}
+
 }

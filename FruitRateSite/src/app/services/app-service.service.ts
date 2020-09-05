@@ -122,4 +122,10 @@ constructor(private http: HttpClient,
     const response: any = this.http.post(url, payload);
     return response;
   }
+
+  getSubCatName(subCat) {
+    const url = environment.apiUrl + config.api.getSubCat + '?sub_cat=' + subCat;
+    const response: any = this.http.get(url);
+    return response;
+  }
 }

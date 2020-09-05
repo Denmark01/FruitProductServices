@@ -12,7 +12,8 @@ export const config = {
         deleteItem: 'delete-item',
         signUp: 'sign-up',
         uploadImage: 'uploadImage',
-        getImageName: 'get-image'
+        getImageName: 'get-image',
+        getSubCat: 'get-sc'
     }
 
 };

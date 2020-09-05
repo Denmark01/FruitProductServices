@@ -27,4 +27,6 @@ public class QueryConstants {
 	public static final String editPriceItem = "update product_details set name = ?, max_qty = ?, weight = ?, price = ?, delivery = ?, stock = ? where item_id = ?";
 	
 	public static final String insertCart = "insert into add_cart (category, customer_id, customer_name, item_id, item_name, item_qty, item_price, item_unit, cart_time, max_qty) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	
+	public static final String getMobno = "select mob_no from user where name = ?";
 }

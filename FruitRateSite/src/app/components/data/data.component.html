@@ -2,4 +2,24 @@
   as an <code>entryComponents</code> section of your <code>NgModule</code>.</p>
   
   <button class="btn btn-lg btn-outline-primary" (click)="open()">Launch demo modal</button>
-  
+
+
+  <div style="width: 300px; margin-bottom: 20px;">
+    <h3>Select a single city</h3>
+    <ng-select [allowClear]="true"
+                [items]="items"
+                [disabled]="disabled"
+                (selected)="selected($event)"
+                (typed)="typed($event)"
+                placeholder="No city selected">
+    </ng-select>
+    <p></p>
+    <pre>{{value.text}}</pre>
+    <div>
+      <button type="button" class="btn btn-primary"
+              [(ngModel)]="disabledV" btnCheckbox
+              btnCheckboxTrue="1" btnCheckboxFalse="0">
+        {{disabled === '1' ? 'Enable' : 'Disable'}}
+      </button>
+    </div>
+  </div>

@@ -12,7 +12,6 @@ import { INCREMENT, NOTIFICATION, UPDATE_CART_ITEM, DECREMENT, DETECT_CART_CHANG
 import { AppReduxService } from 'src/app/services/app-redux.service';
 import * as jwt_decode from 'jwt-decode';
 import { EditItemComponent } from 'src/app/modals/edit-item/edit-item.component';
-
 @Component({
   selector: 'app-items-fruit',
   templateUrl: './items-fruit.component.html',
@@ -45,6 +44,9 @@ export class ItemsFruitComponent implements OnInit {
     public isAdmin: boolean;
   shopname: string;
   roleId: number;
+  location = {
+    phoneNumber: 8851777648,
+  }
     // @select(s => s.itemFruit.item_loader)isLoading;
     // @select(s => s.itemFruit.item_list) item_list;
     constructor(

@@ -1,7 +1,7 @@
 
 .img_logo{
-    width: 151px;
-    height: 37px;
+    /* width: 151px; */
+    height: 50px;
 }
     
 * {
@@ -19,9 +19,10 @@
     max-width: 100%;
 }
 
-@media screen and (max-width: 350px) {
+@media screen and (max-width: 460px) {
   .img_logo{
-    width: 90px;
+    /* width: 90px; */
+    height: 35px;
 }
 }
 
@@ -38,3 +39,4 @@ a.nav-link.cart.active {
     position: relative;
     top: 70px;
 }
+

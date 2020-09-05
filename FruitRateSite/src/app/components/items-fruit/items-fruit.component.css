@@ -27,6 +27,9 @@ ul li{
 #green{
     color: #2a9407b3;
 }
+#red {
+    color: #f75a5a;
+}
 .mar_bottom{
     margin-bottom: 100px;
 }
@@ -116,5 +119,12 @@ kbd {
 }
 
 .active {
-    color: orangered;
+    color: #ffc107;
+}
+.size14 {
+    font-size: 14px;
+}
+
+.head {
+    font-family: fantasy;
 }

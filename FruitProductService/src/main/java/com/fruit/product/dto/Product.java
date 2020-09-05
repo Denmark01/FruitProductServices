@@ -155,6 +155,9 @@ public class Product{
 	@Column(name="sub_category")
 	private String subCategory;
 	
+	@Column(name="mobno")
+	private String mobno;
+	
 	public String getShopName() {
 		return shopName;
 	}
@@ -190,13 +193,23 @@ public class Product{
 	public void setSubCategory(String subCategory) {
 		this.subCategory = subCategory;
 	}
+	
+	
+
+	public String getMobno() {
+		return mobno;
+	}
+
+	public void setMobno(String mobno) {
+		this.mobno = mobno;
+	}
 
 	@Override
 	public String toString() {
 		return "Product [item_id=" + item_id + ", name=" + name + ", image=" + image + ", delivery=" + delivery
 				+ ", price=" + price + ", max_qty=" + max_qty + ", weight=" + weight + ", category=" + category
 				+ ", createdDT=" + createdDT + ", shopName=" + shopName + ", username=" + username + ", isStock="
-				+ isStock + ", subCategory=" + subCategory + "]";
+				+ isStock + ", subCategory=" + subCategory + ", mobno=" + mobno + "]";
 	}
 
 	

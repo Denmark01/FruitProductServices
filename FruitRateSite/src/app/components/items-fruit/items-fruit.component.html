@@ -1,14 +1,15 @@
 <!-- <app-carousel></app-carousel> -->
-<div class="container left">
+<div class="container left mt-2">
   <!-- <ngb-alert *ngIf="!staticAlert" (close)="staticAlertClosed = true" class="overlapTop">
     Check out our awesome new features!</ngb-alert> -->
     <ngb-alert *ngIf="successMessage" (close)="successMessage = null" [type]="alertColor">
      {{ successMessage}}
       </ngb-alert>
-    <h4>Welcome {{username?username:'Guest'}} !</h4>
+    <h4 class="head">Welcome {{username?username:'Guest'}} !</h4>
     <div class="positionAbs">
       <span [ngClass]="searchText === shopname? 'badge badge-warning mr-2':'badge badge-success mr-2'" (click)="select(shopname)" *ngIf="roleId===3">Shop Item</span>
       <span [ngClass]="searchText === ''? 'badge badge-warning mr-2':'badge badge-info mr-2'" (click)="select('ALL')">ALL</span>
+      <span [ngClass]="searchText === 'CAKES'? 'badge badge-warning mr-2':'badge badge-info mr-2'" (click)="select('CAKES')">Cakes</span>
         <span [ngClass]="searchText === 'VEGETABLES'? 'badge badge-warning mr-2':'badge badge-info mr-2'" (click)="select('VEGETABLES')">Vegetables</span>
         <span [ngClass]="searchText === 'FRUITS'? 'badge badge-warning mr-2':'badge badge-info mr-2'" (click)="select('FRUITS')">Fruits</span>        
     </div>
@@ -22,7 +23,7 @@
         <li>
           <span>
             <i class="fa fa-clone" [ngClass]="searchText===item.sub_category?'active':''" aria-hidden="true" (click)="compare(item.sub_category)"></i>
-            <i class="fa fa-backward back" aria-hidden="true" (click)="compare('ALL')" *ngIf="searchText===item.sub_category"></i>
+            <i class="fa fa-backward back" aria-hidden="true" (click)="compare(item.category)" *ngIf="searchText===item.sub_category"></i>
           </span>
           <img [src]="item.image" />
           <i class="fa fa-pencil-square-o position" aria-hidden="true" (click)="open(item)" *ngIf="isAdmin || (roleId===3 && shopname === item.shop_name)"></i>
@@ -31,9 +32,8 @@
         <li *ngIf="false">
           <b>Delivery : </b>{{item.delivery}}</li>
 
-          <li *ngIf="item.isock"><b>Out of Stock</b></li>
-
-        <li id="green" class="font-bold-600" style="min-height: 20px;">Rs : {{item.price}} / {{item.weight}}</li>
+        <li class="font-bold-600" style="min-height: 20px;">Rs : <span id="green">{{item.price}} / {{item.weight}}</span>
+         &nbsp; <a [href]="'tel:' + item.mobno" *ngIf="item.mobno"><i id="red" class="fa fa-phone fa-lg" aria-hidden="true"></i></a></li>
         <li *ngIf="isLogged && roleId === 1">
           Qty :
           <i class="fa fa-minus-circle" aria-hidden="true" (click)="decrementQty(item.item_id)"></i>
@@ -44,10 +44,14 @@
         <li *ngIf="isLogged && isAdmin">
           <button class="btn btn-primary btn-sm-4" (click)="addToCart(item, 'notCss')">{{item.qty > 0?'Click to add': 'Add to Cart'}}</button>
         </li>
-        <span class="shop_name" *ngIf="item.shop_name"><kbd>{{item.shop_name}}</kbd></span>
+        <span class="shop_name" *ngIf="item.shop_name && item.shop_name!=='null'"><kbd>{{item.shop_name}}</kbd></span>
         <li class="align-top">
           <span *ngIf="item.stock === 'Y'"><kbd>Out of Stock</kbd></span>
+          
         </li>
+        <!-- <li>
+          <a [href]="'tel:' + item.mobno" *ngIf="item.mobno"><i id="green" class="fa fa-phone fa-lg" aria-hidden="true">&nbsp;<span class="size14">Call Seller</span></i></a>
+        </li> -->
       </ul>
     </div>
     </div>
